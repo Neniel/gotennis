@@ -3,7 +3,7 @@ package redis
 import (
 	"context"
 
-	"github.com/Neniel/tennis/entity"
+	"github.com/Neniel/gotennis/entity"
 
 	"github.com/go-redis/redis"
 )

@@ -1,8 +1,10 @@
 go 1.22.0
 
 use (
+	./app
 	./cache
 	./categories
 	./entity
 	./players
+	./util
 )

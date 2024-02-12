@@ -2,9 +2,16 @@ package main
 
 import (
 	"context"
+
+	"github.com/Neniel/gotennis/app"
 )
 
 func main() {
-	app := NewApp(context.Background())
-	app.NewAPIServer().Run()
+	app := app.NewApp(context.Background())
+
+	ms := &CategoryMicroservice{
+		App: app,
+	}
+
+	ms.NewAPIServer().Run()
 }

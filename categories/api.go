@@ -3,14 +3,15 @@ package main
 import (
 	"categories/database"
 	"categories/handler"
-	"categories/helper"
 	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/Neniel/gotennis/app"
 	"github.com/Neniel/gotennis/entity"
+	"github.com/Neniel/gotennis/util"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -20,13 +21,17 @@ type APIServer struct {
 	Handler *handler.CategoriesHandler
 }
 
-func (a *App) NewAPIServer() *APIServer {
+type CategoryMicroservice struct {
+	App *app.App
+}
+
+func (ms *CategoryMicroservice) NewAPIServer() *APIServer {
 	return &APIServer{
 		Handler: handler.NewCategoriesHandler(
-			database.NewDatabaseReader(a.DBClients.Redis),
-			database.NewDatabaseWriter(a.DBClients.Redis),
-			database.NewDatabaseReader(a.DBClients.MongoDB),
-			database.NewDatabaseWriter(a.DBClients.MongoDB)),
+			database.NewDatabaseReader(ms.App.DBClients.Redis),
+			database.NewDatabaseWriter(ms.App.DBClients.Redis),
+			database.NewDatabaseReader(ms.App.DBClients.MongoDB),
+			database.NewDatabaseWriter(ms.App.DBClients.MongoDB)),
 	}
 
 }
@@ -105,7 +110,7 @@ func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
 
 	createdCategory, err := api.Handler.Add(r.Context(), &categoryToCreate)
 	if err != nil {
-		if errors.Is(err, helper.ErrCategoryNameIsEmpty) {
+		if errors.Is(err, util.ErrCategoryNameIsEmpty) {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(err.Error()))
 			return

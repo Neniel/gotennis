@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"context"
@@ -50,8 +50,6 @@ func NewApp(ctx context.Context) *App {
 		Password: redisPassword,
 	})
 	log.Println("Connected to Redis")
-
-	go SyncMongoCache(mongoClient, redisClient)
 
 	return &App{
 		DBClients: &DBClients{

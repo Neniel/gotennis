@@ -9,7 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceFolder}/backend/categories",
+            "program": "${workspaceFolder}/categories",
             "env": {
                 "APP_PORT": ":8080",
                 "MONGODB_URI_FILE": "${workspaceFolder}/local/mongodb_uri.txt",
@@ -22,7 +22,19 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceFolder}/backend/players"
-        }
+            "program": "${workspaceFolder}/players"
+        },
+        {
+            "name": "cache",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cache",
+            "env": {
+                "MONGODB_URI_FILE": "${workspaceFolder}/local/mongodb_uri.txt",
+                "REDIS_ADDRESS_FILE": "${workspaceFolder}/local/redis_address.txt",
+                "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt"
+            }
+        },
     ]
 }

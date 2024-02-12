@@ -3,7 +3,7 @@ package mongodb
 import (
 	"context"
 
-	"github.com/Neniel/tennis/entity"
+	"github.com/Neniel/gotennis/entity"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

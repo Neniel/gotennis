@@ -7,33 +7,38 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 
+	"github.com/Neniel/gotennis/app"
 	"github.com/Neniel/gotennis/entity"
+	"github.com/Neniel/gotennis/util"
 
-	"github.com/go-redis/redis"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type cacheSyncronizer struct {
-	mongoClient *mongo.Client
-	redisClient *redis.Client
+type CacheMicroservice struct {
+	App *app.App
 }
 
-const databaseName string = "tennis"
+func (ms *CacheMicroservice) StartSync() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-var collections []string = []string{"categories"}
+	var wg sync.WaitGroup
 
-func (c *cacheSyncronizer) StartSync() {
-	for _, collection := range collections {
-		changeStream, err := c.getChangeStream(databaseName, collection)
+	for _, collection := range util.Collections {
+		changeStream, err := ms.App.DBClients.MongoDB.Database(util.DBName).Collection(collection).Watch(ctx, mongo.Pipeline{})
 		if err != nil {
+			cancel()
 			panic(err)
 		}
 
-		go func(cs *mongo.ChangeStream, collectionName string) {
+		wg.Add(1)
+		go func(cs *mongo.ChangeStream, wg *sync.WaitGroup, collectionName string) {
+			defer wg.Done()
 			// Manejar señales de interrupción para salir graciosamente
 			signalChan := make(chan os.Signal, 1)
 			signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
@@ -44,7 +49,8 @@ func (c *cacheSyncronizer) StartSync() {
 			}()
 
 			// Escuchar cambios en MongoDB y actualizar el caché en Redis
-			for cs.Next(context.Background()) {
+			log.Printf("Listening for changes on '%s' collection", collectionName)
+			for cs.Next(ctx) {
 				var changeEvent bson.M
 				if err := cs.Decode(&changeEvent); err != nil {
 					log.Println("Error al decodificar el evento de cambio:", err)
@@ -66,7 +72,7 @@ func (c *cacheSyncronizer) StartSync() {
 				// Actuar en consecuencia del operationType
 				operationType := changeEvent["operationType"]
 				if operationType == "delete" {
-					c.redisClient.HDel("categories", documentID)
+					ms.App.DBClients.Redis.HDel("categories", documentID)
 					continue
 				}
 
@@ -74,7 +80,7 @@ func (c *cacheSyncronizer) StartSync() {
 					// Obtener el documento actualizado desde MongoDB
 					var updatedDocument entity.Category
 					_id, _ := primitive.ObjectIDFromHex(documentID)
-					if err := c.mongoClient.Database(databaseName).Collection(collectionName).FindOne(context.Background(), bson.M{"_id": _id}).Decode(&updatedDocument); err != nil {
+					if err := ms.App.DBClients.MongoDB.Database(util.DBName).Collection(collectionName).FindOne(ctx, bson.M{"_id": _id}).Decode(&updatedDocument); err != nil {
 						log.Println("Error al obtener el documento actualizado:", err)
 						continue
 					}
@@ -88,7 +94,7 @@ func (c *cacheSyncronizer) StartSync() {
 					}
 
 					// Guardar en Redis utilizando el ID del documento como clave
-					err = c.redisClient.HSet(collectionName, updatedDocument.ID.Hex(), jsonString).Err()
+					err = ms.App.DBClients.Redis.HSet(collectionName, updatedDocument.ID.Hex(), jsonString).Err()
 					if err != nil {
 						log.Println(err.Error())
 						continue
@@ -98,10 +104,7 @@ func (c *cacheSyncronizer) StartSync() {
 				}
 
 			}
-		}(changeStream, collection)
+		}(changeStream, &wg, collection)
 	}
-}
-
-func (c *cacheSyncronizer) getChangeStream(databaseName string, collectionName string) (*mongo.ChangeStream, error) {
-	return c.mongoClient.Database(databaseName).Collection(collectionName).Watch(context.Background(), mongo.Pipeline{})
+	wg.Wait()
 }

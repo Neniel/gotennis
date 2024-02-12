@@ -2,11 +2,11 @@ package handler
 
 import (
 	"categories/database"
-	"categories/helper"
 	"context"
 	"log"
 
-	"github.com/Neniel/tennis/entity"
+	"github.com/Neniel/gotennis/entity"
+	"github.com/Neniel/gotennis/util"
 )
 
 type CategoriesHandler struct {
@@ -27,17 +27,8 @@ func NewCategoriesHandler(cacheReader database.DBReader, cacheWriter database.DB
 
 func (h *CategoriesHandler) Add(ctx context.Context, categoryToAdd *entity.Category) (*entity.Category, error) {
 	if len(categoryToAdd.Name) == 0 {
-		return nil, helper.ErrCategoryNameIsEmpty
+		return nil, util.ErrCategoryNameIsEmpty
 	}
-
-	/*
-		category, err := h.DatabaseWriter.AddCategory(ctx, categoryToAdd)
-		if err != nil {
-			return nil, err
-		}
-
-		return h.CacheWriter.AddCategory(ctx, category)
-	*/
 
 	return h.DatabaseWriter.AddCategory(ctx, categoryToAdd)
 }

@@ -1,9 +1,8 @@
-module cache
+module github.com/Neniel/gotennis/app
 
 go 1.22.0
 
 require (
-	github.com/Neniel/gotennis/entity v0.0.0-20240212212909-6847956f3976
 	github.com/go-redis/redis v6.15.9+incompatible
 	go.mongodb.org/mongo-driver v1.13.1
 )
