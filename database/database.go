@@ -22,6 +22,7 @@ type DBReader interface {
 
 	GetPlayers(context.Context) ([]entity.Player, error)
 	GetPlayer(context.Context, string) (*entity.Player, error)
+	ExistsByGovernmentID(context.Context, string) (bool, error)
 }
 
 type DBWriter interface {
@@ -40,10 +41,10 @@ func NewDatabaseReader(client interface{}) DBReader {
 		return mongodb.NewMongoDbReader(mongoClient)
 	}
 
-	redisClient, isRedisClient := client.(*redis.Client)
+	/*redisClient, isRedisClient := client.(*redis.Client)
 	if isRedisClient {
 		return redisdb.NewRedisReader(redisClient)
-	}
+	}*/
 
 	panic("client is not supported")
 }

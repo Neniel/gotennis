@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"errors"
 
 	"github.com/Neniel/gotennis/entity"
 
@@ -66,11 +67,24 @@ func (mdbr *MongoDbReader) GetPlayer(ctx context.Context, id string) (*entity.Pl
 	}
 
 	var result entity.Player
-	err = mdbr.Players.FindOne(context.Background(), bson.D{{Key: "_id", Value: _id}}).Decode(&result)
+	err = mdbr.Players.FindOne(ctx, bson.D{{Key: "_id", Value: _id}}).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
 	return &result, nil
+}
+
+func (mdbr *MongoDbReader) ExistsByGovernmentID(ctx context.Context, governmentID string) (bool, error) {
+	result := mdbr.Players.FindOne(ctx, bson.D{{Key: "government_id", Value: governmentID}})
+	if errors.Is(result.Err(), mongo.ErrNoDocuments) {
+		return false, nil
+	}
+
+	if result.Err() != nil {
+		return false, result.Err()
+	}
+
+	return true, nil
 }
 
 type MongoDbWriter struct {
