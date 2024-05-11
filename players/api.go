@@ -113,7 +113,7 @@ func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	player, err := api.PlayerMicroservice.Usecases.CreatePlayerUsecase.CreatePlayer(&request)
+	player, err := api.PlayerMicroservice.Usecases.CreatePlayerUsecase.CreatePlayer(r.Context(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))

@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"time"
 
 	"github.com/Neniel/gotennis/database"
@@ -33,14 +35,14 @@ func (r *CreatePlayerRequest) Validate() error {
 	}
 
 	if r.Birthdate.Before(time.Now().UTC()) {
-
+		return util.ErrPlayerBirthdateIsFutureDate
 	}
 
 	return nil
 }
 
 type CreatePlayerUsecase interface {
-	CreatePlayer(request *CreatePlayerRequest) (*entity.Player, error)
+	CreatePlayer(ctx context.Context, request *CreatePlayerRequest) (*entity.Player, error)
 }
 
 type createPlayerUsecase struct {
@@ -53,12 +55,18 @@ func NewCreatePlayerUsecase(app *app.App) CreatePlayerUsecase {
 	}
 }
 
-func (uc *createPlayerUsecase) CreatePlayer(request *CreatePlayerRequest) (*entity.Player, error) {
+func (uc *createPlayerUsecase) CreatePlayer(ctx context.Context, request *CreatePlayerRequest) (*entity.Player, error) {
 	if err := request.Validate(); err != nil {
+		log.Println(fmt.Errorf("couldn't create player. Error when validating request: %w", err))
 		return nil, err
 	}
 
-	player := entity.NewPlayer(request.FirstName, request.MiddleName, request.LastName, request.Birthdate)
+	newPlayer := entity.NewPlayer(request.FirstName, request.MiddleName, request.LastName, request.Birthdate)
 
-	return uc.DBWriter.AddPlayer(context.Background(), player)
+	player, err := uc.DBWriter.AddPlayer(ctx, newPlayer)
+	if err != nil {
+		log.Println(fmt.Errorf("couldn't create player. Error when attempting add user to the database request: %w", err))
+		return nil, err
+	}
+	return player, nil
 }
