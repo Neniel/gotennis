@@ -15,5 +15,6 @@ func NewValidateCategoryUsecase() ValidateCategoryUsecase {
 }
 
 func (uc *validateCategoryUsecase) ValidateCategory(category *entity.Category) error {
-	return category.Validate()
+	//return category.Validate()
+	return nil
 }
