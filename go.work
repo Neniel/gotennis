@@ -7,4 +7,5 @@ use (
 	./entity
 	./players
 	./util
+	./database
 )

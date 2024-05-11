@@ -1,21 +1,21 @@
 version: '3.7'
 
 services:
-  categories:
-    build: ./categories
-    container_name: categories
-    restart: on-failure
-    ports:
-      - 8080:8080
-    environment:
-      - APP_PORT=:8080
-      - MONGODB_URI_FILE=/run/secrets/mongodb_uri
-      - REDIS_ADDRESS_FILE=/run/secrets/redis_address
-      - REDIS_PASSWORD_FILE=/run/secrets/redis_password
-    secrets:
-      - mongodb_uri
-      - redis_address
-      - redis_password
+  #categories:
+  #  build: ./categories
+  #  container_name: categories
+  #  restart: on-failure
+  #  ports:
+  #    - 8080:8080
+  #  environment:
+  #    - APP_PORT=:8080
+  #    - MONGODB_URI_FILE=/run/secrets/mongodb_uri
+  #    - REDIS_ADDRESS_FILE=/run/secrets/redis_address
+  #    - REDIS_PASSWORD_FILE=/run/secrets/redis_password
+  #  secrets:
+  #    - mongodb_uri
+  #    - redis_address
+  #    - redis_password
 
   cache:
     build: ./cache
@@ -52,6 +52,8 @@ services:
 
   mongodb2:
     image: mongo:latest
+    depends_on:
+      - mongodb1
     container_name: mongodb2
     ports:
       - "27018:27017"
@@ -66,6 +68,8 @@ services:
 
   mongodb3:
     image: mongo:latest
+    depends_on:
+      - mongodb2
     container_name: mongodb3
     ports:
       - "27019:27017"
