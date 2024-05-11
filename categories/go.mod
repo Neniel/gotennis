@@ -3,10 +3,10 @@ module categories
 go 1.22.0
 
 require (
-	github.com/Neniel/gotennis/app v0.0.0-20240511145026-ad5c7f6ca980
-	github.com/Neniel/gotennis/database v0.0.0-20240511145026-ad5c7f6ca980
-	github.com/Neniel/gotennis/entity v0.0.0-20240511145026-ad5c7f6ca980
-	github.com/Neniel/gotennis/util v0.0.0-20240511145026-ad5c7f6ca980
+	github.com/Neniel/gotennis/app v0.0.0-20240511154154-abd75d9e7e5d
+	github.com/Neniel/gotennis/database v0.0.0-20240511154154-abd75d9e7e5d
+	github.com/Neniel/gotennis/entity v0.0.0-20240511154154-abd75d9e7e5d
+	github.com/Neniel/gotennis/util v0.0.0-20240511154154-abd75d9e7e5d
 	go.mongodb.org/mongo-driver v1.15.0
 )
 
