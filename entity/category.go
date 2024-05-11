@@ -13,6 +13,14 @@ type Category struct {
 	CreatedAt time.Time          `bson:"created_at" json:"created_at"`
 }
 
+func NewCategory(name string) *Category {
+	return &Category{
+		ID:        primitive.NewObjectID(),
+		Name:      name,
+		CreatedAt: time.Now(),
+	}
+}
+
 func (c *Category) MarshalBinary() ([]byte, error) {
 	return json.Marshal(c)
 }
