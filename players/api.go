@@ -99,7 +99,6 @@ func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	w.WriteHeader(http.StatusBadRequest)
 }
 
 func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
