@@ -22,7 +22,7 @@ type DBReader interface {
 
 	GetPlayers(context.Context) ([]entity.Player, error)
 	GetPlayer(context.Context, string) (*entity.Player, error)
-	ExistsByGovernmentID(context.Context, string) (bool, error)
+	IsAvailable(context.Context, string, string) (bool, error)
 }
 
 type DBWriter interface {

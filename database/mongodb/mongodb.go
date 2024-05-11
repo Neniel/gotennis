@@ -32,7 +32,10 @@ func (mdbr *MongoDbReader) GetCategories(ctx context.Context) ([]entity.Category
 		return nil, err
 	}
 	var output []entity.Category
-	cursor.All(ctx, &output)
+	if err := cursor.All(ctx, &output); err != nil {
+		return nil, err
+	}
+
 	return output, nil
 }
 
@@ -56,7 +59,10 @@ func (mdbr *MongoDbReader) GetPlayers(ctx context.Context) ([]entity.Player, err
 		return nil, err
 	}
 	var output []entity.Player
-	cursor.All(ctx, &output)
+	if err := cursor.All(ctx, &output); err != nil {
+		return nil, err
+	}
+
 	return output, nil
 }
 
@@ -74,17 +80,17 @@ func (mdbr *MongoDbReader) GetPlayer(ctx context.Context, id string) (*entity.Pl
 	return &result, nil
 }
 
-func (mdbr *MongoDbReader) ExistsByGovernmentID(ctx context.Context, governmentID string) (bool, error) {
-	result := mdbr.Players.FindOne(ctx, bson.D{{Key: "government_id", Value: governmentID}})
+func (mdbr *MongoDbReader) IsAvailable(ctx context.Context, field string, value string) (bool, error) {
+	result := mdbr.Players.FindOne(context.TODO(), bson.D{{Key: field, Value: value}})
 	if errors.Is(result.Err(), mongo.ErrNoDocuments) {
-		return false, nil
+		return true, nil
 	}
 
 	if result.Err() != nil {
 		return false, result.Err()
 	}
 
-	return true, nil
+	return false, nil
 }
 
 type MongoDbWriter struct {

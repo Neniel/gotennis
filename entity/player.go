@@ -18,13 +18,22 @@ type Player struct {
 	PhoneNumber         string             `bson:"phone_number" json:"phone_number"`
 	Email               string             `bson:"email" json:"email"`
 	Alias               string             `bson:"alias" json:"alias"`
-	TemporaryAccessCode uint32             `bson:"temporary_access_code" json:"temporary_access_code,omitempty"`
+	TemporaryAccessCode uint32             `bson:"temporary_access_code" json:"-"`
 	Password            string             `bson:"password" json:"-"`
 	Category            *Category          `bson:"category" json:"category"`
 	CreatedAt           time.Time          `bson:"created_at" json:"created_at"`
 }
 
-func NewPlayer(governmentID string, firstName string, middleName string, lastName string, birthDate *time.Time) *Player {
+func NewPlayer(
+	governmentID string,
+	firstName string,
+	middleName string,
+	lastName string,
+	birthDate *time.Time,
+	phoneNumber string,
+	email string,
+	alias string,
+) *Player {
 	return &Player{
 		ID:                  primitive.NewObjectID(),
 		GovernmentID:        governmentID,
@@ -32,6 +41,9 @@ func NewPlayer(governmentID string, firstName string, middleName string, lastNam
 		MiddleName:          middleName,
 		LastName:            lastName,
 		Birthdate:           birthDate,
+		PhoneNumber:         phoneNumber,
+		Email:               email,
+		Alias:               alias,
 		Category:            nil,
 		CreatedAt:           time.Now().UTC(),
 		TemporaryAccessCode: rand.Uint32(),
