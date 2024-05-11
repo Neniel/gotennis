@@ -66,7 +66,7 @@ func (mdbr *MongoDbReader) GetPlayer(ctx context.Context, id string) (*entity.Pl
 	}
 
 	var result entity.Player
-	err = mdbr.Categories.FindOne(context.Background(), bson.D{{Key: "_id", Value: _id}}).Decode(&result)
+	err = mdbr.Players.FindOne(context.Background(), bson.D{{Key: "_id", Value: _id}}).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
