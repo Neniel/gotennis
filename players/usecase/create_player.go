@@ -29,7 +29,7 @@ func (r *CreatePlayerRequest) Validate() error {
 	}
 
 	if r.Birthdate.IsZero() {
-
+		return util.ErrPlayerBirthdateIsEmpty
 	}
 
 	if r.Birthdate.Before(time.Now().UTC()) {
@@ -47,7 +47,7 @@ type createPlayerUsecase struct {
 	DBWriter database.DBWriter
 }
 
-func NewCreateCategoryUsecase(app *app.App) CreatePlayerUsecase {
+func NewCreatePlayerUsecase(app *app.App) CreatePlayerUsecase {
 	return &createPlayerUsecase{
 		DBWriter: database.NewDatabaseWriter(app.DBClients.MongoDB),
 	}

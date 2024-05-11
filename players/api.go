@@ -16,10 +16,10 @@ import (
 type Usecases struct {
 	CreatePlayerUsecase usecase.CreatePlayerUsecase
 	SavePlayerUsecase   interface{}
-	ListPlayersUsecase  interface{}
-	GetPlayerUsecase    interface{}
+	ListPlayersUsecase  usecase.ListPlayersUsecase
+	GetPlayerUsecase    usecase.GetPlayerUsecase
 	UpdatePlayerUsecase interface{}
-	DeletePlayerUsecase interface{}
+	DeletePlayerUsecase usecase.DeletePlayerUsecase
 }
 
 type PlayerMicroservice struct {
@@ -47,11 +47,11 @@ func (api *APIServer) Run() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /ping", api.pingHandler)
-	mux.HandleFunc("GET /categories", api.listPlayers)
-	mux.HandleFunc("GET /categories/{id}", api.getPlayer)
-	mux.HandleFunc("POST /categories", api.addPlayer)
-	mux.HandleFunc("PUT /categories/{id}", api.updatePlayer)
-	mux.HandleFunc("DELETE /categories/{id}", api.deletePlayer)
+	mux.HandleFunc("GET /players", api.listPlayers)
+	mux.HandleFunc("GET /players/{id}", api.getPlayer)
+	mux.HandleFunc("POST /players", api.addPlayer)
+	mux.HandleFunc("PUT /players/{id}", api.updatePlayer)
+	mux.HandleFunc("DELETE /players/{id}", api.deletePlayer)
 
 	log.Fatal(http.ListenAndServe(os.Getenv("APP_PORT"), mux))
 }

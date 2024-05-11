@@ -13,11 +13,10 @@ func main() {
 	ms := &PlayerMicroservice{
 		App: app,
 		Usecases: &Usecases{
-			CreatePlayerUsecase: usecase.NewCreateCategoryUsecase(app),
-			SavePlayerUsecase:   nil,
-			DeletePlayerUsecase: nil,
-			ListPlayersUsecase:  nil,
-			GetPlayerUsecase:    nil,
+			CreatePlayerUsecase: usecase.NewCreatePlayerUsecase(app),
+			DeletePlayerUsecase: usecase.NewDeletePlayerUsecase(app),
+			ListPlayersUsecase:  usecase.NewListPlayersUsecase(app),
+			GetPlayerUsecase:    usecase.NewGetPlayerUsecase(app),
 		},
 	}
 
