@@ -49,9 +49,9 @@ func (rdbr *RedisReader) GetPlayers(ctx context.Context) ([]entity.Player, error
 		return nil, err
 	}
 	for _, v := range mapp {
-		var c entity.Player
-		c.UnmarshalBinary([]byte(v))
-		output = append(output, c)
+		var p entity.Player
+		p.UnmarshalBinary([]byte(v))
+		output = append(output, p)
 	}
 	return output, nil
 }

@@ -29,10 +29,10 @@ func NewPlayer(firstName string, middleName string, lastName string, birthDate t
 	}
 }
 
-func (c *Player) MarshalBinary() ([]byte, error) {
-	return json.Marshal(c)
+func (p *Player) MarshalBinary() ([]byte, error) {
+	return json.Marshal(p)
 }
 
-func (c *Player) UnmarshalBinary(data []byte) error {
-	return json.Unmarshal(data, c)
+func (p *Player) UnmarshalBinary(data []byte) error {
+	return json.Unmarshal(data, p)
 }

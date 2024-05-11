@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.22.0-alpine3.19 AS Build
+FROM golang:1.22-alpine3.19 AS Build
 RUN apk add git
 
 WORKDIR /app
