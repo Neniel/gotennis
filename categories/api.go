@@ -1,8 +1,7 @@
 package main
 
 import (
-	"categories/database"
-	"categories/handler"
+	"categories/usecase"
 	"encoding/json"
 	"errors"
 	"log"
@@ -10,28 +9,35 @@ import (
 	"os"
 
 	"github.com/Neniel/gotennis/app"
-	"github.com/Neniel/gotennis/entity"
-	"github.com/Neniel/gotennis/util"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type APIServer struct {
-	Handler *handler.CategoriesHandler
+type Usecases struct {
+	CreateCategoryUsecase usecase.CreateCategoryUsecase
+	SaveCategoryUsecase   usecase.SaveCategoryUsecase
+	ListCategories        usecase.ListCategoriesUsecase
+	GetCategory           usecase.GetCategoryUsecase
+	UpdateCategory        interface{}
+	DeleteCategory        usecase.DeleteCategoryUsecase
 }
 
 type CategoryMicroservice struct {
-	App *app.App
+	App      *app.App
+	Usecases *Usecases
+}
+
+type APIServer struct {
+	CategoryMicroservice *CategoryMicroservice
 }
 
 func (ms *CategoryMicroservice) NewAPIServer() *APIServer {
 	return &APIServer{
-		Handler: handler.NewCategoriesHandler(
-			database.NewDatabaseReader(ms.App.DBClients.Redis),
-			database.NewDatabaseWriter(ms.App.DBClients.Redis),
-			database.NewDatabaseReader(ms.App.DBClients.MongoDB),
-			database.NewDatabaseWriter(ms.App.DBClients.MongoDB)),
+		CategoryMicroservice: &CategoryMicroservice{
+			App:      ms.App,
+			Usecases: ms.Usecases,
+		},
 	}
 
 }
@@ -42,8 +48,8 @@ func (api *APIServer) Run() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /ping", api.pingHandler)
-	mux.HandleFunc("GET /categories", api.getAllCategories)
-	mux.HandleFunc("GET /categories/{id}", api.getCategoryByID)
+	mux.HandleFunc("GET /categories", api.listCategories)
+	mux.HandleFunc("GET /categories/{id}", api.getCategory)
 	mux.HandleFunc("POST /categories", api.addCategory)
 	mux.HandleFunc("PUT /categories/{id}", api.updateCategory)
 	mux.HandleFunc("DELETE /categories/{id}", api.deleteCategory)
@@ -59,9 +65,9 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusMethodNotAllowed)
 }
 
-func (api *APIServer) getAllCategories(w http.ResponseWriter, r *http.Request) {
+func (api *APIServer) listCategories(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
-	categories, err := api.Handler.GetAll(r.Context())
+	categories, err := api.CategoryMicroservice.Usecases.ListCategories.List(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -74,10 +80,10 @@ func (api *APIServer) getAllCategories(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (api *APIServer) getCategoryByID(w http.ResponseWriter, r *http.Request) {
+func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	if categoryId := r.PathValue("id"); categoryId != "" {
-		categories, err := api.Handler.GetByID(r.Context(), categoryId)
+		categories, err := api.CategoryMicroservice.Usecases.GetCategory.Get(r.Context(), categoryId)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
@@ -93,35 +99,30 @@ func (api *APIServer) getCategoryByID(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		return
 	}
+	w.WriteHeader(http.StatusBadRequest)
 }
 
 func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
-	var categoryToCreate entity.Category
+	var request usecase.CreateCategoryRequest
 	defer r.Body.Close()
-	err := json.NewDecoder(r.Body).Decode(&categoryToCreate)
+	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	createdCategory, err := api.Handler.Add(r.Context(), &categoryToCreate)
+	category, err := api.CategoryMicroservice.Usecases.CreateCategoryUsecase.CreateCategory(&request)
 	if err != nil {
-		if errors.Is(err, util.ErrCategoryNameIsEmpty) {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(err.Error()))
-			return
-		} else {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
-			return
-		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
 	}
+
 	w.WriteHeader(http.StatusCreated)
-	err = json.NewEncoder(w).Encode(&createdCategory)
+	err = json.NewEncoder(w).Encode(&category)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -135,12 +136,14 @@ func (api *APIServer) updateCategory(w http.ResponseWriter, r *http.Request) {
 func (api *APIServer) deleteCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
-		err := api.Handler.Delete(r.Context(), id)
-		if err != nil {
+		err := api.CategoryMicroservice.Usecases.DeleteCategory.Delete(r.Context(), id)
+		if errors.Is(err, primitive.ErrInvalidHex) {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		return
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 		return
