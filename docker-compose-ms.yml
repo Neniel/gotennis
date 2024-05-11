@@ -1,0 +1,61 @@
+version: '3.7'
+
+services:
+  categories:
+    build: ./categories
+    container_name: categories
+    restart: on-failure
+    ports:
+      - 8080:8080
+    environment:
+      - APP_PORT=:8080
+      - MONGODB_URI_FILE=/run/secrets/mongodb_uri
+      - REDIS_ADDRESS_FILE=/run/secrets/redis_address
+      - REDIS_PASSWORD_FILE=/run/secrets/redis_password
+    secrets:
+      - mongodb_uri
+      - redis_address
+      - redis_password
+
+  players:
+    build: ./players
+    container_name: players
+    restart: on-failure
+    ports:
+      - 8081:8080
+    environment:
+      - APP_PORT=:8080
+      - MONGODB_URI_FILE=/run/secrets/mongodb_uri
+      - REDIS_ADDRESS_FILE=/run/secrets/redis_address
+      - REDIS_PASSWORD_FILE=/run/secrets/redis_password
+    secrets:
+      - mongodb_uri
+      - redis_address
+      - redis_password
+
+  cache:
+    build: ./cache
+    container_name: cache
+    restart: on-failure
+    environment:
+      - MONGODB_URI_FILE=/run/secrets/mongodb_uri
+      - REDIS_ADDRESS_FILE=/run/secrets/redis_address
+      - REDIS_PASSWORD_FILE=/run/secrets/redis_password
+    secrets:
+      - mongodb_uri
+      - redis_address
+      - redis_password
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+secrets:
+  mongodb_uri:
+    file: ./secrets/mongodb_uri.txt
+  redis_address:
+    file: ./secrets/redis_address.txt
+  redis_password:
+    file: ./secrets/redis_password.txt
