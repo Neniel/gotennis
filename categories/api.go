@@ -100,7 +100,6 @@ func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	w.WriteHeader(http.StatusBadRequest)
 }
 
 func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
