@@ -8,5 +8,5 @@ const (
 
 var Collections []string = []string{
 	CollNameCategories,
-	//CollNamePlayers,
+	CollNamePlayers,
 }
