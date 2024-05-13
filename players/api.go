@@ -129,6 +129,31 @@ func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
 }
 func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
+	if id := r.PathValue("id"); id != "" {
+		var request usecase.UpdatePlayerRequest
+		defer r.Body.Close()
+		err := json.NewDecoder(r.Body).Decode(&request)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		category, err := api.PlayerMicroservice.Usecases.UpdatePlayerUsecase.UpdateCategory(r.Context(), id, &request)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		err = json.NewEncoder(w).Encode(&category)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+	}
 }
 
 func (api *APIServer) deletePlayer(w http.ResponseWriter, r *http.Request) {

@@ -1,9 +1,11 @@
 package util
 
-func ToPtr[T uint64 | uint32](v T) *T {
+import "time"
+
+func ToPtr[T uint64 | uint32 | time.Time](v T) *T {
 	return &v
 }
 
-func FromPtr[T uint64 | uint32](v *T) T {
+func FromPtr[T uint64 | uint32 | time.Time](v *T) T {
 	return *v
 }

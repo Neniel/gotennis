@@ -2,7 +2,6 @@ package entity
 
 import (
 	"encoding/json"
-	"math/rand"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -18,10 +17,11 @@ type Player struct {
 	PhoneNumber         string             `bson:"phone_number" json:"phone_number"`
 	Email               string             `bson:"email" json:"email"`
 	Alias               string             `bson:"alias" json:"alias"`
-	TemporaryAccessCode uint32             `bson:"temporary_access_code" json:"-"`
+	TemporaryAccessCode *uint32            `bson:"temporary_access_code" json:"-"`
 	Password            string             `bson:"password" json:"-"`
 	Category            *Category          `bson:"category" json:"category"`
 	CreatedAt           time.Time          `bson:"created_at" json:"created_at"`
+	UpdatedAt           *time.Time         `bson:"updated_at" json:"updated_at"`
 }
 
 func NewPlayer(
@@ -35,18 +35,15 @@ func NewPlayer(
 	alias string,
 ) *Player {
 	return &Player{
-		ID:                  primitive.NewObjectID(),
-		GovernmentID:        governmentID,
-		FirstName:           firstName,
-		MiddleName:          middleName,
-		LastName:            lastName,
-		Birthdate:           birthDate,
-		PhoneNumber:         phoneNumber,
-		Email:               email,
-		Alias:               alias,
-		Category:            nil,
-		CreatedAt:           time.Now().UTC(),
-		TemporaryAccessCode: rand.Uint32(),
+		GovernmentID: governmentID,
+		FirstName:    firstName,
+		MiddleName:   middleName,
+		LastName:     lastName,
+		Birthdate:    birthDate,
+		PhoneNumber:  phoneNumber,
+		Email:        email,
+		Alias:        alias,
+		Category:     nil,
 	}
 }
 
