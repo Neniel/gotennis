@@ -12,15 +12,14 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: '1.22'
-      - name: Run tests for Players microservice and collect coverage
+      - name: Run tests for Players microservice
         run: go test -coverprofile=coverage-players.out ./players
-      - name: Run tests for Categories microservice and collect coverage
+      - name: Run tests for Categories microservice
         run: go test -coverprofile=coverage-categories.out ./categories
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v4.2.0
         with:
           flags: smart-tests
           verbose: true
-          show_carryforward_flags:  true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
