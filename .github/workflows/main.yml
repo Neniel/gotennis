@@ -13,9 +13,9 @@ jobs:
         with:
           go-version: '1.22'
       - name: Run tests for Players microservice
-        run: go test -coverprofile=coverage-players.out ./players
+        run: go test -coverprofile=coverage-players.out ./players/...
       - name: Run tests for Categories microservice
-        run: go test -coverprofile=coverage-categories.out ./categories
+        run: go test -coverprofile=coverage-categories.out ./categories/...
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4.2.0
         with:
