@@ -17,7 +17,6 @@ func main() {
 		App: app,
 		Usecases: &Usecases{
 			CreateCategoryUsecase: usecase.NewCreateCategoryUsecase(dbWriter),
-			SaveCategoryUsecase:   usecase.NewSaveCategoryUsecase(dbWriter),
 			DeleteCategory:        usecase.NewDeleteCategoryUsecase(dbWriter),
 			ListCategories:        usecase.NewListCategoriesUsecase(dbReader),
 			GetCategory:           usecase.NewGetCategoryUsecase(dbReader),

@@ -119,3 +119,28 @@ func Test_getCategoryUsecase_Get_Failure(t *testing.T) {
 		})
 	}
 }
+
+func TestNewGetCategoryUsecase(t *testing.T) {
+	dbReader := database.NewMockDBReader(gomock.NewController(t))
+	type args struct {
+		dbReader database.DBReader
+	}
+	tests := []struct {
+		name string
+		args args
+		want GetCategoryUsecase
+	}{
+		{
+			name: "New_get_category_usecase",
+			args: args{dbReader: dbReader},
+			want: &getCategoryUsecase{DBReader: dbReader},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewGetCategoryUsecase(tt.args.dbReader); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewGetCategoryUsecase() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

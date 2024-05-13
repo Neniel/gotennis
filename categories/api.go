@@ -16,7 +16,6 @@ import (
 
 type Usecases struct {
 	CreateCategoryUsecase usecase.CreateCategoryUsecase
-	SaveCategoryUsecase   usecase.SaveCategoryUsecase
 	ListCategories        usecase.ListCategoriesUsecase
 	GetCategory           usecase.GetCategoryUsecase
 	UpdateCategory        interface{}

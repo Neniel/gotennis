@@ -143,3 +143,32 @@ func Test_createCategoryUsecase_CreateCategory_Failure(t *testing.T) {
 		})
 	}
 }
+
+func TestNewCreateCategoryUsecase(t *testing.T) {
+	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
+	type args struct {
+		dbWriter database.DBWriter
+	}
+	tests := []struct {
+		name string
+		args args
+		want CreateCategoryUsecase
+	}{
+		{
+			name: "Create_category_usecase",
+			args: args{
+				dbWriter: dbWriter,
+			},
+			want: &createCategoryUsecase{
+				DBWriter: dbWriter,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewCreateCategoryUsecase(tt.args.dbWriter); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewCreateCategoryUsecase() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
