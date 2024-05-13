@@ -27,6 +27,10 @@ type UpdatePlayerRequest struct {
 }
 
 func (r *UpdatePlayerRequest) Validate(id string) error {
+	if id == "" {
+		return errors.New("id is required in request")
+	}
+
 	if r.ID == "" {
 		return errors.New("id is required in request")
 	}

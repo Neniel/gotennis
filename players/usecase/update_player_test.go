@@ -8,10 +8,12 @@ import (
 
 	"github.com/Neniel/gotennis/database"
 	"github.com/Neniel/gotennis/entity"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/mock/gomock"
 )
 
 func TestUpdatePlayerRequest_Validate(t *testing.T) {
+	id := primitive.NewObjectID()
 	type fields struct {
 		ID           string
 		GovernmentID string
@@ -33,7 +35,177 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Request_for_updating_player_is_valid",
+			fields: fields{
+				ID:           id.Hex(),
+				GovernmentID: "AR-1234567890",
+				FirstName:    "Bob",
+				MiddleName:   "Sponge",
+				LastName:     "Square Pants",
+				Category:     nil,
+				Birthdate:    nil,
+				PhoneNumber:  "+00 000 000 000",
+				Email:        "bobsponge@test.com",
+				Alias:        "bob",
+			},
+			args: args{
+				id: id.Hex(),
+			},
+			wantErr: false,
+		},
+		{
+			name: "Request_for_updating_player_is_not_valid_due_empty_id_in_request",
+			fields: fields{
+				ID:           "",
+				GovernmentID: "AR-1234567890",
+				FirstName:    "Bob",
+				MiddleName:   "Sponge",
+				LastName:     "Square Pants",
+				Category:     nil,
+				Birthdate:    nil,
+				PhoneNumber:  "+00 000 000 000",
+				Email:        "bobsponge@test.com",
+				Alias:        "bob",
+			},
+			args: args{
+				id: id.Hex(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Request_for_updating_player_is_not_valid_due_empty_id_in_request_url",
+			fields: fields{
+				ID:           id.Hex(),
+				GovernmentID: "AR-1234567890",
+				FirstName:    "Bob",
+				MiddleName:   "Sponge",
+				LastName:     "Square Pants",
+				Category:     nil,
+				Birthdate:    nil,
+				PhoneNumber:  "+00 000 000 000",
+				Email:        "bobsponge@test.com",
+				Alias:        "bob",
+			},
+			args: args{
+				id: "",
+			},
+			wantErr: true,
+		},
+		{
+			name: "Request_for_updating_player_is_not_valid_due_to_different_id",
+			fields: fields{
+				ID:           id.Hex(),
+				GovernmentID: "AR-1234567890",
+				FirstName:    "Bob",
+				MiddleName:   "Sponge",
+				LastName:     "Square Pants",
+				Category:     nil,
+				Birthdate:    nil,
+				PhoneNumber:  "+00 000 000 000",
+				Email:        "bobsponge@test.com",
+				Alias:        "bob",
+			},
+			args: args{
+				id: primitive.NewObjectID().Hex(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Request_for_updating_player_is_not_valid_due_empty_government_id",
+			fields: fields{
+				ID:           id.Hex(),
+				GovernmentID: "",
+				FirstName:    "Bob",
+				MiddleName:   "Sponge",
+				LastName:     "Square Pants",
+				Category:     nil,
+				Birthdate:    nil,
+				PhoneNumber:  "+00 000 000 000",
+				Email:        "bobsponge@test.com",
+				Alias:        "bob",
+			},
+			args: args{
+				id: id.Hex(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Request_for_updating_player_is_not_valid_due_empty_government_id",
+			fields: fields{
+				ID:           id.Hex(),
+				GovernmentID: "",
+				FirstName:    "Bob",
+				MiddleName:   "Sponge",
+				LastName:     "Square Pants",
+				Category:     nil,
+				Birthdate:    nil,
+				PhoneNumber:  "+00 000 000 000",
+				Email:        "bobsponge@test.com",
+				Alias:        "bob",
+			},
+			args: args{
+				id: id.Hex(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Request_for_updating_player_is_not_valid_due_empty_first_name",
+			fields: fields{
+				ID:           id.Hex(),
+				GovernmentID: "AR-1234567890",
+				FirstName:    "",
+				MiddleName:   "Sponge",
+				LastName:     "Square Pants",
+				Category:     nil,
+				Birthdate:    nil,
+				PhoneNumber:  "+00 000 000 000",
+				Email:        "bobsponge@test.com",
+				Alias:        "bob",
+			},
+			args: args{
+				id: id.Hex(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Request_for_updating_player_is_not_valid_due_empty_last_name",
+			fields: fields{
+				ID:           id.Hex(),
+				GovernmentID: "AR-1234567890",
+				FirstName:    "Bob",
+				MiddleName:   "Sponge",
+				LastName:     "",
+				Category:     nil,
+				Birthdate:    nil,
+				PhoneNumber:  "+00 000 000 000",
+				Email:        "bobsponge@test.com",
+				Alias:        "bob",
+			},
+			args: args{
+				id: id.Hex(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Request_for_updating_player_is_not_valid_due_empty_email",
+			fields: fields{
+				ID:           id.Hex(),
+				GovernmentID: "AR-1234567890",
+				FirstName:    "Bob",
+				MiddleName:   "Sponge",
+				LastName:     "Square Pants",
+				Category:     nil,
+				Birthdate:    nil,
+				PhoneNumber:  "+00 000 000 000",
+				Email:        "",
+				Alias:        "bob",
+			},
+			args: args{
+				id: id.Hex(),
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
