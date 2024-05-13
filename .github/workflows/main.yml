@@ -1,0 +1,25 @@
+name: Workflow for Codecov example-golang
+on: [push, pull_request]
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Go 1.22
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.22'
+      - name: Run tests for Players microservice and collect coverage
+        run: go test -coverprofile=coverage-players.out ./players
+      - name: Run tests for Categories microservice and collect coverage
+        run: go test -coverprofile=coverage-categories.out ./categories
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          flags: smart-tests
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
