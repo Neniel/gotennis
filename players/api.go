@@ -18,7 +18,7 @@ type Usecases struct {
 	SavePlayerUsecase   interface{}
 	ListPlayersUsecase  usecase.ListPlayersUsecase
 	GetPlayerUsecase    usecase.GetPlayerUsecase
-	UpdatePlayerUsecase interface{}
+	UpdatePlayerUsecase usecase.UpdatePlayerUsecase
 	DeletePlayerUsecase usecase.DeletePlayerUsecase
 }
 
@@ -139,7 +139,7 @@ func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		category, err := api.PlayerMicroservice.Usecases.UpdatePlayerUsecase.UpdateCategory(r.Context(), id, &request)
+		category, err := api.PlayerMicroservice.Usecases.UpdatePlayerUsecase.UpdatePlayer(r.Context(), id, &request)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(err.Error()))
