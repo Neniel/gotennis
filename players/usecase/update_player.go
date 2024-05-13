@@ -59,7 +59,7 @@ func (r *UpdatePlayerRequest) Validate(id string) error {
 		return util.ErrPlayerBirthdateIsEmpty
 	}
 
-	if r.Birthdate != nil && r.Birthdate.Before(time.Now().UTC()) {
+	if r.Birthdate != nil && r.Birthdate.After(time.Now().UTC()) {
 		return util.ErrPlayerBirthdateIsFutureDate
 	}
 

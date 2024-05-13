@@ -9,6 +9,7 @@ import (
 
 	"github.com/Neniel/gotennis/database"
 	"github.com/Neniel/gotennis/entity"
+	"github.com/Neniel/gotennis/util"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/mock/gomock"
 )
@@ -132,25 +133,6 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "Request_for_updating_player_is_not_valid_due_empty_government_id",
-			fields: fields{
-				ID:           id.Hex(),
-				GovernmentID: "",
-				FirstName:    "Bob",
-				MiddleName:   "Sponge",
-				LastName:     "Square Pants",
-				Category:     nil,
-				Birthdate:    nil,
-				PhoneNumber:  "+00 000 000 000",
-				Email:        "bobsponge@test.com",
-				Alias:        "bob",
-			},
-			args: args{
-				id: id.Hex(),
-			},
-			wantErr: true,
-		},
-		{
 			name: "Request_for_updating_player_is_not_valid_due_empty_first_name",
 			fields: fields{
 				ID:           id.Hex(),
@@ -200,6 +182,44 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 				Birthdate:    nil,
 				PhoneNumber:  "+00 000 000 000",
 				Email:        "",
+				Alias:        "bob",
+			},
+			args: args{
+				id: id.Hex(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Request_for_updating_player_is_not_valid_due_to_zero_date",
+			fields: fields{
+				ID:           id.Hex(),
+				GovernmentID: "AR-1234567890",
+				FirstName:    "Bob",
+				MiddleName:   "Sponge",
+				LastName:     "Square Pants",
+				Category:     nil,
+				Birthdate:    &time.Time{},
+				PhoneNumber:  "+00 000 000 000",
+				Email:        "bobsponge@gmail.com",
+				Alias:        "bob",
+			},
+			args: args{
+				id: id.Hex(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Request_for_updating_player_is_not_valid_due_to_future_birthdate",
+			fields: fields{
+				ID:           id.Hex(),
+				GovernmentID: "AR-1234567890",
+				FirstName:    "Bob",
+				MiddleName:   "Sponge",
+				LastName:     "Square Pants",
+				Category:     nil,
+				Birthdate:    util.ToPtr(time.Now().AddDate(20, 0, 0).UTC()),
+				PhoneNumber:  "+00 000 000 000",
+				Email:        "bobsponge@gmail.com",
 				Alias:        "bob",
 			},
 			args: args{
