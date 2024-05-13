@@ -21,5 +21,6 @@ jobs:
         with:
           flags: smart-tests
           verbose: true
+          show_carryforward_flags:  true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
