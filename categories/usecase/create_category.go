@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	"github.com/Neniel/gotennis/database"
 	"github.com/Neniel/gotennis/entity"
@@ -36,10 +38,16 @@ func (r *CreateCategoryRequest) Validate() error {
 
 func (uc *createCategoryUsecase) CreateCategory(ctx context.Context, request *CreateCategoryRequest) (*entity.Category, error) {
 	if err := request.Validate(); err != nil {
+		log.Println(fmt.Errorf("could not create category. Error at Validate: %w", err))
 		return nil, err
 	}
 
 	category := entity.NewCategory(request.Name)
 
-	return uc.DBWriter.AddCategory(ctx, category)
+	newCategory, err := uc.DBWriter.AddCategory(ctx, category)
+	if err != nil {
+		log.Println(fmt.Errorf("could not create category. Error at AddCategory: %w", err))
+		return nil, err
+	}
+	return newCategory, nil
 }

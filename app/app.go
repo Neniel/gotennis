@@ -44,6 +44,9 @@ func NewApp(ctx context.Context) IApp {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
+	if err := mongoClient.Ping(ctx, nil); err != nil {
+		log.Fatalln(err.Error())
+	}
 	log.Println("Connected to MongoDB")
 
 	bsRedisAddress, err := os.ReadFile(os.Getenv("REDIS_ADDRESS_FILE"))

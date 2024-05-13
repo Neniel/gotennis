@@ -18,7 +18,7 @@ type Usecases struct {
 	CreateCategoryUsecase usecase.CreateCategoryUsecase
 	ListCategories        usecase.ListCategoriesUsecase
 	GetCategory           usecase.GetCategoryUsecase
-	UpdateCategory        interface{}
+	UpdateCategory        usecase.UpdateCategoryUsecase
 	DeleteCategory        usecase.DeleteCategoryUsecase
 }
 
@@ -129,21 +129,42 @@ func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
 }
 func (api *APIServer) updateCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
+	if id := r.PathValue("id"); id != "" {
+		var request usecase.UpdateCategoryRequest
+		defer r.Body.Close()
+		err := json.NewDecoder(r.Body).Decode(&request)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		category, err := api.CategoryMicroservice.Usecases.UpdateCategory.UpdateCategory(r.Context(), id, &request)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		err = json.NewEncoder(w).Encode(&category)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+	}
 }
 
 func (api *APIServer) deleteCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 		err := api.CategoryMicroservice.Usecases.DeleteCategory.Delete(r.Context(), id)
-		if errors.Is(err, primitive.ErrInvalidHex) {
+		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			return
-		} else {
-			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
 			return
 		}
-	} else {
-		w.WriteHeader(http.StatusBadRequest)
-		return
+		w.WriteHeader(http.StatusNoContent)
 	}
 }

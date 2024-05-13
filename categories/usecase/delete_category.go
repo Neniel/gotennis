@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	"github.com/Neniel/gotennis/database"
 )
@@ -21,5 +23,10 @@ func NewDeleteCategoryUsecase(dbWriter database.DBWriter) DeleteCategoryUsecase 
 }
 
 func (uc *deleteCategoryUsecase) Delete(ctx context.Context, id string) error {
-	return uc.DBWriter.DeleteCategory(ctx, id)
+	err := uc.DBWriter.DeleteCategory(ctx, id)
+	if err != nil {
+		log.Println(fmt.Errorf("error at DeleteCategory: %w", err))
+		return err
+	}
+	return nil
 }

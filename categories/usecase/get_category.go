@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	"github.com/Neniel/gotennis/database"
 
@@ -23,5 +25,10 @@ func NewGetCategoryUsecase(dbReader database.DBReader) GetCategoryUsecase {
 }
 
 func (uc *getCategoryUsecase) Get(ctx context.Context, id string) (*entity.Category, error) {
-	return uc.DBReader.GetCategory(ctx, id)
+	category, err := uc.DBReader.GetCategory(ctx, id)
+	if err != nil {
+		log.Println(fmt.Errorf("error at GetCategory: %w", err))
+		return nil, err
+	}
+	return category, nil
 }
