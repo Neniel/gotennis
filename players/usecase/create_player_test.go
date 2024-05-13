@@ -443,3 +443,41 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 		})
 	}
 }
+
+func TestNewCreatePlayerUsecase(t *testing.T) {
+	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
+	dbReader := database.NewMockDBReader(gomock.NewController(t))
+
+	type args struct {
+		dbWriter database.DBWriter
+		dbReader database.DBReader
+	}
+	tests := []struct {
+		name string
+		args args
+		want CreatePlayerUsecase
+	}{
+		{
+			name: "Should_get_a_create_player_usecase",
+			args: args{
+				dbWriter: dbWriter,
+				dbReader: dbReader,
+			},
+			want: &createPlayerUsecase{
+				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
+					ValidateEmail:        NewValidateEmailUsecase(dbReader),
+					ValidateAlias:        NewValidateAliasUsecase(dbReader),
+				},
+				DBWriter: dbWriter,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewCreatePlayerUsecase(tt.args.dbWriter, tt.args.dbReader); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewCreatePlayerUsecase() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
