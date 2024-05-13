@@ -112,8 +112,9 @@ func NewMongoDbWriter(client *mongo.Client) *MongoDbWriter {
 }
 
 func (mdbw *MongoDbWriter) AddCategory(ctx context.Context, category *entity.Category) (*entity.Category, error) {
-	//category.ID = primitive.NewObjectID()
-	//category.CreatedAt = time.Now().UTC()
+	category.ID = primitive.NewObjectID()
+	category.CreatedAt = time.Now().UTC()
+
 	_, err := mdbw.Categories.InsertOne(ctx, category)
 	if err != nil {
 		return nil, err
@@ -122,6 +123,8 @@ func (mdbw *MongoDbWriter) AddCategory(ctx context.Context, category *entity.Cat
 }
 
 func (mdbw *MongoDbWriter) UpdateCategory(ctx context.Context, category *entity.Category) (*entity.Category, error) {
+	category.UpdatedAt = util.ToPtr(time.Now().UTC())
+
 	updatedCatgory, err := bson.Marshal(&category)
 	if err != nil {
 		return nil, err
