@@ -59,5 +59,10 @@ func (uc *updateCategoryUsecase) UpdateCategory(ctx context.Context, id string, 
 
 	category.Name = request.Name
 
-	return uc.DBWriter.UpdateCategory(ctx, category)
+	updatedCategory, err := uc.DBWriter.UpdateCategory(ctx, category)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedCategory, err
 }
