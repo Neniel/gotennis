@@ -119,8 +119,19 @@ func (mdbw *MongoDbWriter) AddCategory(ctx context.Context, category *entity.Cat
 }
 
 func (mdbw *MongoDbWriter) UpdateCategory(ctx context.Context, category *entity.Category) (*entity.Category, error) {
-	return nil, nil
+	updatedCatgory, err := bson.Marshal(&category)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = mdbw.Categories.ReplaceOne(ctx, bson.M{"_id": category.ID}, updatedCatgory)
+	if err != nil {
+		return nil, err
+	}
+
+	return category, nil
 }
+
 func (mdbw *MongoDbWriter) DeleteCategory(ctx context.Context, id string) error {
 	_id, err := primitive.ObjectIDFromHex(id)
 	if err != nil {

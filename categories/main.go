@@ -20,6 +20,7 @@ func main() {
 			DeleteCategory:        usecase.NewDeleteCategoryUsecase(dbWriter),
 			ListCategories:        usecase.NewListCategoriesUsecase(dbReader),
 			GetCategory:           usecase.NewGetCategoryUsecase(dbReader),
+			UpdateCategory:        usecase.NewUpdateCategoryUsecase(dbReader, dbWriter),
 		},
 	}
 
