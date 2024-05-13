@@ -20,6 +20,7 @@ func main() {
 			DeletePlayerUsecase: usecase.NewDeletePlayerUsecase(dbWriter),
 			ListPlayersUsecase:  usecase.NewListPlayersUsecase(dbReader),
 			GetPlayerUsecase:    usecase.NewGetPlayerUsecase(dbReader),
+			UpdatePlayerUsecase: usecase.NewUpdatePlayerUsecase(dbWriter, dbReader),
 		},
 	}
 

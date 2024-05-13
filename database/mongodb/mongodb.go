@@ -3,8 +3,11 @@ package mongodb
 import (
 	"context"
 	"errors"
+	"math/rand"
+	"time"
 
 	"github.com/Neniel/gotennis/entity"
+	"github.com/Neniel/gotennis/util"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -147,6 +150,10 @@ func (mdbw *MongoDbWriter) DeleteCategory(ctx context.Context, id string) error 
 }
 
 func (mdbw *MongoDbWriter) AddPlayer(ctx context.Context, player *entity.Player) (*entity.Player, error) {
+	player.ID = primitive.NewObjectID()
+	player.CreatedAt = time.Now().UTC()
+	player.TemporaryAccessCode = util.ToPtr(rand.Uint32())
+
 	_, err := mdbw.Players.InsertOne(ctx, player)
 	if err != nil {
 		return nil, err
@@ -154,9 +161,22 @@ func (mdbw *MongoDbWriter) AddPlayer(ctx context.Context, player *entity.Player)
 	return player, nil
 }
 
-func (mdbw *MongoDbWriter) UpdatePlayer(ctx context.Context, category *entity.Player) (*entity.Player, error) {
-	return nil, nil
+func (mdbw *MongoDbWriter) UpdatePlayer(ctx context.Context, player *entity.Player) (*entity.Player, error) {
+	player.UpdatedAt = util.ToPtr(time.Now().UTC())
+
+	updatedPlayer, err := bson.Marshal(&player)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = mdbw.Players.ReplaceOne(ctx, bson.M{"_id": player.ID}, updatedPlayer)
+	if err != nil {
+		return nil, err
+	}
+
+	return player, nil
 }
+
 func (mdbw *MongoDbWriter) DeletePlayer(ctx context.Context, id string) error {
 	_id, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
