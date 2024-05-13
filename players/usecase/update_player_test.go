@@ -272,7 +272,11 @@ func TestNewUpdatePlayerUsecase(t *testing.T) {
 	}
 }
 
-func Test_updatePlayerUsecase_UpdatePlayer(t *testing.T) {
+func Test_updatePlayerUsecase_UpdatePlayer_Success(t *testing.T) {
+	id := primitive.NewObjectID()
+	dbReader := database.NewMockDBReader(gomock.NewController(t))
+	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
+
 	type fields struct {
 		internalUpdatePlayerUsecases *internalUpdatePlayerUsecases
 		DBWriter                     database.DBWriter
@@ -284,16 +288,98 @@ func Test_updatePlayerUsecase_UpdatePlayer(t *testing.T) {
 		request *UpdatePlayerRequest
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    *entity.Player
-		wantErr bool
+		name           string
+		fields         fields
+		args           args
+		prepareUsecase func()
+		want           *entity.Player
+		wantErr        bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Update_player",
+			fields: fields{
+				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
+					ValidateEmail:        NewValidateEmailUsecase(dbReader),
+					ValidateAlias:        NewValidateAliasUsecase(dbReader),
+				},
+				DBWriter: dbWriter,
+				DBReader: dbReader,
+			},
+			args: args{
+				ctx: context.Background(),
+				id:  id.Hex(),
+				request: &UpdatePlayerRequest{
+					ID:           id.Hex(),
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+54 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				},
+			},
+			prepareUsecase: func() {
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "government_id", "AR-1234567890").Return(true, nil)
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "email", "bobsponge@test.com").Return(true, nil)
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "alias", "bob").Return(true, nil)
+				dbReader.EXPECT().GetPlayer(gomock.Any(), id.Hex()).Return(&entity.Player{
+					ID:           id,
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+00 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				}, nil)
+
+				dbWriter.EXPECT().UpdatePlayer(gomock.Any(), &entity.Player{
+					ID:           id,
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+54 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				}).Return(&entity.Player{
+					ID:           id,
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+54 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				}, nil)
+			},
+			want: &entity.Player{
+				ID:           id,
+				GovernmentID: "AR-1234567890",
+				FirstName:    "Bob",
+				MiddleName:   "Sponge",
+				LastName:     "Square Pants",
+				Category:     nil,
+				Birthdate:    nil,
+				PhoneNumber:  "+54 000 000 000",
+				Email:        "bobsponge@test.com",
+				Alias:        "bob",
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			tt.prepareUsecase()
 			uc := &updatePlayerUsecase{
 				internalUpdatePlayerUsecases: tt.fields.internalUpdatePlayerUsecases,
 				DBWriter:                     tt.fields.DBWriter,
