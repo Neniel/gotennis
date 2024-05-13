@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"reflect"
 	"testing"
 	"time"
@@ -375,6 +376,370 @@ func Test_updatePlayerUsecase_UpdatePlayer_Success(t *testing.T) {
 				Email:        "bobsponge@test.com",
 				Alias:        "bob",
 			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.prepareUsecase()
+			uc := &updatePlayerUsecase{
+				internalUpdatePlayerUsecases: tt.fields.internalUpdatePlayerUsecases,
+				DBWriter:                     tt.fields.DBWriter,
+				DBReader:                     tt.fields.DBReader,
+			}
+			got, err := uc.UpdatePlayer(tt.args.ctx, tt.args.id, tt.args.request)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("updatePlayerUsecase.UpdatePlayer() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("updatePlayerUsecase.UpdatePlayer() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
+	id := primitive.NewObjectID()
+	dbReader := database.NewMockDBReader(gomock.NewController(t))
+	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
+
+	type fields struct {
+		internalUpdatePlayerUsecases *internalUpdatePlayerUsecases
+		DBWriter                     database.DBWriter
+		DBReader                     database.DBReader
+	}
+	type args struct {
+		ctx     context.Context
+		id      string
+		request *UpdatePlayerRequest
+	}
+	tests := []struct {
+		name           string
+		fields         fields
+		args           args
+		prepareUsecase func()
+		want           *entity.Player
+		wantErr        bool
+	}{
+		{
+			name: "Cannot_update_player_due_to_validation_failure_(missing_government_id)",
+			fields: fields{
+				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
+					ValidateEmail:        NewValidateEmailUsecase(dbReader),
+					ValidateAlias:        NewValidateAliasUsecase(dbReader),
+				},
+				DBWriter: dbWriter,
+				DBReader: dbReader,
+			},
+			args: args{
+				ctx: context.Background(),
+				id:  id.Hex(),
+				request: &UpdatePlayerRequest{
+					ID:           id.Hex(),
+					GovernmentID: "",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+54 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				},
+			},
+			prepareUsecase: func() {},
+			want:           nil,
+			wantErr:        true,
+		},
+		{
+			name: "Cannot_update_player_due_to_government_id_is_not_available",
+			fields: fields{
+				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
+					ValidateEmail:        NewValidateEmailUsecase(dbReader),
+					ValidateAlias:        NewValidateAliasUsecase(dbReader),
+				},
+				DBWriter: dbWriter,
+				DBReader: dbReader,
+			},
+			args: args{
+				ctx: context.Background(),
+				id:  id.Hex(),
+				request: &UpdatePlayerRequest{
+					ID:           id.Hex(),
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+54 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				},
+			},
+			prepareUsecase: func() {
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "government_id", gomock.Any()).Return(false, nil)
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "Cannot_update_player_due_to_government_id_might_not_available",
+			fields: fields{
+				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
+					ValidateEmail:        NewValidateEmailUsecase(dbReader),
+					ValidateAlias:        NewValidateAliasUsecase(dbReader),
+				},
+				DBWriter: dbWriter,
+				DBReader: dbReader,
+			},
+			args: args{
+				ctx: context.Background(),
+				id:  id.Hex(),
+				request: &UpdatePlayerRequest{
+					ID:           id.Hex(),
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+54 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				},
+			},
+			prepareUsecase: func() {
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "government_id", gomock.Any()).Return(false, errors.New("could not check government_id availability"))
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "Cannot_update_player_due_to_email_is_not_available",
+			fields: fields{
+				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
+					ValidateEmail:        NewValidateEmailUsecase(dbReader),
+					ValidateAlias:        NewValidateAliasUsecase(dbReader),
+				},
+				DBWriter: dbWriter,
+				DBReader: dbReader,
+			},
+			args: args{
+				ctx: context.Background(),
+				id:  id.Hex(),
+				request: &UpdatePlayerRequest{
+					ID:           id.Hex(),
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+54 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				},
+			},
+			prepareUsecase: func() {
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "government_id", "AR-1234567890").Return(true, nil)
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "email", "bobsponge@test.com").Return(false, nil)
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "Cannot_update_player_due_to_email_might_not_available",
+			fields: fields{
+				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
+					ValidateEmail:        NewValidateEmailUsecase(dbReader),
+					ValidateAlias:        NewValidateAliasUsecase(dbReader),
+				},
+				DBWriter: dbWriter,
+				DBReader: dbReader,
+			},
+			args: args{
+				ctx: context.Background(),
+				id:  id.Hex(),
+				request: &UpdatePlayerRequest{
+					ID:           id.Hex(),
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+54 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				},
+			},
+			prepareUsecase: func() {
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "government_id", "AR-1234567890").Return(true, nil)
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "email", "bobsponge@test.com").Return(false, errors.New("could not check email availability"))
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "Cannot_update_player_due_to_alias_is_not_available",
+			fields: fields{
+				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
+					ValidateEmail:        NewValidateEmailUsecase(dbReader),
+					ValidateAlias:        NewValidateAliasUsecase(dbReader),
+				},
+				DBWriter: dbWriter,
+				DBReader: dbReader,
+			},
+			args: args{
+				ctx: context.Background(),
+				id:  id.Hex(),
+				request: &UpdatePlayerRequest{
+					ID:           id.Hex(),
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+54 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				},
+			},
+			prepareUsecase: func() {
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "government_id", "AR-1234567890").Return(true, nil)
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "email", "bobsponge@test.com").Return(true, nil)
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "alias", "bob").Return(false, nil)
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "Cannot_update_player_due_to_alias_might_not_available",
+			fields: fields{
+				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
+					ValidateEmail:        NewValidateEmailUsecase(dbReader),
+					ValidateAlias:        NewValidateAliasUsecase(dbReader),
+				},
+				DBWriter: dbWriter,
+				DBReader: dbReader,
+			},
+			args: args{
+				ctx: context.Background(),
+				id:  id.Hex(),
+				request: &UpdatePlayerRequest{
+					ID:           id.Hex(),
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+54 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				},
+			},
+			prepareUsecase: func() {
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "government_id", "AR-1234567890").Return(true, nil)
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "email", "bobsponge@test.com").Return(true, nil)
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "alias", "bob").Return(false, errors.New("could not check alias availability"))
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "Cannot_update_player_due_to_could_not_retrieve_player",
+			fields: fields{
+				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
+					ValidateEmail:        NewValidateEmailUsecase(dbReader),
+					ValidateAlias:        NewValidateAliasUsecase(dbReader),
+				},
+				DBWriter: dbWriter,
+				DBReader: dbReader,
+			},
+			args: args{
+				ctx: context.Background(),
+				id:  id.Hex(),
+				request: &UpdatePlayerRequest{
+					ID:           id.Hex(),
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+54 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				},
+			},
+			prepareUsecase: func() {
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "government_id", "AR-1234567890").Return(true, nil)
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "email", "bobsponge@test.com").Return(true, nil)
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "alias", "bob").Return(true, nil)
+				dbReader.EXPECT().GetPlayer(gomock.Any(), gomock.Any()).Return(nil, errors.New("error when retrieving player"))
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "Cannot_update_player_due_to_could_not_update_player",
+			fields: fields{
+				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
+					ValidateEmail:        NewValidateEmailUsecase(dbReader),
+					ValidateAlias:        NewValidateAliasUsecase(dbReader),
+				},
+				DBWriter: dbWriter,
+				DBReader: dbReader,
+			},
+			args: args{
+				ctx: context.Background(),
+				id:  id.Hex(),
+				request: &UpdatePlayerRequest{
+					ID:           id.Hex(),
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+54 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				},
+			},
+			prepareUsecase: func() {
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "government_id", "AR-1234567890").Return(true, nil)
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "email", "bobsponge@test.com").Return(true, nil)
+				dbReader.EXPECT().IsAvailable(gomock.Any(), "alias", "bob").Return(true, nil)
+				dbReader.EXPECT().GetPlayer(gomock.Any(), gomock.Any()).Return(&entity.Player{
+					ID:           id,
+					GovernmentID: "AR-1234567890",
+					FirstName:    "Bob",
+					MiddleName:   "Sponge",
+					LastName:     "Square Pants",
+					Category:     nil,
+					Birthdate:    nil,
+					PhoneNumber:  "+00 000 000 000",
+					Email:        "bobsponge@test.com",
+					Alias:        "bob",
+				}, nil)
+				dbWriter.EXPECT().UpdatePlayer(gomock.Any(), gomock.Any()).Return(nil, errors.New("could not update player"))
+			},
+			want:    nil,
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
