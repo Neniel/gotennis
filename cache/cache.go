@@ -20,7 +20,7 @@ import (
 )
 
 type CacheMicroservice struct {
-	App *app.App
+	App app.IApp
 }
 
 func (ms *CacheMicroservice) StartSync() {
@@ -30,7 +30,7 @@ func (ms *CacheMicroservice) StartSync() {
 	var wg sync.WaitGroup
 
 	for _, collection := range util.Collections {
-		changeStream, err := ms.App.DBClients.MongoDB.Database(util.DBName).Collection(collection).Watch(ctx, mongo.Pipeline{})
+		changeStream, err := ms.App.GetMongoDBClient().Database(util.DBName).Collection(collection).Watch(ctx, mongo.Pipeline{})
 		if err != nil {
 			cancel()
 			panic(err)
@@ -72,7 +72,7 @@ func (ms *CacheMicroservice) StartSync() {
 				// Actuar en consecuencia del operationType
 				operationType := changeEvent["operationType"]
 				if operationType == "delete" {
-					ms.App.DBClients.Redis.HDel("categories", documentID)
+					ms.App.GetRedisClient().HDel("categories", documentID)
 					continue
 				}
 
@@ -80,7 +80,7 @@ func (ms *CacheMicroservice) StartSync() {
 					// Obtener el documento actualizado desde MongoDB
 					var updatedDocument entity.Category
 					_id, _ := primitive.ObjectIDFromHex(documentID)
-					if err := ms.App.DBClients.MongoDB.Database(util.DBName).Collection(collectionName).FindOne(ctx, bson.M{"_id": _id}).Decode(&updatedDocument); err != nil {
+					if err := ms.App.GetMongoDBClient().Database(util.DBName).Collection(collectionName).FindOne(ctx, bson.M{"_id": _id}).Decode(&updatedDocument); err != nil {
 						log.Println("Error al obtener el documento actualizado:", err)
 						continue
 					}
@@ -94,7 +94,7 @@ func (ms *CacheMicroservice) StartSync() {
 					}
 
 					// Guardar en Redis utilizando el ID del documento como clave
-					err = ms.App.DBClients.Redis.HSet(collectionName, updatedDocument.ID.Hex(), jsonString).Err()
+					err = ms.App.GetRedisClient().HSet(collectionName, updatedDocument.ID.Hex(), jsonString).Err()
 					if err != nil {
 						log.Println(err.Error())
 						continue

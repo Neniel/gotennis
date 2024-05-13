@@ -8,7 +8,6 @@ import (
 
 	"github.com/Neniel/gotennis/database"
 
-	"github.com/Neniel/gotennis/app"
 	"github.com/Neniel/gotennis/entity"
 	"github.com/Neniel/gotennis/util"
 )
@@ -31,7 +30,7 @@ func (r *CreatePlayerRequest) Validate() error {
 	}
 
 	if r.Email == "" {
-		return util.ErrPlayerGovernmentIDIsEmpty
+		return util.ErrPlayerEmailIsEmpty
 	}
 
 	if r.FirstName == "" {
@@ -68,13 +67,13 @@ type createPlayerUsecase struct {
 	DBWriter database.DBWriter
 }
 
-func NewCreatePlayerUsecase(app *app.App) CreatePlayerUsecase {
+func NewCreatePlayerUsecase(dbWriter database.DBWriter, dbReader database.DBReader) CreatePlayerUsecase {
 	return &createPlayerUsecase{
-		DBWriter: database.NewDatabaseWriter(app.DBClients.MongoDB),
+		DBWriter: dbWriter,
 		internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
-			ValidateGovernmentID: NewValidateGovernmentIDUsecase(app),
-			ValidateEmail:        NewValidateEmailUsecase(app),
-			ValidateAlias:        NewValidateAliasUsecase(app),
+			ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
+			ValidateEmail:        NewValidateEmailUsecase(dbReader),
+			ValidateAlias:        NewValidateAliasUsecase(dbReader),
 		},
 	}
 }

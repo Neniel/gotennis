@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 
-	"github.com/Neniel/gotennis/app"
 	"github.com/Neniel/gotennis/database"
 )
 
@@ -15,12 +14,16 @@ type validateGovernmentIDUsecase struct {
 	DBReader database.DBReader
 }
 
-func NewValidateGovernmentIDUsecase(app *app.App) ValidateGovernmentIDUsecase {
+func NewValidateGovernmentIDUsecase(dbReader database.DBReader) ValidateGovernmentIDUsecase {
 	return &validateGovernmentIDUsecase{
-		DBReader: database.NewDatabaseReader(app.DBClients.MongoDB),
+		DBReader: dbReader,
 	}
 }
 
 func (uc *validateGovernmentIDUsecase) IsAvailable(ctx context.Context, governmentID string) (bool, error) {
+	if governmentID == "" {
+		return false, nil
+	}
+
 	return uc.DBReader.IsAvailable(ctx, "government_id", governmentID)
 }

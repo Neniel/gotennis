@@ -11,8 +11,21 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+type IApp interface {
+	GetMongoDBClient() *mongo.Client
+	GetRedisClient() *redis.Client
+}
+
 type App struct {
 	DBClients *DBClients
+}
+
+func (a *App) GetMongoDBClient() *mongo.Client {
+	return a.DBClients.MongoDB
+}
+
+func (a *App) GetRedisClient() *redis.Client {
+	return a.DBClients.Redis
 }
 
 type DBClients struct {
@@ -20,7 +33,7 @@ type DBClients struct {
 	Redis   *redis.Client
 }
 
-func NewApp(ctx context.Context) *App {
+func NewApp(ctx context.Context) IApp {
 	bsMongoURI, err := os.ReadFile(os.Getenv("MONGODB_URI_FILE"))
 	if err != nil {
 		log.Fatalln(err.Error())

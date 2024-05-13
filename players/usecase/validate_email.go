@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 
-	"github.com/Neniel/gotennis/app"
 	"github.com/Neniel/gotennis/database"
 )
 
@@ -15,12 +14,16 @@ type validateEmailUsecaseUsecase struct {
 	DBReader database.DBReader
 }
 
-func NewValidateEmailUsecase(app *app.App) ValidateEmailUsecase {
+func NewValidateEmailUsecase(dbReader database.DBReader) ValidateEmailUsecase {
 	return &validateEmailUsecaseUsecase{
-		DBReader: database.NewDatabaseReader(app.DBClients.MongoDB),
+		DBReader: dbReader,
 	}
 }
 
 func (uc *validateEmailUsecaseUsecase) IsAvailable(ctx context.Context, email string) (bool, error) {
+	if email == "" {
+		return false, nil
+	}
+
 	return uc.DBReader.IsAvailable(ctx, "email", email)
 }

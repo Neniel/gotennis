@@ -5,7 +5,6 @@ import (
 
 	"github.com/Neniel/gotennis/database"
 
-	"github.com/Neniel/gotennis/app"
 	"github.com/Neniel/gotennis/entity"
 )
 
@@ -17,9 +16,9 @@ type saveCategoryUsecase struct {
 	DBWriter database.DBWriter
 }
 
-func NewSaveCategoryUsecase(app *app.App) SaveCategoryUsecase {
+func NewSaveCategoryUsecase(dbWriter database.DBWriter) SaveCategoryUsecase {
 	return &saveCategoryUsecase{
-		DBWriter: database.NewDatabaseWriter(app.DBClients.MongoDB),
+		DBWriter: dbWriter,
 	}
 }
 

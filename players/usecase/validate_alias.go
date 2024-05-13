@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 
-	"github.com/Neniel/gotennis/app"
 	"github.com/Neniel/gotennis/database"
 )
 
@@ -15,9 +14,9 @@ type validateAliasUsecase struct {
 	DBReader database.DBReader
 }
 
-func NewValidateAliasUsecase(app *app.App) ValidateAliasUsecase {
+func NewValidateAliasUsecase(dbReader database.DBReader) ValidateAliasUsecase {
 	return &validateAliasUsecase{
-		DBReader: database.NewDatabaseReader(app.DBClients.MongoDB),
+		DBReader: dbReader,
 	}
 }
 

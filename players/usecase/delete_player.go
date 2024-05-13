@@ -4,8 +4,6 @@ import (
 	"context"
 
 	"github.com/Neniel/gotennis/database"
-
-	"github.com/Neniel/gotennis/app"
 )
 
 type DeletePlayerUsecase interface {
@@ -16,9 +14,9 @@ type deletePlayerUsecase struct {
 	DBWriter database.DBWriter
 }
 
-func NewDeletePlayerUsecase(app *app.App) DeletePlayerUsecase {
+func NewDeletePlayerUsecase(dbWriter database.DBWriter) DeletePlayerUsecase {
 	return &deletePlayerUsecase{
-		DBWriter: database.NewDatabaseWriter(app.DBClients.MongoDB),
+		DBWriter: dbWriter,
 	}
 }
 

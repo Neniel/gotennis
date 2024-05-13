@@ -23,7 +23,7 @@ type Usecases struct {
 }
 
 type PlayerMicroservice struct {
-	App      *app.App
+	App      app.IApp
 	Usecases *Usecases
 }
 

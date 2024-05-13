@@ -5,7 +5,6 @@ import (
 
 	"github.com/Neniel/gotennis/database"
 
-	"github.com/Neniel/gotennis/app"
 	"github.com/Neniel/gotennis/entity"
 )
 
@@ -17,9 +16,9 @@ type listPlayersUsecase struct {
 	DBReader database.DBReader
 }
 
-func NewListPlayersUsecase(app *app.App) ListPlayersUsecase {
+func NewListPlayersUsecase(dbReader database.DBReader) ListPlayersUsecase {
 	return &listPlayersUsecase{
-		DBReader: database.NewDatabaseReader(app.DBClients.MongoDB),
+		DBReader: dbReader,
 	}
 }
 

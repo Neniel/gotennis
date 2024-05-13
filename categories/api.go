@@ -24,7 +24,7 @@ type Usecases struct {
 }
 
 type CategoryMicroservice struct {
-	App      *app.App
+	App      app.IApp
 	Usecases *Usecases
 }
 
@@ -113,7 +113,7 @@ func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	category, err := api.CategoryMicroservice.Usecases.CreateCategoryUsecase.CreateCategory(&request)
+	category, err := api.CategoryMicroservice.Usecases.CreateCategoryUsecase.CreateCategory(r.Context(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))

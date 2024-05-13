@@ -4,8 +4,6 @@ import (
 	"context"
 
 	"github.com/Neniel/gotennis/database"
-
-	"github.com/Neniel/gotennis/app"
 )
 
 type DeleteCategoryUsecase interface {
@@ -16,9 +14,9 @@ type deleteCategoryUsecase struct {
 	DBWriter database.DBWriter
 }
 
-func NewDeleteCategoryUsecase(app *app.App) DeleteCategoryUsecase {
+func NewDeleteCategoryUsecase(dbWriter database.DBWriter) DeleteCategoryUsecase {
 	return &deleteCategoryUsecase{
-		DBWriter: database.NewDatabaseWriter(app.DBClients.MongoDB),
+		DBWriter: dbWriter,
 	}
 }
 
