@@ -13,15 +13,6 @@ import (
 
 func Test_createCategoryUsecase_CreateCategory_Success(t *testing.T) {
 	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
-	dbWriter.
-		EXPECT().
-		AddCategory(gomock.Any(), gomock.Any()).
-		Return(
-			&entity.Category{
-				Name: "Category 1",
-			},
-			nil,
-		)
 
 	type fields struct {
 		DBWriter database.DBWriter
@@ -31,11 +22,12 @@ func Test_createCategoryUsecase_CreateCategory_Success(t *testing.T) {
 		request *CreateCategoryRequest
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    *entity.Category
-		wantErr bool
+		name         string
+		fields       fields
+		args         args
+		prepareMocks func()
+		want         *entity.Category
+		wantErr      bool
 	}{
 		{
 			name: "Create_category",
@@ -48,6 +40,17 @@ func Test_createCategoryUsecase_CreateCategory_Success(t *testing.T) {
 					Name: "Category 1",
 				},
 			},
+			prepareMocks: func() {
+				dbWriter.
+					EXPECT().
+					AddCategory(gomock.Any(), gomock.Any()).
+					Return(
+						&entity.Category{
+							Name: "Category 1",
+						},
+						nil,
+					)
+			},
 			want: &entity.Category{
 				Name: "Category 1",
 			},
@@ -56,6 +59,7 @@ func Test_createCategoryUsecase_CreateCategory_Success(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			tt.prepareMocks()
 			uc := &createCategoryUsecase{
 				DBWriter: tt.fields.DBWriter,
 			}
@@ -73,7 +77,6 @@ func Test_createCategoryUsecase_CreateCategory_Success(t *testing.T) {
 
 func Test_createCategoryUsecase_CreateCategory_Failure(t *testing.T) {
 	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
-	dbWriter.EXPECT().AddCategory(gomock.Any(), gomock.Any()).Return(nil, errors.New("error when saving category in the db"))
 
 	type fields struct {
 		DBWriter database.DBWriter
@@ -83,11 +86,12 @@ func Test_createCategoryUsecase_CreateCategory_Failure(t *testing.T) {
 		request *CreateCategoryRequest
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    *entity.Category
-		wantErr bool
+		name         string
+		fields       fields
+		args         args
+		prepareMocks func()
+		want         *entity.Category
+		wantErr      bool
 	}{
 		{
 			name: "Create_category_fails",
@@ -99,6 +103,9 @@ func Test_createCategoryUsecase_CreateCategory_Failure(t *testing.T) {
 				request: &CreateCategoryRequest{
 					Name: "Category 1",
 				},
+			},
+			prepareMocks: func() {
+				dbWriter.EXPECT().AddCategory(gomock.Any(), gomock.Any()).Return(nil, errors.New("error when saving category in the db"))
 			},
 			want:    nil,
 			wantErr: true,
@@ -114,12 +121,14 @@ func Test_createCategoryUsecase_CreateCategory_Failure(t *testing.T) {
 					Name: "",
 				},
 			},
-			want:    nil,
-			wantErr: true,
+			prepareMocks: func() {},
+			want:         nil,
+			wantErr:      true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			tt.prepareMocks()
 			uc := &createCategoryUsecase{
 				DBWriter: tt.fields.DBWriter,
 			}
