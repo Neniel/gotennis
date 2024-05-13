@@ -15,7 +15,7 @@ func Test_createCategoryUsecase_CreateCategory_Success(t *testing.T) {
 	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
 
 	type fields struct {
-		SaveCategoryUsecase SaveCategoryUsecase
+		DBWriter database.DBWriter
 	}
 	type args struct {
 		ctx     context.Context
@@ -32,7 +32,7 @@ func Test_createCategoryUsecase_CreateCategory_Success(t *testing.T) {
 		{
 			name: "Create_category",
 			fields: fields{
-				SaveCategoryUsecase: NewSaveCategoryUsecase(dbWriter),
+				DBWriter: dbWriter,
 			},
 			args: args{
 				ctx: context.TODO(),
@@ -61,7 +61,7 @@ func Test_createCategoryUsecase_CreateCategory_Success(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareMocks()
 			uc := &createCategoryUsecase{
-				SaveCategoryUsecase: tt.fields.SaveCategoryUsecase,
+				DBWriter: tt.fields.DBWriter,
 			}
 			got, err := uc.CreateCategory(tt.args.ctx, tt.args.request)
 			if (err != nil) != tt.wantErr {
@@ -79,7 +79,7 @@ func Test_createCategoryUsecase_CreateCategory_Failure(t *testing.T) {
 	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
 
 	type fields struct {
-		SaveCategoryUsecase SaveCategoryUsecase
+		DBWriter database.DBWriter
 	}
 	type args struct {
 		ctx     context.Context
@@ -96,7 +96,7 @@ func Test_createCategoryUsecase_CreateCategory_Failure(t *testing.T) {
 		{
 			name: "Create_category_fails",
 			fields: fields{
-				SaveCategoryUsecase: NewSaveCategoryUsecase(dbWriter),
+				DBWriter: dbWriter,
 			},
 			args: args{
 				ctx: context.Background(),
@@ -113,7 +113,7 @@ func Test_createCategoryUsecase_CreateCategory_Failure(t *testing.T) {
 		{
 			name: "Create_category_with_empty_name_should_fail",
 			fields: fields{
-				SaveCategoryUsecase: NewSaveCategoryUsecase(dbWriter),
+				DBWriter: dbWriter,
 			},
 			args: args{
 				ctx: context.Background(),
@@ -130,7 +130,7 @@ func Test_createCategoryUsecase_CreateCategory_Failure(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareMocks()
 			uc := &createCategoryUsecase{
-				SaveCategoryUsecase: tt.fields.SaveCategoryUsecase,
+				DBWriter: tt.fields.DBWriter,
 			}
 			got, err := uc.CreateCategory(tt.args.ctx, tt.args.request)
 			if (err != nil) != tt.wantErr {
@@ -160,7 +160,7 @@ func TestNewCreateCategoryUsecase(t *testing.T) {
 				dbWriter: dbWriter,
 			},
 			want: &createCategoryUsecase{
-				SaveCategoryUsecase: NewSaveCategoryUsecase(dbWriter),
+				DBWriter: dbWriter,
 			},
 		},
 	}

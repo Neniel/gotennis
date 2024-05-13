@@ -13,12 +13,12 @@ type CreateCategoryUsecase interface {
 }
 
 type createCategoryUsecase struct {
-	SaveCategoryUsecase SaveCategoryUsecase
+	DBWriter database.DBWriter
 }
 
 func NewCreateCategoryUsecase(dbWriter database.DBWriter) CreateCategoryUsecase {
 	return &createCategoryUsecase{
-		SaveCategoryUsecase: NewSaveCategoryUsecase(dbWriter),
+		DBWriter: dbWriter,
 	}
 }
 
@@ -41,5 +41,5 @@ func (uc *createCategoryUsecase) CreateCategory(ctx context.Context, request *Cr
 
 	category := entity.NewCategory(request.Name)
 
-	return uc.SaveCategoryUsecase.Save(ctx, category)
+	return uc.DBWriter.AddCategory(ctx, category)
 }
