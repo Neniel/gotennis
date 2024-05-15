@@ -6,7 +6,9 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Neniel/gotennis/util"
 	"github.com/go-redis/redis"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -47,7 +49,37 @@ func NewApp(ctx context.Context) IApp {
 	if err := mongoClient.Ping(ctx, nil); err != nil {
 		log.Fatalln(err.Error())
 	}
-	log.Println("Connected to MongoDB")
+	log.Println("✅ Connected to MongoDB")
+
+	db := mongoClient.Database(util.DBName)
+
+	log.Println("Preparing 'players' collection")
+	playersColl := db.Collection(util.CollNamePlayers)
+	indexOptionsGovernmentID := options.Index().SetUnique(true).SetPartialFilterExpression(bson.M{"government_id": bson.M{"$type": "string"}})
+	indexOptionsEmail := options.Index().SetUnique(true).SetPartialFilterExpression(bson.M{"email": bson.M{"$type": "string"}})
+	indexOptionsAlias := options.Index().SetUnique(true).SetPartialFilterExpression(bson.M{"alias": bson.M{"$type": "string"}})
+
+	indexModelGovernmentID := mongo.IndexModel{
+		Keys:    bson.D{{"government_id", 1}},
+		Options: indexOptionsGovernmentID,
+	}
+
+	indexModelEmail := mongo.IndexModel{
+		Keys:    bson.D{{"email", 1}},
+		Options: indexOptionsEmail,
+	}
+
+	indexModelAlias := mongo.IndexModel{
+		Keys:    bson.D{{"alias", 1}},
+		Options: indexOptionsAlias,
+	}
+
+	indexNames, err := playersColl.Indexes().CreateMany(ctx, []mongo.IndexModel{indexModelGovernmentID, indexModelEmail, indexModelAlias})
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	log.Printf("✅ Indexes %v created!", indexNames)
 
 	bsRedisAddress, err := os.ReadFile(os.Getenv("REDIS_ADDRESS_FILE"))
 	if err != nil {
@@ -65,7 +97,7 @@ func NewApp(ctx context.Context) IApp {
 		Addr:     redisAddress,
 		Password: redisPassword,
 	})
-	log.Println("Connected to Redis")
+	log.Println("✅ Connected to Redis")
 
 	return &App{
 		DBClients: &DBClients{
