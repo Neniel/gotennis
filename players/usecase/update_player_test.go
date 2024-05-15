@@ -26,7 +26,7 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 		Birthdate    *time.Time
 		PhoneNumber  string
 		Email        string
-		Alias        string
+		Alias        *string
 	}
 	type args struct {
 		id string
@@ -49,7 +49,7 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 				Birthdate:    nil,
 				PhoneNumber:  "+00 000 000 000",
 				Email:        "bobsponge@test.com",
-				Alias:        "bob",
+				Alias:        util.ToPtr("bob"),
 			},
 			args: args{
 				id: id.Hex(),
@@ -68,7 +68,7 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 				Birthdate:    nil,
 				PhoneNumber:  "+00 000 000 000",
 				Email:        "bobsponge@test.com",
-				Alias:        "bob",
+				Alias:        util.ToPtr("bob"),
 			},
 			args: args{
 				id: id.Hex(),
@@ -87,7 +87,7 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 				Birthdate:    nil,
 				PhoneNumber:  "+00 000 000 000",
 				Email:        "bobsponge@test.com",
-				Alias:        "bob",
+				Alias:        util.ToPtr("bob"),
 			},
 			args: args{
 				id: "",
@@ -106,7 +106,7 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 				Birthdate:    nil,
 				PhoneNumber:  "+00 000 000 000",
 				Email:        "bobsponge@test.com",
-				Alias:        "bob",
+				Alias:        util.ToPtr("bob"),
 			},
 			args: args{
 				id: primitive.NewObjectID().Hex(),
@@ -125,7 +125,7 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 				Birthdate:    nil,
 				PhoneNumber:  "+00 000 000 000",
 				Email:        "bobsponge@test.com",
-				Alias:        "bob",
+				Alias:        util.ToPtr("bob"),
 			},
 			args: args{
 				id: id.Hex(),
@@ -144,7 +144,7 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 				Birthdate:    nil,
 				PhoneNumber:  "+00 000 000 000",
 				Email:        "bobsponge@test.com",
-				Alias:        "bob",
+				Alias:        util.ToPtr("bob"),
 			},
 			args: args{
 				id: id.Hex(),
@@ -163,7 +163,7 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 				Birthdate:    nil,
 				PhoneNumber:  "+00 000 000 000",
 				Email:        "bobsponge@test.com",
-				Alias:        "bob",
+				Alias:        util.ToPtr("bob"),
 			},
 			args: args{
 				id: id.Hex(),
@@ -182,7 +182,7 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 				Birthdate:    nil,
 				PhoneNumber:  "+00 000 000 000",
 				Email:        "",
-				Alias:        "bob",
+				Alias:        util.ToPtr("bob"),
 			},
 			args: args{
 				id: id.Hex(),
@@ -201,7 +201,7 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 				Birthdate:    &time.Time{},
 				PhoneNumber:  "+00 000 000 000",
 				Email:        "bobsponge@gmail.com",
-				Alias:        "bob",
+				Alias:        util.ToPtr("bob"),
 			},
 			args: args{
 				id: id.Hex(),
@@ -220,7 +220,7 @@ func TestUpdatePlayerRequest_Validate(t *testing.T) {
 				Birthdate:    util.ToPtr(time.Now().AddDate(20, 0, 0).UTC()),
 				PhoneNumber:  "+00 000 000 000",
 				Email:        "bobsponge@gmail.com",
-				Alias:        "bob",
+				Alias:        util.ToPtr("bob"),
 			},
 			args: args{
 				id: id.Hex(),
@@ -340,7 +340,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Success(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareUsecase: func() {
@@ -357,7 +357,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Success(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+00 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				}, nil)
 
 				dbWriter.EXPECT().UpdatePlayer(gomock.Any(), &entity.Player{
@@ -370,7 +370,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Success(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				}).Return(&entity.Player{
 					ID:           id,
 					GovernmentID: "AR-1234567890",
@@ -381,7 +381,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Success(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				}, nil)
 			},
 			want: &entity.Player{
@@ -394,7 +394,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Success(t *testing.T) {
 				Birthdate:    nil,
 				PhoneNumber:  "+54 000 000 000",
 				Email:        "bobsponge@test.com",
-				Alias:        "bob",
+				Alias:        util.ToPtr("bob"),
 			},
 			wantErr: false,
 		},
@@ -466,7 +466,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareUsecase: func() {},
@@ -497,7 +497,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareUsecase: func() {
@@ -530,7 +530,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareUsecase: func() {
@@ -563,7 +563,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareUsecase: func() {
@@ -597,7 +597,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareUsecase: func() {
@@ -631,7 +631,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareUsecase: func() {
@@ -666,7 +666,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareUsecase: func() {
@@ -701,7 +701,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareUsecase: func() {
@@ -737,7 +737,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareUsecase: func() {
@@ -754,7 +754,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+00 000 000 000",
 					Email:        "bobsponge@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				}, nil)
 				dbWriter.EXPECT().UpdatePlayer(gomock.Any(), gomock.Any()).Return(nil, errors.New("could not update player"))
 			},

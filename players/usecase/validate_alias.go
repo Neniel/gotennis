@@ -7,7 +7,7 @@ import (
 )
 
 type ValidateAliasUsecase interface {
-	IsAvailable(ctx context.Context, alias string) (bool, error)
+	IsAvailable(ctx context.Context, alias *string) (bool, error)
 }
 
 type validateAliasUsecase struct {
@@ -20,10 +20,10 @@ func NewValidateAliasUsecase(dbReader database.DBReader) ValidateAliasUsecase {
 	}
 }
 
-func (uc *validateAliasUsecase) IsAvailable(ctx context.Context, alias string) (bool, error) {
-	if alias == "" {
+func (uc *validateAliasUsecase) IsAvailable(ctx context.Context, alias *string) (bool, error) {
+	if alias == nil {
 		return true, nil
 	}
 
-	return uc.DBReader.IsAvailable(ctx, "alias", alias)
+	return uc.DBReader.IsAvailable(ctx, "alias", *alias)
 }

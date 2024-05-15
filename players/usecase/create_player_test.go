@@ -8,6 +8,7 @@ import (
 
 	"github.com/Neniel/gotennis/database"
 	"github.com/Neniel/gotennis/entity"
+	"github.com/Neniel/gotennis/util"
 	"go.uber.org/mock/gomock"
 )
 
@@ -52,7 +53,7 @@ func Test_createPlayerUsecase_CreatePlayer_Success(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "spongebob@test.com",
-					Alias:        "",
+					Alias:        util.ToPtr(""),
 				},
 			},
 			prepareMocks: func() {
@@ -65,7 +66,7 @@ func Test_createPlayerUsecase_CreatePlayer_Success(t *testing.T) {
 					LastName:     "Square Pants",
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "spongebob@test.com",
-					Alias:        "",
+					Alias:        util.ToPtr(""),
 				}, nil)
 			},
 			want: &entity.Player{
@@ -75,7 +76,7 @@ func Test_createPlayerUsecase_CreatePlayer_Success(t *testing.T) {
 				LastName:     "Square Pants",
 				PhoneNumber:  "+54 000 000 000",
 				Email:        "spongebob@test.com",
-				Alias:        "",
+				Alias:        util.ToPtr(""),
 			},
 			wantErr: false,
 		},
@@ -226,7 +227,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "spongebob@test.com",
-					Alias:        "",
+					Alias:        util.ToPtr(""),
 				},
 			},
 			prepareMocks: func() {
@@ -256,7 +257,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "spongebob@test.com",
-					Alias:        "",
+					Alias:        util.ToPtr(""),
 				},
 			},
 			prepareMocks: func() {
@@ -286,7 +287,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "spongebob@test.com",
-					Alias:        "",
+					Alias:        util.ToPtr(""),
 				},
 			},
 			prepareMocks: func() {
@@ -317,7 +318,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "spongebob@test.com",
-					Alias:        "",
+					Alias:        util.ToPtr(""),
 				},
 			},
 			prepareMocks: func() {
@@ -348,7 +349,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "spongebob@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareMocks: func() {
@@ -380,7 +381,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "spongebob@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareMocks: func() {
@@ -412,7 +413,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 					Birthdate:    nil,
 					PhoneNumber:  "+54 000 000 000",
 					Email:        "spongebob@test.com",
-					Alias:        "bob",
+					Alias:        util.ToPtr("bob"),
 				},
 			},
 			prepareMocks: func() {

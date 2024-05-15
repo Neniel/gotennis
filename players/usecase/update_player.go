@@ -19,11 +19,11 @@ type UpdatePlayerRequest struct {
 	FirstName    string           `json:"first_name"`
 	MiddleName   string           `json:"middle_name"`
 	LastName     string           `json:"last_name"`
-	Category     *entity.Category `json:"category"`
-	Birthdate    *time.Time       `json:"birthdate"`
+	Category     *entity.Category `json:"category,omitempty"`
+	Birthdate    *time.Time       `json:"birthdate,omitempty"`
 	PhoneNumber  string           `json:"phone_number"`
 	Email        string           `json:"email"`
-	Alias        string           `json:"alias"`
+	Alias        *string          `json:"alias,omitempty"`
 }
 
 func (r *UpdatePlayerRequest) Validate(id string) error {
@@ -53,6 +53,10 @@ func (r *UpdatePlayerRequest) Validate(id string) error {
 
 	if r.LastName == "" {
 		return util.ErrPlayerLastNameIsEmpty
+	}
+
+	if r.Alias != nil && *r.Alias == "" {
+		return util.ErrPlayerAliasIsEmpty
 	}
 
 	if r.Birthdate != nil && r.Birthdate.IsZero() {

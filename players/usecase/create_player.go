@@ -17,11 +17,11 @@ type CreatePlayerRequest struct {
 	FirstName    string           `json:"first_name"`
 	MiddleName   string           `json:"middle_name"`
 	LastName     string           `json:"last_name"`
-	Category     *entity.Category `json:"category"`
-	Birthdate    *time.Time       `json:"birthdate"`
+	Category     *entity.Category `json:"category,omitempty"`
+	Birthdate    *time.Time       `json:"birthdate,omitempty"`
 	PhoneNumber  string           `json:"phone_number"`
 	Email        string           `json:"email"`
-	Alias        string           `json:"alias"`
+	Alias        *string          `json:"alias,omitempty"`
 }
 
 func (r *CreatePlayerRequest) Validate() error {
@@ -47,6 +47,10 @@ func (r *CreatePlayerRequest) Validate() error {
 
 	if r.Birthdate != nil && r.Birthdate.After(time.Now().UTC()) {
 		return util.ErrPlayerBirthdateIsFutureDate
+	}
+
+	if r.Alias != nil && *r.Alias == "" {
+		r.Alias = nil
 	}
 
 	return nil

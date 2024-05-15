@@ -7,7 +7,7 @@ import (
 )
 
 type ValidateGovernmentIDUsecase interface {
-	IsAvailable(ctx context.Context, id string) (bool, error)
+	IsAvailable(ctx context.Context, governmentID string) (bool, error)
 }
 
 type validateGovernmentIDUsecase struct {

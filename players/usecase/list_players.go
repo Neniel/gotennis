@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"log"
 
 	"github.com/Neniel/gotennis/database"
 
@@ -23,5 +24,12 @@ func NewListPlayersUsecase(dbReader database.DBReader) ListPlayersUsecase {
 }
 
 func (uc *listPlayersUsecase) List(ctx context.Context) ([]entity.Player, error) {
-	return uc.DBReader.GetPlayers(ctx)
+	players, err := uc.DBReader.GetPlayers(ctx)
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return players, nil
 }

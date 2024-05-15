@@ -16,7 +16,7 @@ type Player struct {
 	Birthdate           *time.Time         `bson:"birthdate" json:"birthdate"`
 	PhoneNumber         string             `bson:"phone_number" json:"phone_number"`
 	Email               string             `bson:"email" json:"email"`
-	Alias               string             `bson:"alias" json:"alias"`
+	Alias               *string            `bson:"alias" json:"alias"`
 	TemporaryAccessCode *uint32            `bson:"temporary_access_code" json:"-"`
 	Password            string             `bson:"password" json:"-"`
 	Category            *Category          `bson:"category" json:"category"`
@@ -32,7 +32,7 @@ func NewPlayer(
 	birthDate *time.Time,
 	phoneNumber string,
 	email string,
-	alias string,
+	alias *string,
 ) *Player {
 	return &Player{
 		GovernmentID: governmentID,
