@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/Neniel/gotennis/entity"
@@ -174,6 +175,22 @@ func (mdbw *MongoDbWriter) UpdatePlayer(ctx context.Context, player *entity.Play
 
 	_, err = mdbw.Players.ReplaceOne(ctx, bson.M{"_id": player.ID}, updatedPlayer)
 	if err != nil {
+		if e, ok := err.(mongo.WriteException); ok {
+			for _, ee := range e.WriteErrors {
+				if strings.Contains(ee.Message, "government_id_1") {
+					return nil, &util.AppError{Message: "government_id has already been assigned to another player"}
+				}
+
+				if strings.Contains(ee.Message, "email_1") {
+					return nil, &util.AppError{Message: "email has already been assigned to another player"}
+				}
+
+				if strings.Contains(ee.Message, "alias_1") {
+					return nil, &util.AppError{Message: "alias has already been assigned to another player"}
+				}
+			}
+		}
+
 		return nil, err
 	}
 
