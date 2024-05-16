@@ -58,8 +58,7 @@ services:
     command:
       [
         "mongosh",
-        #"mongodb://mongodb1:27017,mongodb2:27017,mongodb3:27017/admin",
-        "mongodb://mongodb1:27017/admin",
+        "mongodb://mongodb1:27017,mongodb2:27018,mongodb3:27019/admin",
         "/scripts/init-replica.js"
       ]
 
