@@ -3,7 +3,7 @@ module github.com/Neniel/gotennis/app
 go 1.22.0
 
 require (
-	github.com/Neniel/gotennis/util v0.0.0-20240518223634-9731dc7ad999
+	github.com/Neniel/gotennis/util v0.0.0-20240518224948-b2f61a748d3b
 	github.com/go-redis/redis v6.15.9+incompatible
 	go.mongodb.org/mongo-driver v1.15.0
 	go.uber.org/mock v0.4.0
