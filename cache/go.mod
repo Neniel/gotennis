@@ -3,9 +3,9 @@ module cache
 go 1.22.0
 
 require (
-	github.com/Neniel/gotennis/app v0.0.0-20240511192532-66755fecd4eb
-	github.com/Neniel/gotennis/entity v0.0.0-20240511192532-66755fecd4eb
-	github.com/Neniel/gotennis/util v0.0.0-20240511192532-66755fecd4eb
+	github.com/Neniel/gotennis/app v0.0.0-20240518223634-9731dc7ad999
+	github.com/Neniel/gotennis/entity v0.0.0-20240518223634-9731dc7ad999
+	github.com/Neniel/gotennis/util v0.0.0-20240518223634-9731dc7ad999
 	go.mongodb.org/mongo-driver v1.15.0
 )
 
@@ -19,6 +19,7 @@ require (
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20240424034433-3c2c7870ae76 // indirect
+	go.uber.org/mock v0.4.0 // indirect
 	golang.org/x/crypto v0.23.0 // indirect
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
