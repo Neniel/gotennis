@@ -16,6 +16,7 @@ services:
       - mongodb_uri
       - redis_address
       - redis_password
+      - grafana_graphite_token
 
   players:
     build: ./players
@@ -25,10 +26,10 @@ services:
       - 8081:8080
     environment:
       - APP_PORT=:8080
+      - APP_ENVIRONMENT=docker
       - MONGODB_URI_FILE=/run/secrets/mongodb_uri
       - REDIS_ADDRESS_FILE=/run/secrets/redis_address
       - REDIS_PASSWORD_FILE=/run/secrets/redis_password
-      - APP_ENVIRONMENT=docker
     secrets:
       - mongodb_uri
       - redis_address
@@ -39,10 +40,10 @@ services:
     container_name: cache
     restart: on-failure
     environment:
+      - APP_ENVIRONMENT=docker
       - MONGODB_URI_FILE=/run/secrets/mongodb_uri
       - REDIS_ADDRESS_FILE=/run/secrets/redis_address
       - REDIS_PASSWORD_FILE=/run/secrets/redis_password
-      - APP_ENVIRONMENT=docker
     secrets:
       - mongodb_uri
       - redis_address

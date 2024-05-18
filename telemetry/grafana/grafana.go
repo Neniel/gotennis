@@ -39,7 +39,7 @@ func SendMetric(name string, interval uint64, value float64, tags map[string]str
 	go func() {
 		appEnvironment := os.Getenv("APP_ENVIRONMENT")
 		if appEnvironment != "" {
-			tags["APP_ENVIRONMENT"] = appEnvironment
+			tags["environment"] = appEnvironment
 
 			t := make([]string, 0)
 			for k, v := range tags {

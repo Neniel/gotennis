@@ -32,9 +32,7 @@ func (uc *getCategoryUsecase) Get(ctx context.Context, id string) (*entity.Categ
 		return nil, err
 	}
 
-	defer grafana.SendMetric("get.category.succeeded", 1, 1, map[string]string{
-		"environment": "localhost",
-	})
+	defer grafana.SendMetric("get.category.succeeded", 1, 1, map[string]string{})
 
 	return category, nil
 }
