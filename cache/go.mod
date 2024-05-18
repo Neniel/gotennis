@@ -3,9 +3,9 @@ module cache
 go 1.22.0
 
 require (
-	github.com/Neniel/gotennis/app v0.0.0-20240518231300-3576d373345a
-	github.com/Neniel/gotennis/entity v0.0.0-20240518231300-3576d373345a
-	github.com/Neniel/gotennis/util v0.0.0-20240518231300-3576d373345a
+	github.com/Neniel/gotennis/app v0.0.0-20240518231409-a4e75b9520fc
+	github.com/Neniel/gotennis/entity v0.0.0-20240518231409-a4e75b9520fc
+	github.com/Neniel/gotennis/util v0.0.0-20240518231409-a4e75b9520fc
 	go.mongodb.org/mongo-driver v1.15.0
 )
 
