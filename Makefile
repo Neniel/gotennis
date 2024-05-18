@@ -29,6 +29,19 @@ test:
 	go test ./players/...
 	go test ./util/...
 
+run-alloy:
+	docker rm grafana_alloy -f
+	docker run -d --name=grafana_alloy -v ./grafana/alloy/config.alloy:/etc/alloy/config.alloy -p 12345:12345 grafana/alloy:latest run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+
+prometheus:
+	docker stop prometheus
+	docker rm prometheus
+	docker run -d --name=prometheus -p 9090:9090 -v ./prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+
+grafana:
+	docker rm grafana
+	docker run -d --name=grafana -p 3000:3000 grafana/grafana-enterprise
+
 msg:
 	@echo "\033[1;31m🎾 Hola mundo! 🎾\033[0m"
 	@echo "\033[1;32m🎾 Hola mundo! 🎾\033[0m"

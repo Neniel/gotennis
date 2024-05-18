@@ -8,6 +8,7 @@ import (
 	"github.com/Neniel/gotennis/database"
 
 	"github.com/Neniel/gotennis/entity"
+	"github.com/Neniel/gotennis/telemetry/grafana"
 )
 
 type GetCategoryUsecase interface {
@@ -30,5 +31,10 @@ func (uc *getCategoryUsecase) Get(ctx context.Context, id string) (*entity.Categ
 		log.Println(fmt.Errorf("error at GetCategory: %w", err))
 		return nil, err
 	}
+
+	defer grafana.SendMetric("get.category.succeeded", 1, 1, map[string]string{
+		"environment": "localhost",
+	})
+
 	return category, nil
 }

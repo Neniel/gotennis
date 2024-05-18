@@ -7,6 +7,7 @@ import (
 
 	"github.com/Neniel/gotennis/database"
 	"github.com/Neniel/gotennis/entity"
+	"github.com/Neniel/gotennis/logger"
 	"github.com/Neniel/gotennis/util"
 )
 
@@ -38,7 +39,8 @@ func (r *CreateCategoryRequest) Validate() error {
 
 func (uc *createCategoryUsecase) CreateCategory(ctx context.Context, request *CreateCategoryRequest) (*entity.Category, error) {
 	if err := request.Validate(); err != nil {
-		log.Println(fmt.Errorf("could not create category. Error at Validate: %w", err))
+		logger.Logger().Info(fmt.Errorf("could not create category: %w", err).Error())
+		//log.Println(fmt.Errorf("could not create category. Error at Validate: %w", err))
 		return nil, err
 	}
 

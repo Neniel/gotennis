@@ -7,11 +7,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 
 	"github.com/Neniel/gotennis/app"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type Usecases struct {
@@ -52,6 +57,7 @@ func (api *APIServer) Run() {
 	mux.HandleFunc("POST /categories", api.addCategory)
 	mux.HandleFunc("PUT /categories/{id}", api.updateCategory)
 	mux.HandleFunc("DELETE /categories/{id}", api.deleteCategory)
+	mux.Handle("/metrics", promhttp.Handler())
 
 	log.Fatal(http.ListenAndServe(os.Getenv("APP_PORT"), mux))
 }
@@ -79,7 +85,30 @@ func (api *APIServer) listCategories(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+var counters map[string]prometheus.Counter = map[string]prometheus.Counter{}
+var mutex sync.Mutex
+
+func IncrMetric(name string) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	_, ok := counters[name]
+	if !ok {
+		counters[name] = promauto.NewCounter(prometheus.CounterOpts{
+			Name: name,
+		})
+
+		counters[name].Inc()
+	}
+
+	counters[name].Inc()
+
+}
+
 func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
+
+	IncrMetric("get_category_count_queries")
+
 	w.Header().Add("Content-Type", "application/json")
 	if categoryId := r.PathValue("id"); categoryId != "" {
 		categories, err := api.CategoryMicroservice.Usecases.GetCategory.Get(r.Context(), categoryId)

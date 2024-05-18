@@ -14,7 +14,8 @@
                 "APP_PORT": ":8080",
                 "MONGODB_URI_FILE": "${workspaceFolder}/local/mongodb_uri.txt",
                 "REDIS_ADDRESS_FILE": "${workspaceFolder}/local/redis_address.txt",
-                "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt"
+                "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt",
+                "APP_ENVIRONMENT": "localhost"
             }
         },
         {
@@ -27,7 +28,8 @@
                 "APP_PORT": ":8081",
                 "MONGODB_URI_FILE": "${workspaceFolder}/local/mongodb_uri.txt",
                 "REDIS_ADDRESS_FILE": "${workspaceFolder}/local/redis_address.txt",
-                "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt"
+                "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt",
+                "APP_ENVIRONMENT": "localhost"
             }
         },
         {
@@ -39,7 +41,8 @@
             "env": {
                 "MONGODB_URI_FILE": "${workspaceFolder}/local/mongodb_uri.txt",
                 "REDIS_ADDRESS_FILE": "${workspaceFolder}/local/redis_address.txt",
-                "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt"
+                "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt",
+                "APP_ENVIRONMENT": "localhost"
             }
         },
     ]
