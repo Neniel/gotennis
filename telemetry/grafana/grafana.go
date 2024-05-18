@@ -28,7 +28,7 @@ func init() {
 	token = strings.Replace(string(bsGrafanaGraphiteToken), "\n", "", -1)
 }
 
-func SendMetric(name string, interval uint64, value float64, tags map[string]string) {
+func SendMetric(name string, interval uint64, value float64, tags map[string]interface{}) {
 	go func() {
 		appEnvironment := os.Getenv("APP_ENVIRONMENT")
 		if appEnvironment != "" {
