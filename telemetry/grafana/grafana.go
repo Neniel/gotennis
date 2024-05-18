@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -19,23 +18,17 @@ type Metric struct {
 	Time     int64    `json:"time"`
 }
 
-type Client struct {
-	http.Client
-}
-
-var once sync.Once
-var client *http.Client
 var token string
 
+func init() {
+	bsGrafanaGraphiteToken, err := os.ReadFile(os.Getenv("GRAFANA_GRAPHITE_TOKEN"))
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	token = strings.Replace(string(bsGrafanaGraphiteToken), "\n", "", -1)
+}
+
 func SendMetric(name string, interval uint64, value float64, tags map[string]string) {
-	once.Do(func() {
-		client = &http.Client{}
-		bsGrafanaGraphiteToken, err := os.ReadFile(os.Getenv("GRAFANA_GRAPHITE_TOKEN"))
-		if err != nil {
-			log.Fatalln(err.Error())
-		}
-		token = strings.Replace(string(bsGrafanaGraphiteToken), "\n", "", -1)
-	})
 	go func() {
 		appEnvironment := os.Getenv("APP_ENVIRONMENT")
 		if appEnvironment != "" {
@@ -71,13 +64,12 @@ func SendMetric(name string, interval uint64, value float64, tags map[string]str
 			req.Header.Add("Authorization", token)
 			req.Header.Add("Content-Type", "application/json")
 
-			res, err := client.Do(req)
+			_, err = http.DefaultClient.Do(req)
 			if err != nil {
 				log.Println(fmt.Errorf("error when sending metric: %w", err))
 				return
 			}
 
-			log.Println(res.StatusCode)
 		}
 
 	}()
