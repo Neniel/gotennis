@@ -15,6 +15,8 @@
                 "MONGODB_URI_FILE": "${workspaceFolder}/local/mongodb_uri.txt",
                 "REDIS_ADDRESS_FILE": "${workspaceFolder}/local/redis_address.txt",
                 "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt",
+                "GRAFANA_GRAPHITE_TOKEN": "${workspaceFolder}/local/grafana_graphite_token.txt",
+                "APP_ENVIRONMENT": "localhost"
             }
         },
         {
@@ -28,6 +30,8 @@
                 "MONGODB_URI_FILE": "${workspaceFolder}/local/mongodb_uri.txt",
                 "REDIS_ADDRESS_FILE": "${workspaceFolder}/local/redis_address.txt",
                 "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt",
+                "GRAFANA_GRAPHITE_TOKEN": "${workspaceFolder}/local/grafana_graphite_token.txt",
+                "APP_ENVIRONMENT": "localhost"
             }
         },
         {
@@ -41,6 +45,7 @@
                 "REDIS_ADDRESS_FILE": "${workspaceFolder}/local/redis_address.txt",
                 "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt",
                 "GRAFANA_GRAPHITE_TOKEN": "${workspaceFolder}/local/grafana_graphite_token.txt",
+                "APP_ENVIRONMENT": "localhost"
             }
         },
     ]
