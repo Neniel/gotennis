@@ -1,8 +1,9 @@
-up:
+SERVICE ?=
+deploy:
 	@echo "🎾"
-	docker-compose -f docker-compose.yml down
-	docker-compose -f docker-compose.yml build
-	docker-compose -f docker-compose.yml up -d
+	docker-compose -f docker-compose.yml down ${SERVICE}
+	docker-compose -f docker-compose.yml build ${SERVICE}
+	docker-compose -f docker-compose.yml up -d ${SERVICE}
 
 update-dependencies:
 	@echo "\033[1;33m🎾 Updating dependencies 🎾\033[0m"
