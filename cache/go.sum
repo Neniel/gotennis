@@ -1,9 +1,11 @@
-github.com/Neniel/gotennis/app v0.0.0-20240518231409-a4e75b9520fc h1:ATqgTwH7cHsFs3idz4Vt78PoPuncLYC6DXQSDkSZ8S0=
-github.com/Neniel/gotennis/app v0.0.0-20240518231409-a4e75b9520fc/go.mod h1:ygWd2zL9czz3v1QhK9dfv3p+Hii+aDvHlNs2eb048QA=
-github.com/Neniel/gotennis/entity v0.0.0-20240518231409-a4e75b9520fc h1:YCXKEnhWik09iufe5PshV12NHjmxmEHr0gLdI5c0TUc=
-github.com/Neniel/gotennis/entity v0.0.0-20240518231409-a4e75b9520fc/go.mod h1:6wB6GHMVqbEXlESWyjGXACJUBCA52f9TuUG44l+q1Hw=
-github.com/Neniel/gotennis/util v0.0.0-20240518231409-a4e75b9520fc h1:S2oFAbtByevjW2cA6ljFK2+vEBZzaTHHgR3rez9AhRo=
-github.com/Neniel/gotennis/util v0.0.0-20240518231409-a4e75b9520fc/go.mod h1:A0neqSkwpiymacEwHeVIGbb1Ir/TrgcdkLY3TFT1rAE=
+github.com/Neniel/gotennis/app v0.0.0-20240518235219-20c7896174ee h1:lOlKMsh+ketzlsZc1WfcdjUaluTiAqgiS8IzQ2Le6rs=
+github.com/Neniel/gotennis/app v0.0.0-20240518235219-20c7896174ee/go.mod h1:F0I6+HCaLWuINR7vHXodfOaxW7EngZoevCLsHSIaCeM=
+github.com/Neniel/gotennis/entity v0.0.0-20240518235219-20c7896174ee h1:W35JqErQmQYuOtD1LkRD7sgiq/luql4guw1xTaP9+BQ=
+github.com/Neniel/gotennis/entity v0.0.0-20240518235219-20c7896174ee/go.mod h1:6wB6GHMVqbEXlESWyjGXACJUBCA52f9TuUG44l+q1Hw=
+github.com/Neniel/gotennis/logger v0.0.0-20240518235219-20c7896174ee h1:kwnW8Ywgjq3iqzkOF53DKlLC0j/NAnTf1qWi9SJ2hvQ=
+github.com/Neniel/gotennis/logger v0.0.0-20240518235219-20c7896174ee/go.mod h1:gRGhCaY3WAq5WtPu9fd9Zaff57RTDNXLM0SkasMAcow=
+github.com/Neniel/gotennis/util v0.0.0-20240518235219-20c7896174ee h1:RWh9SZUH1faJX42fQovZH5wNAWVyBjglFuD2yW/xZpk=
+github.com/Neniel/gotennis/util v0.0.0-20240518235219-20c7896174ee/go.mod h1:A0neqSkwpiymacEwHeVIGbb1Ir/TrgcdkLY3TFT1rAE=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/fsnotify/fsnotify v1.6.0 h1:n+5WquG0fcWoWp6xPWfHdbskMCQaFnG6PfBrh1Ky4HY=

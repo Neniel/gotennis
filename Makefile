@@ -14,6 +14,9 @@ update-dependencies:
 	cd entity ; go get -u ./... ; go mod tidy
 	cd players ; go get -u ./... ; go mod tidy
 	cd util ; go get -u ./... ; go mod tidy
+	git add .
+	git commit -m "update dependencies"
+	git push
 
 gen-mocks:
 	@echo "\033[1;33m🎾 Generating mocks 🎾\033[0m"
