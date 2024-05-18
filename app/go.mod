@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/Neniel/gotennis/logger v0.0.0-20240518231409-a4e75b9520fc
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect

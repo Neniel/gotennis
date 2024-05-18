@@ -2,10 +2,11 @@ package app
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"os"
 	"strings"
 
+	"github.com/Neniel/gotennis/logger"
 	"github.com/Neniel/gotennis/util"
 	"github.com/go-redis/redis"
 	"go.mongodb.org/mongo-driver/bson"
@@ -38,22 +39,22 @@ type DBClients struct {
 func NewApp(ctx context.Context) IApp {
 	bsMongoURI, err := os.ReadFile(os.Getenv("MONGODB_URI_FILE"))
 	if err != nil {
-		log.Fatalln(err.Error())
+		logger.Fatal(err.Error())
 	}
 	mongoURI := strings.Replace(string(bsMongoURI), "\n", "", -1)
 
 	mongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
 	if err != nil {
-		log.Fatalln(err.Error())
+		logger.Fatal(err.Error())
 	}
 	if err := mongoClient.Ping(ctx, nil); err != nil {
-		log.Fatalln(err.Error())
+		logger.Fatal(err.Error())
 	}
-	log.Println("✅ Connected to MongoDB")
+	logger.Info("Connected to MongoDB")
 
 	db := mongoClient.Database(util.DBName)
 
-	log.Println("Preparing 'players' collection")
+	logger.Info("Preparing 'players' collection")
 	playersColl := db.Collection(util.CollNamePlayers)
 	indexOptionsGovernmentID := options.Index().SetUnique(true).SetPartialFilterExpression(bson.M{"government_id": bson.M{"$type": "string"}})
 	indexOptionsEmail := options.Index().SetUnique(true).SetPartialFilterExpression(bson.M{"email": bson.M{"$type": "string"}})
@@ -76,20 +77,20 @@ func NewApp(ctx context.Context) IApp {
 
 	indexNames, err := playersColl.Indexes().CreateMany(ctx, []mongo.IndexModel{indexModelGovernmentID, indexModelEmail, indexModelAlias})
 	if err != nil {
-		log.Fatalln(err)
+		logger.Fatal(err.Error())
 	}
 
-	log.Printf("✅ Indexes %v created!", indexNames)
+	logger.Info(fmt.Sprintf("Indexes %v created!", indexNames))
 
 	bsRedisAddress, err := os.ReadFile(os.Getenv("REDIS_ADDRESS_FILE"))
 	if err != nil {
-		log.Fatalln(err.Error())
+		logger.Fatal(err.Error())
 	}
 	redisAddress := strings.Replace(string(bsRedisAddress), "\n", "", -1)
 
 	bsRedisPassword, err := os.ReadFile(os.Getenv("REDIS_PASSWORD_FILE"))
 	if err != nil {
-		log.Fatalln(err.Error())
+		logger.Fatal(err.Error())
 	}
 	redisPassword := strings.Replace(string(bsRedisPassword), "\n", "", -1)
 
@@ -97,7 +98,7 @@ func NewApp(ctx context.Context) IApp {
 		Addr:     redisAddress,
 		Password: redisPassword,
 	})
-	log.Println("✅ Connected to Redis")
+	logger.Info("Connected to Redis")
 
 	return &App{
 		DBClients: &DBClients{

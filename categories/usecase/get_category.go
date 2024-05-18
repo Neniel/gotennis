@@ -3,12 +3,11 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/Neniel/gotennis/database"
+	"github.com/Neniel/gotennis/logger"
 
 	"github.com/Neniel/gotennis/entity"
-	"github.com/Neniel/gotennis/telemetry/grafana"
 )
 
 type GetCategoryUsecase interface {
@@ -28,11 +27,9 @@ func NewGetCategoryUsecase(dbReader database.DBReader) GetCategoryUsecase {
 func (uc *getCategoryUsecase) Get(ctx context.Context, id string) (*entity.Category, error) {
 	category, err := uc.DBReader.GetCategory(ctx, id)
 	if err != nil {
-		log.Println(fmt.Errorf("error at GetCategory: %w", err))
+		logger.Error(fmt.Errorf("could not get category: %w", err).Error())
 		return nil, err
 	}
-
-	defer grafana.SendMetric("get.category.succeeded", 1, 1, map[string]string{})
 
 	return category, nil
 }

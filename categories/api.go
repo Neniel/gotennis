@@ -7,15 +7,13 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sync"
 
 	"github.com/Neniel/gotennis/app"
+	"github.com/Neniel/gotennis/telemetry/grafana"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -85,30 +83,7 @@ func (api *APIServer) listCategories(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var counters map[string]prometheus.Counter = map[string]prometheus.Counter{}
-var mutex sync.Mutex
-
-func IncrMetric(name string) {
-	mutex.Lock()
-	defer mutex.Unlock()
-
-	_, ok := counters[name]
-	if !ok {
-		counters[name] = promauto.NewCounter(prometheus.CounterOpts{
-			Name: name,
-		})
-
-		counters[name].Inc()
-	}
-
-	counters[name].Inc()
-
-}
-
 func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
-
-	IncrMetric("get_category_count_queries")
-
 	w.Header().Add("Content-Type", "application/json")
 	if categoryId := r.PathValue("id"); categoryId != "" {
 		categories, err := api.CategoryMicroservice.Usecases.GetCategory.Get(r.Context(), categoryId)
@@ -127,6 +102,7 @@ func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+		grafana.SendMetric("get.category.succeeded", 1, 1, map[string]interface{}{})
 	}
 }
 

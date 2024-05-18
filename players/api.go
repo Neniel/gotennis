@@ -9,6 +9,7 @@ import (
 	"players/usecase"
 
 	"github.com/Neniel/gotennis/app"
+	"github.com/Neniel/gotennis/telemetry/grafana"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -85,19 +86,32 @@ func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
 		categories, err := api.PlayerMicroservice.Usecases.GetPlayerUsecase.Get(r.Context(), categoryId)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
+			grafana.SendMetric("get.player", 1, 1, map[string]interface{}{
+				"status_code": http.StatusBadRequest,
+			})
 			return
 		}
 
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			w.WriteHeader(http.StatusNotFound)
+			grafana.SendMetric("get.player", 1, 1, map[string]interface{}{
+				"status_code": http.NotFound,
+			})
 			return
 		}
 
 		err = json.NewEncoder(w).Encode(&categories)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
+			grafana.SendMetric("get.player", 1, 1, map[string]interface{}{
+				"status_code": http.StatusInternalServerError,
+			})
 			return
 		}
+
+		grafana.SendMetric("get.player", 1, 1, map[string]interface{}{
+			"status_code": http.StatusOK,
+		})
 	}
 }
 
