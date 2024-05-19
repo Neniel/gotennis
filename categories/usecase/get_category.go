@@ -27,7 +27,7 @@ func NewGetCategoryUsecase(dbReader database.DBReader) GetCategoryUsecase {
 func (uc *getCategoryUsecase) Get(ctx context.Context, id string) (*entity.Category, error) {
 	category, err := uc.DBReader.GetCategory(ctx, id)
 	if err != nil {
-		logger.Error(fmt.Errorf("could not get category: %w", err).Error())
+		logger.Logger.Error(fmt.Errorf("could not get category: %w", err).Error())
 		return nil, err
 	}
 

@@ -51,22 +51,25 @@ func NewApp(ctx context.Context) IApp {
 func NewCommonApp(ctx context.Context) IApp {
 	bsMongoURI, err := os.ReadFile(os.Getenv("MONGODB_URI_FILE"))
 	if err != nil {
-		logger.Fatal(err.Error())
+		logger.Logger.Error(err.Error())
+		os.Exit(1)
 	}
 	mongoURI := strings.Replace(string(bsMongoURI), "\n", "", -1)
 
 	mongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
 	if err != nil {
-		logger.Fatal(err.Error())
+		logger.Logger.Error(err.Error())
+		os.Exit(1)
 	}
 	if err := mongoClient.Ping(ctx, nil); err != nil {
-		logger.Fatal(err.Error())
+		logger.Logger.Error(err.Error())
+		os.Exit(1)
 	}
-	logger.Info("Connected to MongoDB")
+	logger.Logger.Info("Connected to MongoDB")
 
 	db := mongoClient.Database(util.DBName)
 
-	logger.Info("Preparing 'players' collection")
+	logger.Logger.Info("Preparing 'players' collection")
 	playersColl := db.Collection(util.CollNamePlayers)
 	indexOptionsGovernmentID := options.Index().SetUnique(true).SetPartialFilterExpression(bson.M{"government_id": bson.M{"$type": "string"}})
 	indexOptionsEmail := options.Index().SetUnique(true).SetPartialFilterExpression(bson.M{"email": bson.M{"$type": "string"}})
@@ -89,20 +92,23 @@ func NewCommonApp(ctx context.Context) IApp {
 
 	indexNames, err := playersColl.Indexes().CreateMany(ctx, []mongo.IndexModel{indexModelGovernmentID, indexModelEmail, indexModelAlias})
 	if err != nil {
-		logger.Fatal(err.Error())
+		logger.Logger.Error(err.Error())
+		os.Exit(1)
 	}
 
-	logger.Info(fmt.Sprintf("Indexes %v created!", indexNames))
+	logger.Logger.Info(fmt.Sprintf("Indexes %v created!", indexNames))
 
 	bsRedisAddress, err := os.ReadFile(os.Getenv("REDIS_ADDRESS_FILE"))
 	if err != nil {
-		logger.Fatal(err.Error())
+		logger.Logger.Error(err.Error())
+		os.Exit(1)
 	}
 	redisAddress := strings.Replace(string(bsRedisAddress), "\n", "", -1)
 
 	bsRedisPassword, err := os.ReadFile(os.Getenv("REDIS_PASSWORD_FILE"))
 	if err != nil {
-		logger.Fatal(err.Error())
+		logger.Logger.Error(err.Error())
+		os.Exit(1)
 	}
 	redisPassword := strings.Replace(string(bsRedisPassword), "\n", "", -1)
 
@@ -110,7 +116,7 @@ func NewCommonApp(ctx context.Context) IApp {
 		Addr:     redisAddress,
 		Password: redisPassword,
 	})
-	logger.Info("Connected to Redis")
+	logger.Logger.Info("Connected to Redis")
 
 	return &App{
 		DBClients: &DBClients{
@@ -126,16 +132,18 @@ func NewKubernetesApp(ctx context.Context) IApp {
 
 	mongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
 	if err != nil {
-		logger.Fatal(err.Error())
+		logger.Logger.Error(err.Error())
+		os.Exit(1)
 	}
 	if err := mongoClient.Ping(ctx, nil); err != nil {
-		logger.Fatal(err.Error())
+		logger.Logger.Error(err.Error())
+		os.Exit(1)
 	}
-	logger.Info("Connected to MongoDB")
+	logger.Logger.Info("Connected to MongoDB")
 
 	db := mongoClient.Database(util.DBName)
 
-	logger.Info("Preparing 'players' collection")
+	logger.Logger.Info("Preparing 'players' collection")
 	playersColl := db.Collection(util.CollNamePlayers)
 	indexOptionsGovernmentID := options.Index().SetUnique(true).SetPartialFilterExpression(bson.M{"government_id": bson.M{"$type": "string"}})
 	indexOptionsEmail := options.Index().SetUnique(true).SetPartialFilterExpression(bson.M{"email": bson.M{"$type": "string"}})
@@ -158,10 +166,11 @@ func NewKubernetesApp(ctx context.Context) IApp {
 
 	indexNames, err := playersColl.Indexes().CreateMany(ctx, []mongo.IndexModel{indexModelGovernmentID, indexModelEmail, indexModelAlias})
 	if err != nil {
-		logger.Fatal(err.Error())
+		logger.Logger.Error(err.Error())
+		os.Exit(1)
 	}
 
-	logger.Info(fmt.Sprintf("Indexes %v created!", indexNames))
+	logger.Logger.Info(fmt.Sprintf("Indexes %v created!", indexNames))
 
 	redisAddress := os.Getenv("REDIS_SERVER_ADDRESS")
 	redisPassword := os.Getenv("REDIS_PASSWORD")
@@ -170,7 +179,7 @@ func NewKubernetesApp(ctx context.Context) IApp {
 		Addr:     redisAddress,
 		Password: redisPassword,
 	})
-	logger.Info("Connected to Redis")
+	logger.Logger.Info("Connected to Redis")
 
 	return &App{
 		DBClients: &DBClients{
