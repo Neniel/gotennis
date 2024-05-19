@@ -3,12 +3,12 @@ module categories
 go 1.22.0
 
 require (
-	github.com/Neniel/gotennis/app v0.0.0-20240519025825-4b4ba8b8ac30
-	github.com/Neniel/gotennis/database v0.0.0-20240519025825-4b4ba8b8ac30
-	github.com/Neniel/gotennis/entity v0.0.0-20240519025825-4b4ba8b8ac30
-	github.com/Neniel/gotennis/logger v0.0.0-20240519025825-4b4ba8b8ac30
-	github.com/Neniel/gotennis/telemetry v0.0.0-20240519025825-4b4ba8b8ac30
-	github.com/Neniel/gotennis/util v0.0.0-20240519025825-4b4ba8b8ac30
+	github.com/Neniel/gotennis/app v0.0.0-20240519174528-23c313c0faa5
+	github.com/Neniel/gotennis/database v0.0.0-20240519174528-23c313c0faa5
+	github.com/Neniel/gotennis/entity v0.0.0-20240519174528-23c313c0faa5
+	github.com/Neniel/gotennis/logger v0.0.0-20240519174528-23c313c0faa5
+	github.com/Neniel/gotennis/telemetry v0.0.0-20240519174528-23c313c0faa5
+	github.com/Neniel/gotennis/util v0.0.0-20240519174528-23c313c0faa5
 	github.com/prometheus/client_golang v1.19.1
 	go.mongodb.org/mongo-driver v1.15.0
 	go.uber.org/mock v0.4.0
