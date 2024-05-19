@@ -1,7 +1,7 @@
-github.com/Neniel/gotennis/entity v0.0.0-20240519191034-f31f8d9a8aff h1:CxPK2QrSu7VAn9IxMvrsqhQChXSKHBVqTiVV97Sb4lU=
-github.com/Neniel/gotennis/entity v0.0.0-20240519191034-f31f8d9a8aff/go.mod h1:6wB6GHMVqbEXlESWyjGXACJUBCA52f9TuUG44l+q1Hw=
-github.com/Neniel/gotennis/util v0.0.0-20240519191034-f31f8d9a8aff h1:Z1IJGdmqgC3xxJGKM4ufeXuAn4hHMldxeqbTAgzW6Ac=
-github.com/Neniel/gotennis/util v0.0.0-20240519191034-f31f8d9a8aff/go.mod h1:A0neqSkwpiymacEwHeVIGbb1Ir/TrgcdkLY3TFT1rAE=
+github.com/Neniel/gotennis/entity v0.0.0-20240519200603-e2fe9552c4bc h1:b7JX/6Vy+DcRGo0h7VQKouybFr0sAH91ML1LzOnPTRo=
+github.com/Neniel/gotennis/entity v0.0.0-20240519200603-e2fe9552c4bc/go.mod h1:6wB6GHMVqbEXlESWyjGXACJUBCA52f9TuUG44l+q1Hw=
+github.com/Neniel/gotennis/util v0.0.0-20240519200603-e2fe9552c4bc h1:3KRrXubpnm0Hq3zC1UCr4DTgUAhPitTPI83bvN000N8=
+github.com/Neniel/gotennis/util v0.0.0-20240519200603-e2fe9552c4bc/go.mod h1:A0neqSkwpiymacEwHeVIGbb1Ir/TrgcdkLY3TFT1rAE=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
