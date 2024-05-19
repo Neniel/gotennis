@@ -37,8 +37,8 @@ type DBClients struct {
 }
 
 func NewApp(ctx context.Context) IApp {
-	runWith := os.Getenv("RUN_WITH")
-	switch runWith {
+	appEnvironment := os.Getenv("APP_ENVIRONMENT")
+	switch appEnvironment {
 	case "k8s":
 		return NewKubernetesApp(ctx)
 	case "localhost", "docker":

@@ -21,17 +21,19 @@ type Metric struct {
 var token string
 
 func init() {
-	runWith := os.Getenv("RUN_WITH")
-	if runWith == "localhost" || runWith == "docker" {
+	appEnvironment := os.Getenv("APP_ENVIRONMENT")
+	if appEnvironment == "localhost" || appEnvironment == "docker" {
 		bsGrafanaGraphiteToken, err := os.ReadFile(os.Getenv("GRAFANA_GRAPHITE_TOKEN"))
 		if err != nil {
 			log.Fatalln(err.Error())
 		}
 		token = strings.Replace(string(bsGrafanaGraphiteToken), "\n", "", -1)
+		return
 	}
 
-	if runWith == "k8s" {
+	if appEnvironment == "k8s" {
 		token = os.Getenv("GRAFANA_GRAPHITE_TOKEN")
+		return
 	}
 
 }
@@ -70,6 +72,7 @@ func SendMetric(name string, interval uint64, value float64, tags map[string]int
 			}
 
 			req.Header.Add("Authorization", token)
+			log.Println("token=", token)
 			req.Header.Add("Content-Type", "application/json")
 
 			res, err := http.DefaultClient.Do(req)
