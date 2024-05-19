@@ -72,10 +72,14 @@ func SendMetric(name string, interval uint64, value float64, tags map[string]int
 			req.Header.Add("Authorization", token)
 			req.Header.Add("Content-Type", "application/json")
 
-			_, err = http.DefaultClient.Do(req)
+			res, err := http.DefaultClient.Do(req)
 			if err != nil {
 				log.Println(fmt.Errorf("error when sending metric: %w", err))
 				return
+			}
+
+			if res.StatusCode != http.StatusOK {
+				log.Println(fmt.Errorf("error when sending metric: %v", res.StatusCode).Error())
 			}
 
 		}
