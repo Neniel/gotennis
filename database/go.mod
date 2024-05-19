@@ -3,8 +3,8 @@ module github.com/Neniel/gotennis/database
 go 1.22.0
 
 require (
-	github.com/Neniel/gotennis/entity v0.0.0-20240519201754-e8e2ea5618bc
-	github.com/Neniel/gotennis/util v0.0.0-20240519201754-e8e2ea5618bc
+	github.com/Neniel/gotennis/entity v0.0.0-20240519202552-e621225419fd
+	github.com/Neniel/gotennis/util v0.0.0-20240519202552-e621225419fd
 	github.com/go-redis/redis v6.15.9+incompatible
 	go.mongodb.org/mongo-driver v1.15.0
 	go.uber.org/mock v0.4.0
