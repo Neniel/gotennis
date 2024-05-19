@@ -18,7 +18,6 @@
                 "GRAFANA_GRAPHITE_TOKEN": "${workspaceFolder}/local/grafana_graphite_token.txt",
                 "APP_ENVIRONMENT": "localhost",
                 "LOGGING_LEVEL": "DEBUG",
-                "RUN_WITH": "localhost"
             }
         },
         {
@@ -35,7 +34,6 @@
                 "GRAFANA_GRAPHITE_TOKEN": "${workspaceFolder}/local/grafana_graphite_token.txt",
                 "APP_ENVIRONMENT": "localhost",
                 "LOGGING_LEVEL": "DEBUG",
-                "RUN_WITH": "localhost"
             }
         },
         {
@@ -51,7 +49,6 @@
                 "GRAFANA_GRAPHITE_TOKEN": "${workspaceFolder}/local/grafana_graphite_token.txt",
                 "APP_ENVIRONMENT": "localhost",
                 "LOGGING_LEVEL": "DEBUG",
-                "RUN_WITH": "localhost"
             }
         },
     ]

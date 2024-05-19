@@ -72,7 +72,6 @@ func SendMetric(name string, interval uint64, value float64, tags map[string]int
 			}
 
 			req.Header.Add("Authorization", token)
-			log.Println("token=", token)
 			req.Header.Add("Content-Type", "application/json")
 
 			res, err := http.DefaultClient.Do(req)
