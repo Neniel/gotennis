@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tennis-categories-service
+spec:
+  selector:
+    app: tennis-categories
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tennis-players-service
+spec:
+  selector:
+    app: tennis-players
+  ports:
+    - protocol: TCP
+      port: 81
+      targetPort: 8080
+  type: LoadBalancer

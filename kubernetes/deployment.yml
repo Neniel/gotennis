@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-app-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: go-app
+  template:
+    metadata:
+      labels:
+        app: go-app
+    spec:
+      containers:
+      - name: go-app
+        image: neniel/tennis-categories:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: RUN_WITH
+          value: "k8s"
+        - name: MONGODB_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-connection-string-secret
+              key: mongodb_connection_string
+        - name: REDIS_SERVER_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: redis-server-address-secret
+              key: redis_server_address
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-password-secret
+              key: redis_password
+        - name: GRAFANA_GRAPHITE_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: grafana-graphite-token-secret
+              key: grafana_graphite_token
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-app-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: go-app
+  template:
+    metadata:
+      labels:
+        app: go-app
+    spec:
+      containers:
+      - name: go-app
+        image: neniel/tennis-players:latest
+        ports:
+        - containerPort: 8081
+        env:
+        - name: RUN_WITH
+          value: "k8s"
+        - name: MONGODB_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-connection-string-secret
+              key: mongodb_connection_string
+        - name: REDIS_SERVER_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: redis-server-address-secret
+              key: redis_server_address
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-password-secret
+              key: redis_password
+        - name: GRAFANA_GRAPHITE_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: grafana-graphite-token-secret
+              key: grafana_graphite_token
