@@ -21,11 +21,19 @@ type Metric struct {
 var token string
 
 func init() {
-	bsGrafanaGraphiteToken, err := os.ReadFile(os.Getenv("GRAFANA_GRAPHITE_TOKEN"))
-	if err != nil {
-		log.Fatalln(err.Error())
+	runWith := os.Getenv("RUN_WITH")
+	if runWith == "localhost" || runWith == "docker" {
+		bsGrafanaGraphiteToken, err := os.ReadFile(os.Getenv("GRAFANA_GRAPHITE_TOKEN"))
+		if err != nil {
+			log.Fatalln(err.Error())
+		}
+		token = strings.Replace(string(bsGrafanaGraphiteToken), "\n", "", -1)
 	}
-	token = strings.Replace(string(bsGrafanaGraphiteToken), "\n", "", -1)
+
+	if runWith == "k8s" {
+		token = os.Getenv("GRAFANA_GRAPHITE_TOKEN")
+	}
+
 }
 
 func SendMetric(name string, interval uint64, value float64, tags map[string]interface{}) {

@@ -89,20 +89,31 @@ func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
 		categories, err := api.CategoryMicroservice.Usecases.GetCategory.Get(r.Context(), categoryId)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
+			grafana.SendMetric("get.category", 1, 1, map[string]interface{}{
+				"status_code": http.StatusBadRequest,
+			})
 			return
 		}
 
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			w.WriteHeader(http.StatusNotFound)
+			grafana.SendMetric("get.category", 1, 1, map[string]interface{}{
+				"status_code": http.NotFound,
+			})
 			return
 		}
 
 		err = json.NewEncoder(w).Encode(&categories)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
+			grafana.SendMetric("get.category", 1, 1, map[string]interface{}{
+				"status_code": http.StatusInternalServerError,
+			})
 			return
 		}
-		grafana.SendMetric("get.category.succeeded", 1, 1, map[string]interface{}{})
+		grafana.SendMetric("get.category", 1, 1, map[string]interface{}{
+			"status_code": http.StatusOK,
+		})
 	}
 }
 

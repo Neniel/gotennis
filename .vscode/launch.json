@@ -17,7 +17,8 @@
                 "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt",
                 "GRAFANA_GRAPHITE_TOKEN": "${workspaceFolder}/local/grafana_graphite_token.txt",
                 "APP_ENVIRONMENT": "localhost",
-                "LOGGING_LEVEL": "DEBUG"
+                "LOGGING_LEVEL": "DEBUG",
+                "RUN_WITH": "localhost"
             }
         },
         {
@@ -33,7 +34,8 @@
                 "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt",
                 "GRAFANA_GRAPHITE_TOKEN": "${workspaceFolder}/local/grafana_graphite_token.txt",
                 "APP_ENVIRONMENT": "localhost",
-                "LOGGING_LEVEL": "DEBUG"
+                "LOGGING_LEVEL": "DEBUG",
+                "RUN_WITH": "localhost"
             }
         },
         {
@@ -48,7 +50,8 @@
                 "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt",
                 "GRAFANA_GRAPHITE_TOKEN": "${workspaceFolder}/local/grafana_graphite_token.txt",
                 "APP_ENVIRONMENT": "localhost",
-                "LOGGING_LEVEL": "DEBUG"
+                "LOGGING_LEVEL": "DEBUG",
+                "RUN_WITH": "localhost"
             }
         },
     ]

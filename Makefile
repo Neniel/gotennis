@@ -1,9 +1,18 @@
 SERVICE ?=
+IMAGE ?=
+
 deploy:
 	@echo "🎾"
 	docker-compose -f docker-compose.yml down ${SERVICE}
 	docker-compose -f docker-compose.yml build ${SERVICE}
 	docker-compose -f docker-compose.yml up -d ${SERVICE}
+
+build:
+	docker-compose build ${SERVICE}
+
+
+push:
+	docker push neniel/${IMAGE}:latest
 
 update-dependencies:
 	@echo "\033[1;33m🎾 Updating dependencies 🎾\033[0m"
