@@ -5,7 +5,7 @@ deploy:
 	@echo "🎾"
 	docker-compose -f docker-compose.yml down ${SERVICE}
 	docker-compose -f docker-compose.yml build ${SERVICE}
-	docker-compose -f docker-compose.yml up -d ${SERVICE}
+	docker-compose --verbose -f docker-compose.yml up -d ${SERVICE}
 
 build:
 	docker-compose build ${SERVICE}
@@ -17,14 +17,14 @@ push:
 k8s-dashboard:
 	minikube dashboard
 
-k8s-apply:
+k8s-deploy:
 	kubectl apply -f kubernetes/secrets.yml
 	kubectl apply -f kubernetes/mongo-deployment.yml
 	kubectl apply -f kubernetes/ingress.yml
 	kubectl apply -f kubernetes/categories-deployment.yml
 	kubectl apply -f kubernetes/players-deployment.yml
 
-k8s-reset:
+k8s-destroy:
 	kubectl delete deployment --all
 	kubectl delete service --all
 	kubectl delete statefulset --all
@@ -33,6 +33,10 @@ k8s-reset:
 	kubectl delete secret --all
 	kubectl delete ingress --all
 	kubectl delete pod --all
+
+k8s-configure:
+	minikube addons enable ingress
+	minikube addons enable metrics-server
 
 update-dependencies:
 	@echo "\033[1;33m🎾 Updating dependencies 🎾\033[0m"
