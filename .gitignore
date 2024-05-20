@@ -1,5 +1,5 @@
 data
 secrets
-kubernete
+kubernetes/secrets.yml
 dev
 .DS_Store
