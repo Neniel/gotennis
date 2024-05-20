@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: players-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: players
+  template:
+    metadata:
+      labels:
+        app: players
+    spec:
+      containers:
+      - name: players-ms
+        image: neniel/tennis-players:latest
+        ports:
+        - containerPort: 8081
+        env:
+        - name: APP_PORT
+          value: :8081
+        - name: APP_ENVIRONMENT
+          value: k8s
+        - name: MONGODB_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: application-secret
+              key: mongodb_connection_string
+        - name: REDIS_SERVER_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: application-secret
+              key: redis_server_address
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: application-secret
+              key: redis_password
+        - name: GRAFANA_GRAPHITE_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: application-secret
+              key: grafana_graphite_token
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: players-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: players
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081

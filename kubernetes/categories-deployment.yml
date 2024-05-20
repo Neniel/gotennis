@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: categories-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: categories
+  template:
+    metadata:
+      labels:
+        app: categories
+    spec:
+      containers:
+      - name: categories-ms
+        image: neniel/tennis-categories:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: APP_PORT
+          value: :8080
+        - name: APP_ENVIRONMENT
+          value: k8s
+        - name: MONGODB_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: application-secret
+              key: mongodb_connection_string
+        - name: REDIS_SERVER_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: application-secret
+              key: redis_server_address
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: application-secret
+              key: redis_password
+        - name: GRAFANA_GRAPHITE_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: application-secret
+              key: grafana_graphite_token
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: categories-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: categories
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
