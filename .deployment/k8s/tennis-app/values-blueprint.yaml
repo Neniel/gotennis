@@ -36,7 +36,4 @@ app:
     name: players
 
   secrets:
-    mongodb_connection_string: <BASE64_MONGODB_CONNECTION_STRING>
-    redis_server_address: <BASE64_REDIS_SERVER_ADDRESS>
-    redis_password: <BASE64_REDIS_PASSWORD>
-    grafana_graphite_token: <BASE64_GRAFANA_GRAPHITE_TOKEN>
+    config: <BASE64_JSON_CONFIG>
