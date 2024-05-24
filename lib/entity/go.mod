@@ -1,4 +1,4 @@
-module github.com/Neniel/gotennis/entity
+module github.com/Neniel/gotennis/lib/entity
 
 go 1.22.0
 

@@ -1,13 +1,13 @@
 go 1.22.3
 
 use (
-	./app
 	./cache
 	./categories
-	./database
-	./entity
-	./log
 	./players
-	./telemetry
-	./util
+	./lib/app
+	./lib/database
+	./lib/entity
+	./lib/log
+	./lib/telemetry
+	./lib/util
 )

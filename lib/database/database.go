@@ -3,9 +3,9 @@ package database
 import (
 	"context"
 
-	"github.com/Neniel/gotennis/database/mongodb"
-	redisdb "github.com/Neniel/gotennis/database/redis"
-	"github.com/Neniel/gotennis/entity"
+	"github.com/Neniel/gotennis/lib/database/mongodb"
+	redisdb "github.com/Neniel/gotennis/lib/database/redis"
+	"github.com/Neniel/gotennis/lib/entity"
 
 	"github.com/go-redis/redis"
 	"go.mongodb.org/mongo-driver/mongo"
