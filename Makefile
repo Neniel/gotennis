@@ -68,13 +68,16 @@ k8s-uninstall:
 
 update-dependencies:
 	@echo "\033[1;33m🎾 Updating dependencies 🎾\033[0m"
-	cd app ; go get -u ./... ; go mod tidy
 	cd cache ; go get -u ./... ; go mod tidy
 	cd categories ; go get -u ./... ; go mod tidy
-	cd database ; go get -u ./... ; go mod tidy
-	cd entity ; go get -u ./... ; go mod tidy
 	cd players ; go get -u ./... ; go mod tidy
-	cd util ; go get -u ./... ; go mod tidy
+	cd lib/app ; go get -u ./... ; go mod tidy
+	cd lib/database ; go get -u ./... ; go mod tidy
+	cd lib/entity ; go get -u ./... ; go mod tidy
+	cd lib/util ; go get -u ./... ; go mod tidy
+	cd lib/telemetry ; go get -u ./... ; go mod tidy
+	cd lib/log ; go get -u ./... ; go mod tidy
+	cd lib/config ; go get -u ./... ; go mod tidy
 
 gen-mocks:
 	@echo "\033[1;33m🎾 Generating mocks 🎾\033[0m"
