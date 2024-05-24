@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/Neniel/gotennis/lib/config"
@@ -21,19 +22,17 @@ type Metric struct {
 }
 
 var token string
-
-func init() {
-	c, err := config.LoadConfiguration()
-	if err != nil {
-		log.Logger.Error(err.Error())
-		os.Exit(1)
-	}
-
-	token = c.Grafana.GraphiteToken
-
-}
+var once *sync.Once
 
 func SendMetric(name string, interval uint64, value float64, tags map[string]interface{}) {
+	once.Do(func() {
+		c, err := config.LoadConfiguration()
+		if err != nil {
+			log.Logger.Warn(err.Error())
+		}
+
+		token = c.Grafana.GraphiteToken
+	})
 	go func() {
 		if token != "" {
 			if appEnvironment := os.Getenv("APP_ENVIRONMENT"); appEnvironment == "" {

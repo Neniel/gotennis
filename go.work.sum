@@ -1,4 +1,9 @@
 github.com/Neniel/gotennis/config v0.0.0-20240524060653-2b8f363879c4/go.mod h1:HdwzfW+LIkyLfLvKb8dJz0gEF3wDz18RnyMM/Ae4sNw=
+github.com/Neniel/gotennis/lib/app v0.0.0-20240524201638-a576cbabafa4/go.mod h1:4I0KEXMkXM73t2uObu8vxw7vbR5XeFVQAqUgZS00Hi0=
+github.com/Neniel/gotennis/lib/database v0.0.0-20240524201638-a576cbabafa4/go.mod h1:lpX5hFKYlBxrKwKbx4zSbrs3bdZkMs2e7E7i6aSWAZ4=
+github.com/Neniel/gotennis/lib/entity v0.0.0-20240524201638-a576cbabafa4/go.mod h1:1gNLcZcNyQx8I+nHX+6JMwTSsp2W30yhh/hOU7LyUqQ=
+github.com/Neniel/gotennis/lib/telemetry v0.0.0-20240524201638-a576cbabafa4/go.mod h1:QcgKEkZNUbvoGIoODDX88hHwjod1JLvkuTtE0wp2rUA=
+github.com/Neniel/gotennis/lib/util v0.0.0-20240524201638-a576cbabafa4/go.mod h1:3vpfEzyh65Z4f9K20xleDayZ4MZPdXr+pxXiszBxfU0=
 github.com/alecthomas/kingpin/v2 v2.4.0/go.mod h1:0gyi0zQnjuFk8xrkNKamJoyUo382HRL7ATRpFZCw6tE=
 github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137/go.mod h1:OMCwj8VM1Kc9e19TLln2VL61YJF0x1XFtfdL4JdbSyE=
 github.com/bsm/ginkgo/v2 v2.12.0/go.mod h1:SwYbGRRDovPVboqFv0tPTcG1sN61LM1Z4ARdbAV9g4c=
