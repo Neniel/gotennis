@@ -24,6 +24,33 @@ type Redis struct {
 	Password string `json:"password"`
 }
 
+func ReadFromFile(configFile string) (*Configuration, error) {
+	c := Configuration{}
+	bs, err := os.ReadFile(configFile)
+	if err != nil {
+		log.Logger.Error(err.Error())
+		return nil, err
+	}
+
+	err = json.NewDecoder(strings.NewReader(string(bs))).Decode(&c)
+	if err != nil {
+		return nil, err
+	}
+
+	return &c, nil
+
+}
+
+func ReadFromEnvironmentVariable(configFile string) (*Configuration, error) {
+	c := Configuration{}
+	err := json.NewDecoder(strings.NewReader(configFile)).Decode(&c)
+	if err != nil {
+		return nil, err
+	}
+
+	return &c, err
+}
+
 type Grafana struct {
 	GraphiteToken string `json:"graphite_token"`
 }
@@ -35,32 +62,13 @@ func LoadConfiguration() (*Configuration, error) {
 		return nil, errors.New("environment variable CONFIG_FILE is not set")
 	}
 
-	c := Configuration{}
-	appEnvironment := os.Getenv("APP_ENVIRONMENT")
-	if appEnvironment == "localhost" || appEnvironment == "docker" {
-		bs, err := os.ReadFile(configFile)
-		if err != nil {
-			log.Logger.Error(err.Error())
-			return nil, err
-		}
-
-		err = json.NewDecoder(strings.NewReader(string(bs))).Decode(&c)
-		if err != nil {
-			return nil, err
-		}
-
-		return &c, err
+	switch os.Getenv("APP_ENVIRONMENT") {
+	case "localhost", "docker":
+		return ReadFromFile(configFile)
+	case "k8s":
+		return ReadFromEnvironmentVariable(configFile)
+	default:
+		return nil, errors.New("invalid value for environment variable APP_ENVIRONMENT")
 	}
-
-	if appEnvironment == "k8s" {
-		err := json.NewDecoder(strings.NewReader(configFile)).Decode(&c)
-		if err != nil {
-			return nil, err
-		}
-
-		return &c, err
-	}
-
-	return nil, errors.New("invalid value for environment variable APP_ENVIRONMENT")
 
 }
