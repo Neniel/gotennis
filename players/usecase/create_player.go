@@ -3,11 +3,11 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/Neniel/gotennis/lib/database"
 	"github.com/Neniel/gotennis/lib/entity"
+	"github.com/Neniel/gotennis/lib/log"
 	"github.com/Neniel/gotennis/lib/util"
 )
 
@@ -83,40 +83,40 @@ func NewCreatePlayerUsecase(dbWriter database.DBWriter, dbReader database.DBRead
 
 func (uc *createPlayerUsecase) CreatePlayer(ctx context.Context, request *CreatePlayerRequest) (*entity.Player, error) {
 	if err := request.Validate(); err != nil {
-		log.Println(fmt.Errorf("couldn't create player. Error when validating request: %w", err))
+		log.Logger.Error(fmt.Errorf("couldn't create player. Error when validating request: %w", err).Error())
 		return nil, err
 	}
 
 	isAvailableGovernmentID, err := uc.internalCreatePlayerUsecases.ValidateGovernmentID.IsAvailable(ctx, request.GovernmentID)
 	if err != nil {
-		log.Println(fmt.Errorf("couldn't create player. Error when validating government ID: %w", err))
+		log.Logger.Error(fmt.Errorf("couldn't create player. Error when validating government ID: %w", err).Error())
 		return nil, err
 	}
 
 	if !isAvailableGovernmentID {
-		log.Println(fmt.Errorf("couldn't create player. There is another player registered with the provided government ID"))
+		log.Logger.Error(fmt.Errorf("couldn't create player. There is another player registered with the provided government ID").Error())
 		return nil, fmt.Errorf("couldn't create player. There is another player registered with the provided government ID")
 	}
 
 	isAvailableEmail, err := uc.internalCreatePlayerUsecases.ValidateEmail.IsAvailable(ctx, request.Email)
 	if err != nil {
-		log.Println(fmt.Errorf("couldn't create player. Error when validating email: %w", err))
+		log.Logger.Error(fmt.Errorf("couldn't create player. Error when validating email: %w", err).Error())
 		return nil, err
 	}
 
 	if !isAvailableEmail {
-		log.Println(fmt.Errorf("couldn't create player. There is another player registered with the provided email"))
+		log.Logger.Error(fmt.Errorf("couldn't create player. There is another player registered with the provided email").Error())
 		return nil, fmt.Errorf("couldn't create player. There is another player registered with the provided email")
 	}
 
 	isAvailableAlias, err := uc.internalCreatePlayerUsecases.ValidateAlias.IsAvailable(ctx, request.Alias)
 	if err != nil {
-		log.Println(fmt.Errorf("couldn't create player. Error when validating alias: %w", err))
+		log.Logger.Error(fmt.Errorf("couldn't create player. Error when validating alias: %w", err).Error())
 		return nil, err
 	}
 
 	if !isAvailableAlias {
-		log.Println(fmt.Errorf("couldn't create player. There is another player registered with the provided alias"))
+		log.Logger.Error(fmt.Errorf("couldn't create player. There is another player registered with the provided alias").Error())
 		return nil, fmt.Errorf("couldn't create player. There is another player registered with the provided alias")
 	}
 
@@ -133,7 +133,7 @@ func (uc *createPlayerUsecase) CreatePlayer(ctx context.Context, request *Create
 
 	player, err := uc.DBWriter.AddPlayer(ctx, newPlayer)
 	if err != nil {
-		log.Println(fmt.Errorf("couldn't create player. Error when attempting add user to the database request: %w", err))
+		log.Logger.Error(fmt.Errorf("couldn't create player. Error when attempting add user to the database request: %w", err).Error())
 		return nil, err
 	}
 	return player, nil

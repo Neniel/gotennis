@@ -3,11 +3,12 @@ go 1.22.3
 use (
 	./cache
 	./categories
-	./players
 	./lib/app
+	./lib/config
 	./lib/database
 	./lib/entity
 	./lib/log
 	./lib/telemetry
 	./lib/util
+	./players
 )

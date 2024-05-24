@@ -10,9 +10,9 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/Neniel/gotennis/app"
-	"github.com/Neniel/gotennis/entity"
-	"github.com/Neniel/gotennis/util"
+	"github.com/Neniel/gotennis/lib/app"
+	"github.com/Neniel/gotennis/lib/entity"
+	"github.com/Neniel/gotennis/lib/util"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
