@@ -9,7 +9,10 @@ require (
 	go.uber.org/mock v0.4.0
 )
 
+require github.com/Neniel/gotennis/log v0.0.0-20240524060523-a754bbf09129 // indirect
+
 require (
+	github.com/Neniel/gotennis/config v0.0.0-20240524062754-060f13081905
 	github.com/Neniel/gotennis/logger v0.0.0-20240519202620-0b65f55a8167
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
