@@ -22,6 +22,10 @@ type Redis struct {
 	Password string `json:"password"`
 }
 
+type Grafana struct {
+	GraphiteToken string `json:"graphite_token"`
+}
+
 func ReadFromFile(configFile string) (*Configuration, error) {
 	c := Configuration{}
 	bs, err := os.ReadFile(configFile)
@@ -35,7 +39,6 @@ func ReadFromFile(configFile string) (*Configuration, error) {
 	}
 
 	return &c, nil
-
 }
 
 func ReadFromEnvironmentVariable(configFile string) (*Configuration, error) {
@@ -46,10 +49,6 @@ func ReadFromEnvironmentVariable(configFile string) (*Configuration, error) {
 	}
 
 	return &c, err
-}
-
-type Grafana struct {
-	GraphiteToken string `json:"graphite_token"`
 }
 
 func LoadConfiguration() (*Configuration, error) {
@@ -66,5 +65,4 @@ func LoadConfiguration() (*Configuration, error) {
 	default:
 		return nil, errors.New("invalid value for environment variable APP_ENVIRONMENT")
 	}
-
 }
