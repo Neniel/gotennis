@@ -35,17 +35,32 @@ func LoadConfiguration() (*Configuration, error) {
 		return nil, errors.New("environment variable CONFIG_FILE is not set")
 	}
 
-	bs, err := os.ReadFile(configFile)
-	if err != nil {
-		log.Logger.Error(err.Error())
-		return nil, err
-	}
-
 	c := Configuration{}
-	err = json.NewDecoder(strings.NewReader(string(bs))).Decode(&c)
-	if err != nil {
-		return nil, err
+	appEnvironment := os.Getenv("APP_ENVIRONMENT")
+	if appEnvironment == "localhost" || appEnvironment == "docker" {
+		bs, err := os.ReadFile(configFile)
+		if err != nil {
+			log.Logger.Error(err.Error())
+			return nil, err
+		}
+
+		err = json.NewDecoder(strings.NewReader(string(bs))).Decode(&c)
+		if err != nil {
+			return nil, err
+		}
+
+		return &c, err
 	}
 
-	return &c, err
+	if appEnvironment == "k8s" {
+		err := json.NewDecoder(strings.NewReader(configFile)).Decode(&c)
+		if err != nil {
+			return nil, err
+		}
+
+		return &c, err
+	}
+
+	return nil, errors.New("invalid value for environment variable APP_ENVIRONMENT")
+
 }
