@@ -1,2 +1,4 @@
+github.com/Neniel/gotennis/log v0.0.0-20240524060523-a754bbf09129 h1:EPuXNehN7GQSnGaBr7uQFZCIzRB3furawo5O/uu0l4Y=
+github.com/Neniel/gotennis/log v0.0.0-20240524060523-a754bbf09129/go.mod h1:pkZUw2bEVehqelZN+Ob7l683/2aXOlHr/mQ9RRobtn0=
 github.com/Neniel/gotennis/logger v0.0.0-20240520020819-2f5ff6402264 h1:Z1K8gBlHtYkdARf4p0/5BNntZFepOA+8cbuyS9KQKuo=
 github.com/Neniel/gotennis/logger v0.0.0-20240520020819-2f5ff6402264/go.mod h1:gRGhCaY3WAq5WtPu9fd9Zaff57RTDNXLM0SkasMAcow=
