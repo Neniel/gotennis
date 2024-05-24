@@ -8,6 +8,6 @@ use (
 	./players
 	./util
 	./database
-	./logger
+	./log
 	./telemetry
 )
