@@ -5,8 +5,6 @@ import (
 	"errors"
 	"os"
 	"strings"
-
-	"github.com/Neniel/gotennis/log"
 )
 
 type Configuration struct {
@@ -28,7 +26,6 @@ func ReadFromFile(configFile string) (*Configuration, error) {
 	c := Configuration{}
 	bs, err := os.ReadFile(configFile)
 	if err != nil {
-		log.Logger.Error(err.Error())
 		return nil, err
 	}
 
@@ -58,7 +55,6 @@ type Grafana struct {
 func LoadConfiguration() (*Configuration, error) {
 	configFile := os.Getenv("CONFIG_FILE")
 	if configFile == "" {
-		log.Logger.Error("environment variable CONFIG_FILE is not set")
 		return nil, errors.New("environment variable CONFIG_FILE is not set")
 	}
 
