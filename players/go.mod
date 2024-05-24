@@ -3,11 +3,11 @@ module github.com/Neniel/gotennis/players
 go 1.22.3
 
 require (
-	github.com/Neniel/gotennis/lib/app v0.0.0-20240524201638-a576cbabafa4
-	github.com/Neniel/gotennis/lib/database v0.0.0-20240524201638-a576cbabafa4
-	github.com/Neniel/gotennis/lib/entity v0.0.0-20240524201638-a576cbabafa4
-	github.com/Neniel/gotennis/lib/telemetry v0.0.0-20240524201638-a576cbabafa4
-	github.com/Neniel/gotennis/lib/util v0.0.0-20240524201638-a576cbabafa4
+	github.com/Neniel/gotennis/lib/app v0.0.0-20240524212422-0aa9290371e7
+	github.com/Neniel/gotennis/lib/database v0.0.0-20240524212422-0aa9290371e7
+	github.com/Neniel/gotennis/lib/entity v0.0.0-20240524212422-0aa9290371e7
+	github.com/Neniel/gotennis/lib/telemetry v0.0.0-20240524212422-0aa9290371e7
+	github.com/Neniel/gotennis/lib/util v0.0.0-20240524212422-0aa9290371e7
 	go.mongodb.org/mongo-driver v1.15.0
 	go.uber.org/mock v0.4.0
 )

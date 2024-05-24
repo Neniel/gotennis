@@ -3,16 +3,17 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"log"
+
 	"net/http"
 	"os"
 
 	"github.com/Neniel/gotennis/players/usecase"
-
-	"github.com/Neniel/gotennis/lib/app"
-	"github.com/Neniel/gotennis/lib/telemetry/grafana"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+
+	"github.com/Neniel/gotennis/lib/app"
+	"github.com/Neniel/gotennis/lib/log"
+	"github.com/Neniel/gotennis/lib/telemetry/grafana"
 )
 
 type Usecases struct {
@@ -44,7 +45,7 @@ func (ms *PlayerMicroservice) NewAPIServer() *APIServer {
 }
 
 func (api *APIServer) Run() {
-	log.Println("Starting API Server")
+	log.Logger.Info("Starting API Server")
 
 	mux := http.NewServeMux()
 
@@ -55,7 +56,7 @@ func (api *APIServer) Run() {
 	mux.HandleFunc("PUT /players/{id}", api.updatePlayer)
 	mux.HandleFunc("DELETE /players/{id}", api.deletePlayer)
 
-	log.Fatal(http.ListenAndServe(os.Getenv("APP_PORT"), mux))
+	log.Logger.Error(http.ListenAndServe(os.Getenv("APP_PORT"), mux).Error())
 }
 
 func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {

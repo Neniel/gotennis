@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"github.com/Neniel/gotennis/app"
+	"github.com/Neniel/gotennis/lib/app"
 )
 
 func main() {

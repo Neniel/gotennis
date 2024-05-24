@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/Neniel/gotennis/lib/database"
 
 	"github.com/Neniel/gotennis/lib/entity"
+	"github.com/Neniel/gotennis/lib/log"
 	"github.com/Neniel/gotennis/lib/util"
 )
 
@@ -100,40 +100,40 @@ func NewUpdatePlayerUsecase(dbWriter database.DBWriter, dbReader database.DBRead
 
 func (uc *updatePlayerUsecase) UpdatePlayer(ctx context.Context, id string, request *UpdatePlayerRequest) (*entity.Player, error) {
 	if err := request.Validate(id); err != nil {
-		log.Println(fmt.Errorf("couldn't create player. Error when validating request: %w", err))
+		log.Logger.Error(fmt.Errorf("couldn't create player. Error when validating request: %w", err).Error())
 		return nil, err
 	}
 
 	isAvailableGovernmentID, err := uc.internalUpdatePlayerUsecases.ValidateGovernmentID.IsAvailable(ctx, request.GovernmentID)
 	if err != nil {
-		log.Println(fmt.Errorf("couldn't update player. Error when validating government ID: %w", err))
+		log.Logger.Error(fmt.Errorf("couldn't update player. Error when validating government ID: %w", err).Error())
 		return nil, err
 	}
 
 	if !isAvailableGovernmentID {
-		log.Println(fmt.Errorf("couldn't update player. There is another player registered with the provided government ID"))
+		log.Logger.Error(fmt.Errorf("couldn't update player. There is another player registered with the provided government ID").Error())
 		return nil, fmt.Errorf("couldn't update player. There is another player registered with the provided government ID")
 	}
 
 	isAvailableEmail, err := uc.internalUpdatePlayerUsecases.ValidateEmail.IsAvailable(ctx, request.Email)
 	if err != nil {
-		log.Println(fmt.Errorf("couldn't update player. Error when validating email: %w", err))
+		log.Logger.Error(fmt.Errorf("couldn't update player. Error when validating email: %w", err).Error())
 		return nil, err
 	}
 
 	if !isAvailableEmail {
-		log.Println(fmt.Errorf("couldn't update player. There is another player registered with the provided email"))
+		log.Logger.Error(fmt.Errorf("couldn't update player. There is another player registered with the provided email").Error())
 		return nil, fmt.Errorf("couldn't update player. There is another player registered with the provided email")
 	}
 
 	isAvailableAlias, err := uc.internalUpdatePlayerUsecases.ValidateAlias.IsAvailable(ctx, request.Alias)
 	if err != nil {
-		log.Println(fmt.Errorf("couldn't update player. Error when validating alias: %w", err))
+		log.Logger.Error(fmt.Errorf("couldn't update player. Error when validating alias: %w", err).Error())
 		return nil, err
 	}
 
 	if !isAvailableAlias {
-		log.Println(fmt.Errorf("couldn't update player. There is another player registered with the provided alias"))
+		log.Logger.Error(fmt.Errorf("couldn't update player. There is another player registered with the provided alias").Error())
 		return nil, fmt.Errorf("couldn't update player. There is another player registered with the provided alias")
 	}
 
@@ -154,7 +154,7 @@ func (uc *updatePlayerUsecase) UpdatePlayer(ctx context.Context, id string, requ
 
 	updatedPlayer, err := uc.DBWriter.UpdatePlayer(ctx, player)
 	if err != nil {
-		log.Println(fmt.Errorf("couldn't update player. Error when attempting add user to the database request: %w", err))
+		log.Logger.Error(fmt.Errorf("couldn't update player. Error when attempting add user to the database request: %w", err).Error())
 		return nil, err
 	}
 	return updatedPlayer, nil

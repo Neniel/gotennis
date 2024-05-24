@@ -9,7 +9,7 @@ import (
 
 	"github.com/Neniel/gotennis/categories/usecase"
 
-	"github.com/Neniel/gotennis/app"
+	"github.com/Neniel/gotennis/lib/app"
 	"github.com/Neniel/gotennis/lib/telemetry/grafana"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
