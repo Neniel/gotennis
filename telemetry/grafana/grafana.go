@@ -3,11 +3,13 @@ package grafana
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/Neniel/gotennis/config"
+	"github.com/Neniel/gotennis/log"
 )
 
 type Metric struct {
@@ -21,28 +23,27 @@ type Metric struct {
 var token string
 
 func init() {
-	appEnvironment := os.Getenv("APP_ENVIRONMENT")
-	if appEnvironment == "localhost" || appEnvironment == "docker" {
-		bsGrafanaGraphiteToken, err := os.ReadFile(os.Getenv("GRAFANA_GRAPHITE_TOKEN"))
-		if err != nil {
-			log.Fatalln(err.Error())
-		}
-		token = strings.Replace(string(bsGrafanaGraphiteToken), "\n", "", -1)
-		return
+	c, err := config.LoadConfiguration()
+	if err != nil {
+		log.Logger.Error(err.Error())
+		os.Exit(1)
 	}
 
-	if appEnvironment == "k8s" {
-		token = os.Getenv("GRAFANA_GRAPHITE_TOKEN")
-		return
-	}
+	token = c.Grafana.GraphiteToken
 
 }
 
 func SendMetric(name string, interval uint64, value float64, tags map[string]interface{}) {
 	go func() {
-		appEnvironment := os.Getenv("APP_ENVIRONMENT")
-		if appEnvironment != "" {
-			tags["environment"] = appEnvironment
+		if token != "" {
+			if appEnvironment := os.Getenv("APP_ENVIRONMENT"); appEnvironment == "" {
+				log.Logger.Warn("environment variable APP_ENVIRONMENT is not set")
+			} else {
+				tags["environment"] = appEnvironment
+			}
+
+			hostname, _ := os.Hostname()
+			tags["hostname"] = hostname
 
 			t := make([]string, 0)
 			for k, v := range tags {
@@ -61,13 +62,13 @@ func SendMetric(name string, interval uint64, value float64, tags map[string]int
 			mm = append(mm, m)
 			bs, err := json.Marshal(&mm)
 			if err != nil {
-				log.Println(fmt.Errorf("error when marshaling: %w", err))
+				log.Logger.Error(fmt.Errorf("error when marshaling: %w", err).Error())
 				return
 			}
 
 			req, err := http.NewRequest(http.MethodPost, "https://graphite-prod-13-prod-us-east-0.grafana.net/graphite/metrics", strings.NewReader(string(bs)))
 			if err != nil {
-				log.Println(fmt.Errorf("error when creating request: %w", err))
+				log.Logger.Info(fmt.Errorf("error when creating request: %w", err).Error())
 				return
 			}
 
@@ -76,12 +77,12 @@ func SendMetric(name string, interval uint64, value float64, tags map[string]int
 
 			res, err := http.DefaultClient.Do(req)
 			if err != nil {
-				log.Println(fmt.Errorf("error when sending metric: %w", err))
+				log.Logger.Error(fmt.Errorf("error when sending metric: %w", err).Error())
 				return
 			}
 
 			if res.StatusCode != http.StatusOK {
-				log.Println(fmt.Errorf("error when sending metric: %v", res.StatusCode).Error())
+				log.Logger.Error(fmt.Errorf("error when sending metric: %v", res.StatusCode).Error())
 			}
 
 		}
