@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Neniel/gotennis/config"
-	"github.com/Neniel/gotennis/log"
+	"github.com/Neniel/gotennis/lib/config"
+	"github.com/Neniel/gotennis/lib/log"
 )
 
 type Metric struct {

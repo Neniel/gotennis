@@ -1,4 +1,6 @@
-github.com/Neniel/gotennis/config v0.0.0-20240524060653-2b8f363879c4 h1:61TBO6zzTfk1EOJecwNbCkkdRfUDmWieKdgHjjJzszc=
-github.com/Neniel/gotennis/config v0.0.0-20240524060653-2b8f363879c4/go.mod h1:HdwzfW+LIkyLfLvKb8dJz0gEF3wDz18RnyMM/Ae4sNw=
+github.com/Neniel/gotennis/lib/config v0.0.0-20240524193746-8ffec7330e48 h1:f2yDZGT2Tcm3UTBdt4StHGMN9Xfo3tJKej0AVDfDLf4=
+github.com/Neniel/gotennis/lib/config v0.0.0-20240524193746-8ffec7330e48/go.mod h1:hXOzvuspOZZOb7Z0FCj61k3BPFDVRomoW1IMFu//48U=
+github.com/Neniel/gotennis/lib/log v0.0.0-20240524193746-8ffec7330e48 h1:9XUyXfWrSwgDZ4R4Hlak0ZCcjfrP9ukUNjI0/PqhZew=
+github.com/Neniel/gotennis/lib/log v0.0.0-20240524193746-8ffec7330e48/go.mod h1:Kp7iNt5+s0O0BH6e7dpMSAUOH1WAiK6KqZqAT4pQz4A=
 github.com/Neniel/gotennis/log v0.0.0-20240524060523-a754bbf09129 h1:EPuXNehN7GQSnGaBr7uQFZCIzRB3furawo5O/uu0l4Y=
 github.com/Neniel/gotennis/log v0.0.0-20240524060523-a754bbf09129/go.mod h1:pkZUw2bEVehqelZN+Ob7l683/2aXOlHr/mQ9RRobtn0=
