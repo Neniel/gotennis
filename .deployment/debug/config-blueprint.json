@@ -1,9 +1,9 @@
 {
     "mongodb": {
-        "uri": ""
+        "uri": "mongodb://localhost:27017,localhost:27018,localhost:27019/tennis?replicaSet=rs0"
     },
     "redis": {
-        "address": "",
+        "address": "localhost:6379",
         "password": ""
     },
     "grafana": {
