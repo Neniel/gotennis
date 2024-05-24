@@ -1,65 +1,39 @@
 services:
-  mongodb1:
-    image: mongo:latest
-    container_name: mongodb1
+  categories:
+    build: ./categories
+    container_name: categories
+    image: neniel/tennis-categories:latest
     ports:
-      - "27017:27017"
-    volumes:
-      - ./data/db1:/data/db
+      - 8080:8080
     environment:
-      - MONGO_INITDB_DATABASE=tennis
-      - MONGO_REPLICA_SET_NAME=rs0
-      - MONGO_PORT=27017
-      - MONGO_PRIORITY=1
-    command: [ "mongod", "--replSet", "rs0", "--bind_ip_all" ]
+      - APP_PORT=:8080
+      - APP_ENVIRONMENT=docker
+      - CONFIG_FILE=/run/secrets/config
+    secrets:
+      - config
 
-  mongodb2:
-    image: mongo:latest
-    depends_on:
-      - mongodb1
-    container_name: mongodb2
+  players:
+    build: ./players
+    container_name: players
+    image: neniel/tennis-players:latest
     ports:
-      - "27018:27017"
-    volumes:
-      - ./data/db2:/data/db
+      - 8081:8080
     environment:
-      - MONGO_INITDB_DATABASE=tennis
-      - MONGO_REPLICA_SET_NAME=rs0
-      - MONGO_PORT=27017
-      - MONGO_PRIORITY=0
-    command: [ "mongod", "--replSet", "rs0", "--bind_ip_all" ]
+      - APP_PORT=:8080
+      - APP_ENVIRONMENT=docker
+      - CONFIG_FILE=/run/secrets/config
+    secrets:
+      - config
 
-  mongodb3:
-    image: mongo:latest
-    depends_on:
-      - mongodb2
-    container_name: mongodb3
-    ports:
-      - "27019:27017"
-    volumes:
-      - ./data/db3:/data/db
+  cache:
+    build: ./cache
+    container_name: cache
+    image: neniel/tennis-cache:latest
     environment:
-      - MONGO_INITDB_DATABASE=tennis
-      - MONGO_REPLICA_SET_NAME=rs0
-      - MONGO_PORT=27017
-      - MONGO_PRIORITY=0
-    command: [ "mongod", "--replSet", "rs0", "--bind_ip_all" ]
-
-  mongo-init-replica:
-    image: mongo:latest
-    depends_on:
-      - mongodb1
-      - mongodb2
-      - mongodb3
-    volumes:
-      - ./scripts:/scripts
-    command:
-      [
-        "mongosh",
-        "mongodb://mongodb1:27017,mongodb2:27018,mongodb3:27019/admin",
-        "/scripts/init-replica.js"
-      ]
+      - APP_ENVIRONMENT=docker
+      - CONFIG_FILE=/run/secrets/config
+    secrets:
+      - config
 
 include:
-  - docker-compose-ms.yml
   - docker-compose-secrets.yml
