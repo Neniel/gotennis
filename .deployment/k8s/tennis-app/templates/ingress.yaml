@@ -2,6 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-wildcard-host
+  namespace: {{ .Values.app.namespace }}
 spec:
   rules:
   - host: "categories.tennis.dev"
@@ -11,9 +12,9 @@ spec:
         path: "/"
         backend:
           service:
-            name: categories-service
+            name: {{ .Values.app.services.categories.name }}
             port:
-              number: 8080
+              number: {{ .Values.app.services.categories.port }}
   - host: "players.tennis.dev"
     http:
       paths:
@@ -21,6 +22,6 @@ spec:
         path: "/"
         backend:
           service:
-            name: players-service
+            name: {{ .Values.app.services.players.name }}
             port:
-              number: 8081
+              number: {{ .Values.app.services.players.port }}

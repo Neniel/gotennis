@@ -12,10 +12,7 @@
             "program": "${workspaceFolder}/categories",
             "env": {
                 "APP_PORT": ":8080",
-                "MONGODB_URI_FILE": "${workspaceFolder}/local/mongodb_uri.txt",
-                "REDIS_ADDRESS_FILE": "${workspaceFolder}/local/redis_address.txt",
-                "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt",
-                "GRAFANA_GRAPHITE_TOKEN": "${workspaceFolder}/local/grafana_graphite_token.txt",
+                "CONFIG_FILE": "${workspaceFolder}/.deployment/debug/config.json",
                 "APP_ENVIRONMENT": "localhost",
                 "LOGGING_LEVEL": "DEBUG",
             }
@@ -28,10 +25,7 @@
             "program": "${workspaceFolder}/players",
             "env": {
                 "APP_PORT": ":8081",
-                "MONGODB_URI_FILE": "${workspaceFolder}/local/mongodb_uri.txt",
-                "REDIS_ADDRESS_FILE": "${workspaceFolder}/local/redis_address.txt",
-                "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt",
-                "GRAFANA_GRAPHITE_TOKEN": "${workspaceFolder}/local/grafana_graphite_token.txt",
+                "CONFIG_FILE": "${workspaceFolder}/.deployment/debug/config.json",
                 "APP_ENVIRONMENT": "localhost",
                 "LOGGING_LEVEL": "DEBUG",
             }
@@ -43,10 +37,7 @@
             "mode": "auto",
             "program": "${workspaceFolder}/cache",
             "env": {
-                "MONGODB_URI_FILE": "${workspaceFolder}/local/mongodb_uri.txt",
-                "REDIS_ADDRESS_FILE": "${workspaceFolder}/local/redis_address.txt",
-                "REDIS_PASSWORD_FILE": "${workspaceFolder}/local/redis_password.txt",
-                "GRAFANA_GRAPHITE_TOKEN": "${workspaceFolder}/local/grafana_graphite_token.txt",
+                "CONFIG_FILE": "${workspaceFolder}/.deployment/debug/config.json",
                 "APP_ENVIRONMENT": "localhost",
                 "LOGGING_LEVEL": "DEBUG",
             }

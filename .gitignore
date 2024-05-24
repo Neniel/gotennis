@@ -1,5 +1,6 @@
 data
-secrets
-kubernetes/secrets.yml
+secrets/config.json
+.deployment/debug/config.json
+.deployment/k8s/tennis-app/values-dev.yaml
 dev
 .DS_Store

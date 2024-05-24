@@ -1,58 +1,60 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: {{ .Values.app.namespace }}
   name: players-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: players
+      app: {{ .Values.app.players.name }}
   template:
     metadata:
       labels:
-        app: players
+        app: {{ .Values.app.players.name }}
     spec:
       containers:
-      - name: players-ms
-        image: neniel/tennis-players:latest
+      - name: {{ .Values.app.containers.players.name }}
+        image: "{{ .Values.app.images.players.name }}:{{ .Values.app.images.players.tag }}"
         ports:
-        - containerPort: 8081
+        - containerPort: {{ .Values.app.containers.players.port }}
         env:
         - name: APP_PORT
-          value: :8081
+          value: :{{ .Values.app.containers.players.port }}
         - name: APP_ENVIRONMENT
           value: k8s
         - name: MONGODB_CONNECTION_STRING
           valueFrom:
             secretKeyRef:
-              name: application-secret
+              name: tennis-secret
               key: mongodb_connection_string
         - name: REDIS_SERVER_ADDRESS
           valueFrom:
             secretKeyRef:
-              name: application-secret
+              name: tennis-secret
               key: redis_server_address
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: application-secret
+              name: tennis-secret
               key: redis_password
         - name: GRAFANA_GRAPHITE_TOKEN
           valueFrom:
             secretKeyRef:
-              name: application-secret
+              name: tennis-secret
               key: grafana_graphite_token
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: players-service
+  namespace: {{ .Values.app.namespace }}
+  name: {{ .Values.app.services.players.name }}
 spec:
-  type: LoadBalancer
+  #type: LoadBalancer
   selector:
-    app: players
+    app: {{ .Values.app.players.name }}
   ports:
     - protocol: TCP
-      port: 8081
-      targetPort: 8081
+      port: {{ .Values.app.services.players.port }}
+      targetPort: {{ .Values.app.services.players.targetPort }}

@@ -1,0 +1,42 @@
+# Use this blueprint for generating values-[dev|qa|prod].yaml files
+
+app:
+  namespace: default
+
+  images:
+    categories:
+      name: neniel/tennis-categories
+      tag: latest
+    players:
+      name: neniel/tennis-players
+      tag: latest
+
+  containers:
+    categories:
+      name: categories
+      port: 8080
+    players:
+      name: players
+      port: 8080
+
+  services:
+    categories:
+      name: categories
+      port: 8080
+      targetPort: 8080
+    players:
+      name: players
+      port: 8081
+      targetPort: 8080
+
+  categories:
+    name: categories
+
+  players:
+    name: players
+
+  secrets:
+    mongodb_connection_string: <BASE64_MONGODB_CONNECTION_STRING>
+    redis_server_address: <BASE64_REDIS_SERVER_ADDRESS>
+    redis_password: <BASE64_REDIS_PASSWORD>
+    grafana_graphite_token: <BASE64_GRAFANA_GRAPHITE_TOKEN>

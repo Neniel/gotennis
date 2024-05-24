@@ -1,0 +1,12 @@
+{
+    "mongodb": {
+        "uri": ""
+    },
+    "redis": {
+        "address": "",
+        "password": ""
+    },
+    "grafana": {
+        "graphite_token": ""
+    }
+}

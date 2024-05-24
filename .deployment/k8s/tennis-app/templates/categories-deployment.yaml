@@ -1,57 +1,59 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: {{ .Values.app.namespace }}
   name: categories-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: categories
+      app: {{ .Values.app.categories.name }}
   template:
     metadata:
       labels:
-        app: categories
+        app: {{ .Values.app.categories.name }}
     spec:
       containers:
-      - name: categories-ms
-        image: neniel/tennis-categories:latest
+      - name: {{ .Values.app.containers.categories.name }}
+        image: "{{ .Values.app.images.categories.name }}:{{ .Values.app.images.categories.tag }}"
         ports:
-        - containerPort: 8080
+        - containerPort: {{ .Values.app.containers.categories.port }}
         env:
         - name: APP_PORT
-          value: :8080
+          value: :{{ .Values.app.containers.categories.port }}
         - name: APP_ENVIRONMENT
           value: k8s
         - name: MONGODB_CONNECTION_STRING
           valueFrom:
             secretKeyRef:
-              name: application-secret
+              name: tennis-secret
               key: mongodb_connection_string
         - name: REDIS_SERVER_ADDRESS
           valueFrom:
             secretKeyRef:
-              name: application-secret
+              name: tennis-secret
               key: redis_server_address
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: application-secret
+              name: tennis-secret
               key: redis_password
         - name: GRAFANA_GRAPHITE_TOKEN
           valueFrom:
             secretKeyRef:
-              name: application-secret
+              name: tennis-secret
               key: grafana_graphite_token
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: categories-service
+  namespace: {{ .Values.app.namespace }}
+  name: {{ .Values.app.services.categories.name }}
 spec:
-  type: LoadBalancer
+  #type: LoadBalancer
   selector:
-    app: categories
+    app: {{ .Values.app.categories.name }}
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: {{ .Values.app.services.categories.port }}
+      targetPort: {{ .Values.app.services.categories.targetPort }}

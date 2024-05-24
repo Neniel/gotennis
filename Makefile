@@ -1,11 +1,19 @@
 SERVICE ?=
 IMAGE ?=
 
+deploy-db:
+	docker-compose -f docker-compose-db.yml down
+	docker-compose -f docker-compose-db.yml build
+	docker-compose -f docker-compose-db.yml up -d
+
 deploy:
 	@echo "🎾"
-	docker-compose -f docker-compose.yml down ${SERVICE}
-	docker-compose -f docker-compose.yml build ${SERVICE}
-	docker-compose --verbose -f docker-compose.yml up -d ${SERVICE}
+	docker-compose -f docker-compose-db.yml down
+	docker-compose -f docker-compose-db.yml build
+	docker-compose -f docker-compose-db.yml up -d
+	docker-compose -f docker-compose-ms.yml down ${SERVICE}
+	docker-compose -f docker-compose-ms.yml build ${SERVICE}
+	docker-compose --verbose -f docker-compose-ms.yml up -d ${SERVICE}
 
 build:
 	docker-compose build ${SERVICE}
@@ -14,29 +22,31 @@ build:
 push:
 	docker push neniel/tennis-${IMAGE}:latest
 
-k8s-dashboard:
+k8s-deploy:
+	helm install tennis-app .deployment/k8s/tennis-app -f .deployment/k8s/tennis-app/values-dev.yaml
+
+k8s-redeploy:
+	helm upgrade tennis-app .deployment/k8s/tennis-app -f .deployment/k8s/tennis-app/values-dev.yaml
+
+k8s-uninstall:
+	helm uninstall tennis-app
+
+k8s-delete-cluster-kind:
+	kind delete cluster
+
+k8s-configure-minikube:
+	minikube start
+	minikube addons enable metrics-server
+	minikube addons enable ingress
 	minikube dashboard
 
-k8s-deploy:
-	kubectl apply -f kubernetes/secrets.yml
-	kubectl apply -f kubernetes/mongo-deployment.yml
-	kubectl apply -f kubernetes/ingress.yml
-	kubectl apply -f kubernetes/categories-deployment.yml
-	kubectl apply -f kubernetes/players-deployment.yml
-
-k8s-destroy:
-	kubectl delete deployment --all
-	kubectl delete service --all
-	kubectl delete statefulset --all
-	kubectl delete daemonset --all
-	kubectl delete configmap --all
-	kubectl delete secret --all
-	kubectl delete ingress --all
-	kubectl delete pod --all
-
-k8s-configure:
-	minikube addons enable ingress
-	minikube addons enable metrics-server
+k8s-configure-kind:
+	kind create cluster --config .deployment/k8s/kind/configuration.yaml
+	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+	kubectl wait --namespace ingress-nginx \
+  --for=condition=ready pod \
+  --selector=app.kubernetes.io/component=controller \
+  --timeout=90s
 
 update-dependencies:
 	@echo "\033[1;33m🎾 Updating dependencies 🎾\033[0m"
