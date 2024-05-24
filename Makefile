@@ -1,38 +1,39 @@
 SERVICE ?=
 IMAGE ?=
+TAG ?=
+ENV ?=
 
 deploy-db:
 	docker-compose -f docker-compose-db.yml down
 	docker-compose -f docker-compose-db.yml build
 	docker-compose -f docker-compose-db.yml up -d
 
-deploy:
-	@echo "🎾"
-	docker-compose -f docker-compose-db.yml down
-	docker-compose -f docker-compose-db.yml build
-	docker-compose -f docker-compose-db.yml up -d
-	docker-compose -f docker-compose-ms.yml down ${SERVICE}
-	docker-compose -f docker-compose-ms.yml build ${SERVICE}
-	docker-compose --verbose -f docker-compose-ms.yml up -d ${SERVICE}
-
 build:
-	docker-compose build ${SERVICE}
+	docker-compose -f docker-compose.yml build ${SERVICE}
 
+deploy: deploy-db
+ifeq ($(ENV),)
+	@echo "🎾"
+	docker-compose -f docker-compose.yml down ${SERVICE}
+	docker-compose -f docker-compose.yml build ${SERVICE}
+	docker-compose --verbose -f docker-compose.yml up -d ${SERVICE}
+else
+	docker-compose -f docker-compose-${ENV}.yml down ${SERVICE}
+	docker-compose -f docker-compose-${ENV}.yml build ${SERVICE}
+	docker-compose --verbose -f docker-compose-${ENV}.yml up -d ${SERVICE}
+endif
 
 push:
+ifeq ($(IMAGE),)
+	echo "Error: IMAGE is not set!"
+	false
+endif
+
+ifneq ($(TAG),)
+	docker push neniel/tennis-${IMAGE}:${TAG}
+else
 	docker push neniel/tennis-${IMAGE}:latest
-
-k8s-deploy:
-	helm install tennis-app .deployment/k8s/tennis-app -f .deployment/k8s/tennis-app/values-dev.yaml
-
-k8s-redeploy:
-	helm upgrade tennis-app .deployment/k8s/tennis-app -f .deployment/k8s/tennis-app/values-dev.yaml
-
-k8s-uninstall:
-	helm uninstall tennis-app
-
-k8s-delete-cluster-kind:
-	kind delete cluster
+endif
 
 k8s-configure-minikube:
 	minikube start
@@ -48,6 +49,23 @@ k8s-configure-kind:
   --selector=app.kubernetes.io/component=controller \
   --timeout=90s
 
+k8s-deploy:
+ifneq ($(ENV),)
+	helm install tennis-app .deployment/k8s/tennis-app -f .deployment/k8s/tennis-app/values-${ENV}.yaml
+else
+	helm install tennis-app .deployment/k8s/tennis-app -f .deployment/k8s/tennis-app/values.yaml
+endif
+
+k8s-redeploy:
+ifneq ($(ENV),)
+	helm upgrade tennis-app .deployment/k8s/tennis-app -f .deployment/k8s/tennis-app/values-${ENV}.yaml
+else
+	helm upgrade tennis-app .deployment/k8s/tennis-app -f .deployment/k8s/tennis-app/values.yaml
+endif
+
+k8s-uninstall:
+	helm uninstall tennis-app
+
 update-dependencies:
 	@echo "\033[1;33m🎾 Updating dependencies 🎾\033[0m"
 	cd app ; go get -u ./... ; go mod tidy
@@ -57,24 +75,21 @@ update-dependencies:
 	cd entity ; go get -u ./... ; go mod tidy
 	cd players ; go get -u ./... ; go mod tidy
 	cd util ; go get -u ./... ; go mod tidy
-	git add .
-	git commit -m "update dependencies"
-	git push
 
 gen-mocks:
 	@echo "\033[1;33m🎾 Generating mocks 🎾\033[0m"
-	mockgen -source=./app/app.go -destination=./app/mock_app.go -package=app
-	mockgen -source=./database/database.go -destination=./database/mock_database.go -package=database
+	mockgen -source=./lib/app/app.go -destination=./lib/app/mock_app.go -package=app
+	mockgen -source=./lib/database/database.go -destination=./lib/database/mock_database.go -package=database
 
 test:
 	@echo "\033[1;33m🎾 Running tests 🎾\033[0m"
-	go test ./app/...
 	go test ./cache/...
 	go test ./categories/...
-	go test ./database/...
-	go test ./entity/...
 	go test ./players/...
-	go test ./util/...
+	go test ./lib/app/...
+	go test ./lib/database/...
+	go test ./lib/entity/...
+	go test ./lib/util/...
 
 run-alloy:
 	docker rm grafana_alloy -f
