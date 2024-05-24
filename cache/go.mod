@@ -1,16 +1,17 @@
 module cache
 
-go 1.22.0
+go 1.22.3
 
 require (
-	github.com/Neniel/gotennis/app v0.0.0-20240519202620-0b65f55a8167
-	github.com/Neniel/gotennis/entity v0.0.0-20240519202620-0b65f55a8167
-	github.com/Neniel/gotennis/util v0.0.0-20240519202620-0b65f55a8167
+	github.com/Neniel/gotennis/app v0.0.0-20240524065217-609a6a9dfb84
+	github.com/Neniel/gotennis/entity v0.0.0-20240524065217-609a6a9dfb84
+	github.com/Neniel/gotennis/util v0.0.0-20240524065217-609a6a9dfb84
 	go.mongodb.org/mongo-driver v1.15.0
 )
 
 require (
-	github.com/Neniel/gotennis/logger v0.0.0-20240519202620-0b65f55a8167 // indirect
+	github.com/Neniel/gotennis/config v0.0.0-20240524065217-609a6a9dfb84 // indirect
+	github.com/Neniel/gotennis/log v0.0.0-20240524065217-609a6a9dfb84 // indirect
 	github.com/go-redis/redis v6.15.9+incompatible // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect

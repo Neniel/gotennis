@@ -1,13 +1,13 @@
-go 1.22.0
+go 1.22.3
 
 use (
 	./app
 	./cache
 	./categories
-	./entity
-	./players
-	./util
 	./database
+	./entity
 	./log
+	./players
 	./telemetry
+	./util
 )
