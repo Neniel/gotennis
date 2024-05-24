@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Neniel/gotennis/database"
+	"github.com/Neniel/gotennis/lib/database"
 
-	"github.com/Neniel/gotennis/entity"
+	"github.com/Neniel/gotennis/lib/entity"
 )
 
 type ListCategoriesUsecase interface {

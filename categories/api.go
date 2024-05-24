@@ -1,15 +1,16 @@
 package main
 
 import (
-	"categories/usecase"
 	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/Neniel/gotennis/categories/usecase"
+
 	"github.com/Neniel/gotennis/app"
-	"github.com/Neniel/gotennis/telemetry/grafana"
+	"github.com/Neniel/gotennis/lib/telemetry/grafana"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

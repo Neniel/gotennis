@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Neniel/gotennis/database"
-	"github.com/Neniel/gotennis/entity"
-	"github.com/Neniel/gotennis/logger"
-	"github.com/Neniel/gotennis/util"
+	"github.com/Neniel/gotennis/lib/database"
+	"github.com/Neniel/gotennis/lib/entity"
+	"github.com/Neniel/gotennis/lib/log"
+	"github.com/Neniel/gotennis/lib/util"
 )
 
 type CreateCategoryUsecase interface {
@@ -38,8 +38,7 @@ func (r *CreateCategoryRequest) Validate() error {
 
 func (uc *createCategoryUsecase) CreateCategory(ctx context.Context, request *CreateCategoryRequest) (*entity.Category, error) {
 	if err := request.Validate(); err != nil {
-		logger.Logger.Info(fmt.Errorf("could not create category: %w", err).Error())
-		//log.Println(fmt.Errorf("could not create category. Error at Validate: %w", err))
+		log.Logger.Info(fmt.Errorf("could not create category: %w", err).Error())
 		return nil, err
 	}
 
@@ -47,7 +46,7 @@ func (uc *createCategoryUsecase) CreateCategory(ctx context.Context, request *Cr
 
 	newCategory, err := uc.DBWriter.AddCategory(ctx, category)
 	if err != nil {
-		logger.Logger.Info(fmt.Errorf("could not create category: %w", err).Error())
+		log.Logger.Info(fmt.Errorf("could not create category: %w", err).Error())
 		return nil, err
 	}
 	return newCategory, nil

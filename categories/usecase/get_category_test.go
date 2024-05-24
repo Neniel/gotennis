@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Neniel/gotennis/database"
-	"github.com/Neniel/gotennis/entity"
+	"github.com/Neniel/gotennis/lib/database"
+	"github.com/Neniel/gotennis/lib/entity"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/mock/gomock"
 )

@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Neniel/gotennis/app"
+	"github.com/Neniel/gotennis/lib/app"
 	"go.uber.org/mock/gomock"
 )
 

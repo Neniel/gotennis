@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Neniel/gotennis/database"
-	"github.com/Neniel/gotennis/logger"
+	"github.com/Neniel/gotennis/lib/database"
+	"github.com/Neniel/gotennis/lib/log"
 
-	"github.com/Neniel/gotennis/entity"
+	"github.com/Neniel/gotennis/lib/entity"
 )
 
 type GetCategoryUsecase interface {
@@ -27,7 +27,7 @@ func NewGetCategoryUsecase(dbReader database.DBReader) GetCategoryUsecase {
 func (uc *getCategoryUsecase) Get(ctx context.Context, id string) (*entity.Category, error) {
 	category, err := uc.DBReader.GetCategory(ctx, id)
 	if err != nil {
-		logger.Logger.Error(fmt.Errorf("could not get category: %w", err).Error())
+		log.Logger.Error(fmt.Errorf("could not get category: %w", err).Error())
 		return nil, err
 	}
 

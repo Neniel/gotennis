@@ -6,10 +6,11 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"players/usecase"
 
-	"github.com/Neniel/gotennis/app"
-	"github.com/Neniel/gotennis/telemetry/grafana"
+	"github.com/Neniel/gotennis/players/usecase"
+
+	"github.com/Neniel/gotennis/lib/app"
+	"github.com/Neniel/gotennis/lib/telemetry/grafana"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )

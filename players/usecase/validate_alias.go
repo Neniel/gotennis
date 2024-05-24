@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 
-	"github.com/Neniel/gotennis/database"
+	"github.com/Neniel/gotennis/lib/database"
 )
 
 type ValidateAliasUsecase interface {

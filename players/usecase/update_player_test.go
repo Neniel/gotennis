@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Neniel/gotennis/database"
-	"github.com/Neniel/gotennis/entity"
-	"github.com/Neniel/gotennis/util"
+	"github.com/Neniel/gotennis/lib/database"
+	"github.com/Neniel/gotennis/lib/entity"
+	"github.com/Neniel/gotennis/lib/util"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/mock/gomock"
 )

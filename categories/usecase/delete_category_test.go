@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Neniel/gotennis/database"
+	"github.com/Neniel/gotennis/lib/database"
 	"go.uber.org/mock/gomock"
 )
 

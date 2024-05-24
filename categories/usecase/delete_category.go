@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Neniel/gotennis/database"
+	"github.com/Neniel/gotennis/lib/database"
 )
 
 type DeleteCategoryUsecase interface {

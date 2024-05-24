@@ -1,11 +1,12 @@
 package main
 
 import (
-	"categories/usecase"
 	"context"
 
-	"github.com/Neniel/gotennis/app"
-	"github.com/Neniel/gotennis/database"
+	"github.com/Neniel/gotennis/categories/usecase"
+
+	"github.com/Neniel/gotennis/lib/app"
+	"github.com/Neniel/gotennis/lib/database"
 )
 
 func main() {

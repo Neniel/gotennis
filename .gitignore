@@ -1,6 +1,6 @@
 data
 secrets/config.json
 .deployment/debug/config.json
-.deployment/k8s/tennis-app/values-dev.yaml
+.deployment/k8s/tennis-app/values*.yaml
 dev
 .DS_Store
