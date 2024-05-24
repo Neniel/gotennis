@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Neniel/gotennis/config"
-	"github.com/Neniel/gotennis/log"
-	"github.com/Neniel/gotennis/util"
+	"github.com/Neniel/gotennis/lib/config"
+	"github.com/Neniel/gotennis/lib/log"
+	"github.com/Neniel/gotennis/lib/util"
 	"github.com/go-redis/redis"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
