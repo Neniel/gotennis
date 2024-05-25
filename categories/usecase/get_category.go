@@ -10,21 +10,21 @@ import (
 	"github.com/Neniel/gotennis/lib/entity"
 )
 
-type GetCategoryUsecase interface {
-	Get(ctx context.Context, id string) (*entity.Category, error)
+type GetCategory interface {
+	Do(ctx context.Context, id string) (*entity.Category, error)
 }
 
-type getCategoryUsecase struct {
+type getCategory struct {
 	DBReader database.DBReader
 }
 
-func NewGetCategoryUsecase(dbReader database.DBReader) GetCategoryUsecase {
-	return &getCategoryUsecase{
+func NewGetCategory(dbReader database.DBReader) GetCategory {
+	return &getCategory{
 		DBReader: dbReader,
 	}
 }
 
-func (uc *getCategoryUsecase) Get(ctx context.Context, id string) (*entity.Category, error) {
+func (uc *getCategory) Do(ctx context.Context, id string) (*entity.Category, error) {
 	category, err := uc.DBReader.GetCategory(ctx, id)
 	if err != nil {
 		log.Logger.Error(fmt.Errorf("could not get category: %w", err).Error())

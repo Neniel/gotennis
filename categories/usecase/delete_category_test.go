@@ -10,7 +10,7 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-func TestNewDeleteCategoryUsecase(t *testing.T) {
+func TestNewDeleteCategory(t *testing.T) {
 	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
 
 	type args struct {
@@ -19,22 +19,22 @@ func TestNewDeleteCategoryUsecase(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want DeleteCategoryUsecase
+		want DeleteCategory
 	}{
 		{
 			name: "NewDeleteCategoryUsecase",
 			args: args{
 				dbWriter: dbWriter,
 			},
-			want: &deleteCategoryUsecase{
+			want: &deleteCategory{
 				DBWriter: dbWriter,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewDeleteCategoryUsecase(tt.args.dbWriter); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewDeleteCategoryUsecase() = %v, want %v", got, tt.want)
+			if got := NewDeleteCategory(tt.args.dbWriter); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewDeleteCategory() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -75,11 +75,11 @@ func Test_deleteCategoryUsecase_Delete_Success(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareMocks()
-			uc := &deleteCategoryUsecase{
+			uc := &deleteCategory{
 				DBWriter: tt.fields.DBWriter,
 			}
-			if err := uc.Delete(tt.args.ctx, tt.args.id); (err != nil) != tt.wantErr {
-				t.Errorf("deleteCategoryUsecase.Delete() error = %v, wantErr %v", err, tt.wantErr)
+			if err := uc.Do(tt.args.ctx, tt.args.id); (err != nil) != tt.wantErr {
+				t.Errorf("deleteCategory.Do() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
@@ -120,11 +120,11 @@ func Test_deleteCategoryUsecase_Delete_Failure(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareMocks()
-			uc := &deleteCategoryUsecase{
+			uc := &deleteCategory{
 				DBWriter: tt.fields.DBWriter,
 			}
-			if err := uc.Delete(tt.args.ctx, tt.args.id); (err != nil) != tt.wantErr {
-				t.Errorf("deleteCategoryUsecase.Delete() error = %v, wantErr %v", err, tt.wantErr)
+			if err := uc.Do(tt.args.ctx, tt.args.id); (err != nil) != tt.wantErr {
+				t.Errorf("deleteCategory.Do() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

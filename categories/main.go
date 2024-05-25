@@ -17,11 +17,11 @@ func main() {
 	ms := &CategoryMicroservice{
 		App: app,
 		Usecases: &Usecases{
-			CreateCategoryUsecase: usecase.NewCreateCategoryUsecase(dbWriter),
-			DeleteCategory:        usecase.NewDeleteCategoryUsecase(dbWriter),
-			ListCategories:        usecase.NewListCategoriesUsecase(dbReader),
-			GetCategory:           usecase.NewGetCategoryUsecase(dbReader),
-			UpdateCategory:        usecase.NewUpdateCategoryUsecase(dbReader, dbWriter),
+			CreateCategoryUsecase: usecase.NewCreateCategory(dbWriter),
+			DeleteCategory:        usecase.NewDeleteCategory(dbWriter),
+			ListCategories:        usecase.NewListCategories(dbReader),
+			GetCategory:           usecase.NewGetCategory(dbReader),
+			UpdateCategory:        usecase.NewUpdateCategory(dbReader, dbWriter),
 		},
 	}
 

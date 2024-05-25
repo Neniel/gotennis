@@ -57,16 +57,16 @@ func Test_getCategoryUsecase_Get_Success(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			uc := &getCategoryUsecase{
+			uc := &getCategory{
 				DBReader: tt.fields.DBReader,
 			}
-			got, err := uc.Get(tt.args.ctx, tt.args.id)
+			got, err := uc.Do(tt.args.ctx, tt.args.id)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("getCategoryUsecase.Get() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("getCategory.Do error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("getCategoryUsecase.Get() = %v, want %v", got, tt.want)
+				t.Errorf("getCategory.Do() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -105,16 +105,16 @@ func Test_getCategoryUsecase_Get_Failure(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			uc := &getCategoryUsecase{
+			uc := &getCategory{
 				DBReader: tt.fields.DBReader,
 			}
-			got, err := uc.Get(tt.args.ctx, tt.args.id)
+			got, err := uc.Do(tt.args.ctx, tt.args.id)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("getCategoryUsecase.Get() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("getCategory.Do() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("getCategoryUsecase.Get() = %v, want %v", got, tt.want)
+				t.Errorf("getCategory.Do() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -128,18 +128,18 @@ func TestNewGetCategoryUsecase(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want GetCategoryUsecase
+		want GetCategory
 	}{
 		{
 			name: "New_get_category_usecase",
 			args: args{dbReader: dbReader},
-			want: &getCategoryUsecase{DBReader: dbReader},
+			want: &getCategory{DBReader: dbReader},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewGetCategoryUsecase(tt.args.dbReader); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewGetCategoryUsecase() = %v, want %v", got, tt.want)
+			if got := NewGetCategory(tt.args.dbReader); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewGetCategory() = %v, want %v", got, tt.want)
 			}
 		})
 	}
