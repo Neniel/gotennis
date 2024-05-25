@@ -12,4 +12,5 @@ use (
 	./lib/util
 	./players
 	./tournaments
+	./lib
 )
