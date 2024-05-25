@@ -70,6 +70,21 @@ func (mr *MockDatabaseMockRecorder) AddPlayer(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddPlayer", reflect.TypeOf((*MockDatabase)(nil).AddPlayer), arg0, arg1)
 }
 
+// AddTournament mocks base method.
+func (m *MockDatabase) AddTournament(arg0 context.Context, arg1 *entity.Tournament) (*entity.Tournament, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddTournament", arg0, arg1)
+	ret0, _ := ret[0].(*entity.Tournament)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddTournament indicates an expected call of AddTournament.
+func (mr *MockDatabaseMockRecorder) AddTournament(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTournament", reflect.TypeOf((*MockDatabase)(nil).AddTournament), arg0, arg1)
+}
+
 // DeleteCategory mocks base method.
 func (m *MockDatabase) DeleteCategory(arg0 context.Context, arg1 string) error {
 	m.ctrl.T.Helper()
@@ -96,6 +111,20 @@ func (m *MockDatabase) DeletePlayer(arg0 context.Context, arg1 string) error {
 func (mr *MockDatabaseMockRecorder) DeletePlayer(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePlayer", reflect.TypeOf((*MockDatabase)(nil).DeletePlayer), arg0, arg1)
+}
+
+// DeleteTournament mocks base method.
+func (m *MockDatabase) DeleteTournament(arg0 context.Context, arg1 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTournament", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTournament indicates an expected call of DeleteTournament.
+func (mr *MockDatabaseMockRecorder) DeleteTournament(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTournament", reflect.TypeOf((*MockDatabase)(nil).DeleteTournament), arg0, arg1)
 }
 
 // GetCategories mocks base method.
@@ -158,6 +187,36 @@ func (mr *MockDatabaseMockRecorder) GetPlayers(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPlayers", reflect.TypeOf((*MockDatabase)(nil).GetPlayers), arg0)
 }
 
+// GetTournament mocks base method.
+func (m *MockDatabase) GetTournament(arg0 context.Context, arg1 string) (*entity.Tournament, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTournament", arg0, arg1)
+	ret0, _ := ret[0].(*entity.Tournament)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTournament indicates an expected call of GetTournament.
+func (mr *MockDatabaseMockRecorder) GetTournament(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTournament", reflect.TypeOf((*MockDatabase)(nil).GetTournament), arg0, arg1)
+}
+
+// GetTournaments mocks base method.
+func (m *MockDatabase) GetTournaments(arg0 context.Context) ([]entity.Tournament, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTournaments", arg0)
+	ret0, _ := ret[0].([]entity.Tournament)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTournaments indicates an expected call of GetTournaments.
+func (mr *MockDatabaseMockRecorder) GetTournaments(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTournaments", reflect.TypeOf((*MockDatabase)(nil).GetTournaments), arg0)
+}
+
 // IsAvailable mocks base method.
 func (m *MockDatabase) IsAvailable(arg0 context.Context, arg1, arg2 string) (bool, error) {
 	m.ctrl.T.Helper()
@@ -201,6 +260,21 @@ func (m *MockDatabase) UpdatePlayer(arg0 context.Context, arg1 *entity.Player) (
 func (mr *MockDatabaseMockRecorder) UpdatePlayer(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePlayer", reflect.TypeOf((*MockDatabase)(nil).UpdatePlayer), arg0, arg1)
+}
+
+// UpdateTournament mocks base method.
+func (m *MockDatabase) UpdateTournament(arg0 context.Context, arg1 *entity.Tournament) (*entity.Tournament, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateTournament", arg0, arg1)
+	ret0, _ := ret[0].(*entity.Tournament)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateTournament indicates an expected call of UpdateTournament.
+func (mr *MockDatabaseMockRecorder) UpdateTournament(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTournament", reflect.TypeOf((*MockDatabase)(nil).UpdateTournament), arg0, arg1)
 }
 
 // MockDBReader is a mock of DBReader interface.
@@ -286,6 +360,36 @@ func (mr *MockDBReaderMockRecorder) GetPlayers(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPlayers", reflect.TypeOf((*MockDBReader)(nil).GetPlayers), arg0)
 }
 
+// GetTournament mocks base method.
+func (m *MockDBReader) GetTournament(arg0 context.Context, arg1 string) (*entity.Tournament, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTournament", arg0, arg1)
+	ret0, _ := ret[0].(*entity.Tournament)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTournament indicates an expected call of GetTournament.
+func (mr *MockDBReaderMockRecorder) GetTournament(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTournament", reflect.TypeOf((*MockDBReader)(nil).GetTournament), arg0, arg1)
+}
+
+// GetTournaments mocks base method.
+func (m *MockDBReader) GetTournaments(arg0 context.Context) ([]entity.Tournament, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTournaments", arg0)
+	ret0, _ := ret[0].([]entity.Tournament)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTournaments indicates an expected call of GetTournaments.
+func (mr *MockDBReaderMockRecorder) GetTournaments(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTournaments", reflect.TypeOf((*MockDBReader)(nil).GetTournaments), arg0)
+}
+
 // IsAvailable mocks base method.
 func (m *MockDBReader) IsAvailable(arg0 context.Context, arg1, arg2 string) (bool, error) {
 	m.ctrl.T.Helper()
@@ -354,6 +458,21 @@ func (mr *MockDBWriterMockRecorder) AddPlayer(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddPlayer", reflect.TypeOf((*MockDBWriter)(nil).AddPlayer), arg0, arg1)
 }
 
+// AddTournament mocks base method.
+func (m *MockDBWriter) AddTournament(arg0 context.Context, arg1 *entity.Tournament) (*entity.Tournament, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddTournament", arg0, arg1)
+	ret0, _ := ret[0].(*entity.Tournament)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddTournament indicates an expected call of AddTournament.
+func (mr *MockDBWriterMockRecorder) AddTournament(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTournament", reflect.TypeOf((*MockDBWriter)(nil).AddTournament), arg0, arg1)
+}
+
 // DeleteCategory mocks base method.
 func (m *MockDBWriter) DeleteCategory(arg0 context.Context, arg1 string) error {
 	m.ctrl.T.Helper()
@@ -380,6 +499,20 @@ func (m *MockDBWriter) DeletePlayer(arg0 context.Context, arg1 string) error {
 func (mr *MockDBWriterMockRecorder) DeletePlayer(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePlayer", reflect.TypeOf((*MockDBWriter)(nil).DeletePlayer), arg0, arg1)
+}
+
+// DeleteTournament mocks base method.
+func (m *MockDBWriter) DeleteTournament(arg0 context.Context, arg1 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTournament", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTournament indicates an expected call of DeleteTournament.
+func (mr *MockDBWriterMockRecorder) DeleteTournament(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTournament", reflect.TypeOf((*MockDBWriter)(nil).DeleteTournament), arg0, arg1)
 }
 
 // UpdateCategory mocks base method.
@@ -410,4 +543,19 @@ func (m *MockDBWriter) UpdatePlayer(arg0 context.Context, arg1 *entity.Player) (
 func (mr *MockDBWriterMockRecorder) UpdatePlayer(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePlayer", reflect.TypeOf((*MockDBWriter)(nil).UpdatePlayer), arg0, arg1)
+}
+
+// UpdateTournament mocks base method.
+func (m *MockDBWriter) UpdateTournament(arg0 context.Context, arg1 *entity.Tournament) (*entity.Tournament, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateTournament", arg0, arg1)
+	ret0, _ := ret[0].(*entity.Tournament)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateTournament indicates an expected call of UpdateTournament.
+func (mr *MockDBWriterMockRecorder) UpdateTournament(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTournament", reflect.TypeOf((*MockDBWriter)(nil).UpdateTournament), arg0, arg1)
 }
