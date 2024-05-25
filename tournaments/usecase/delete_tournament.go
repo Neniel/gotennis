@@ -21,5 +21,5 @@ func NewDeleteTournament(dbWriter database.DBWriter) DeleteTournament {
 }
 
 func (u *deleteTournament) Do(ctx context.Context, id string) error {
-	return nil
+	return u.DBWriter.DeleteTournament(ctx, id)
 }

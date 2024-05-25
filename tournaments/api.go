@@ -30,12 +30,12 @@ type TournamentMicroservice struct {
 }
 
 type APIServer struct {
-	PlayerMicroservice *TournamentMicroservice
+	TournamentMicroservice *TournamentMicroservice
 }
 
 func (ms *TournamentMicroservice) NewAPIServer() *APIServer {
 	return &APIServer{
-		PlayerMicroservice: &TournamentMicroservice{
+		TournamentMicroservice: &TournamentMicroservice{
 			App:      ms.App,
 			Usecases: ms.Usecases,
 		},
@@ -49,11 +49,11 @@ func (api *APIServer) Run() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /api/ping", api.pingHandler)
-	mux.HandleFunc("GET /api/tournaments", api.listPlayers)
-	mux.HandleFunc("GET /api/tournaments/{id}", api.getPlayer)
-	mux.HandleFunc("POST /api/tournaments", api.addPlayer)
-	mux.HandleFunc("PUT /api/tournaments/{id}", api.updatePlayer)
-	mux.HandleFunc("DELETE /api/tournaments/{id}", api.deletePlayer)
+	mux.HandleFunc("GET /api/tournaments", api.listTournaments)
+	mux.HandleFunc("GET /api/tournaments/{id}", api.getTournament)
+	mux.HandleFunc("POST /api/tournaments", api.addTournament)
+	mux.HandleFunc("PUT /api/tournaments/{id}", api.updateTournament)
+	mux.HandleFunc("DELETE /api/tournaments/{id}", api.deleteTournament)
 
 	log.Logger.Error(http.ListenAndServe(os.Getenv("APP_PORT"), mux).Error())
 }
@@ -66,28 +66,38 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusMethodNotAllowed)
 }
 
-func (api *APIServer) listPlayers(w http.ResponseWriter, r *http.Request) {
+func (api *APIServer) listTournaments(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
-	categories, err := api.PlayerMicroservice.Usecases.ListTournaments.Do(r.Context())
+	categories, err := api.TournamentMicroservice.Usecases.ListTournaments.Do(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		grafana.SendMetric("tournament.list", 1, 1, map[string]interface{}{
+			"status_code": http.StatusInternalServerError,
+		})
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(&categories)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		grafana.SendMetric("tournament.list", 1, 1, map[string]interface{}{
+			"status_code": http.StatusInternalServerError,
+		})
 		return
 	}
+
+	grafana.SendMetric("tournament.list", 1, 1, map[string]interface{}{
+		"status_code": http.StatusOK,
+	})
 }
 
-func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
+func (api *APIServer) getTournament(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	if categoryId := r.PathValue("id"); categoryId != "" {
-		categories, err := api.PlayerMicroservice.Usecases.GetTournament.Do(r.Context(), categoryId)
+		categories, err := api.TournamentMicroservice.Usecases.GetTournament.Do(r.Context(), categoryId)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
-			grafana.SendMetric("get.player", 1, 1, map[string]interface{}{
+			grafana.SendMetric("tournament.get", 1, 1, map[string]interface{}{
 				"status_code": http.StatusBadRequest,
 			})
 			return
@@ -95,7 +105,7 @@ func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
 
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			w.WriteHeader(http.StatusNotFound)
-			grafana.SendMetric("get.player", 1, 1, map[string]interface{}{
+			grafana.SendMetric("tournament.get", 1, 1, map[string]interface{}{
 				"status_code": http.NotFound,
 			})
 			return
@@ -104,58 +114,77 @@ func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
 		err = json.NewEncoder(w).Encode(&categories)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			grafana.SendMetric("get.player", 1, 1, map[string]interface{}{
+			grafana.SendMetric("tournament.get", 1, 1, map[string]interface{}{
 				"status_code": http.StatusInternalServerError,
 			})
 			return
 		}
 
-		grafana.SendMetric("get.player", 1, 1, map[string]interface{}{
+		grafana.SendMetric("tournament.get", 1, 1, map[string]interface{}{
 			"status_code": http.StatusOK,
 		})
 	}
 }
 
-func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
+func (api *APIServer) addTournament(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	var request usecase.CreateTournamentRequest
 	defer r.Body.Close()
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
+		grafana.SendMetric("tournaments.add", 1, 1, map[string]interface{}{
+			"status_code": http.StatusBadRequest,
+		})
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	player, err := api.PlayerMicroservice.Usecases.CreateTournament.CreateTournament(r.Context(), &request)
+	tournament, err := api.TournamentMicroservice.Usecases.CreateTournament.CreateTournament(r.Context(), &request)
 	if err != nil {
+		grafana.SendMetric("tournaments.add", 1, 1, map[string]interface{}{
+			"status_code": http.StatusBadRequest,
+		})
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	err = json.NewEncoder(w).Encode(&player)
+	err = json.NewEncoder(w).Encode(&tournament)
 	if err != nil {
+		grafana.SendMetric("tournaments.add", 1, 1, map[string]interface{}{
+			"status_code": http.StatusInternalServerError,
+		})
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
+
+	grafana.SendMetric("tournaments.add", 1, 1, map[string]interface{}{
+		"status_code": http.StatusCreated,
+	})
 }
-func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
+func (api *APIServer) updateTournament(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 		var request usecase.UpdateTournamentRequest
 		defer r.Body.Close()
 		err := json.NewDecoder(r.Body).Decode(&request)
 		if err != nil {
+			grafana.SendMetric("tournaments.update", 1, 1, map[string]interface{}{
+				"status_code": http.StatusBadRequest,
+			})
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(err.Error()))
 			return
 		}
 
-		category, err := api.PlayerMicroservice.Usecases.UpdateTournament.Do(r.Context(), id, &request)
+		category, err := api.TournamentMicroservice.Usecases.UpdateTournament.Do(r.Context(), id, &request)
 		if err != nil {
+			grafana.SendMetric("tournaments.update", 1, 1, map[string]interface{}{
+				"status_code": http.StatusBadRequest,
+			})
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(err.Error()))
 			return
@@ -164,6 +193,9 @@ func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		err = json.NewEncoder(w).Encode(&category)
 		if err != nil {
+			grafana.SendMetric("tournaments.update", 1, 1, map[string]interface{}{
+				"status_code": http.StatusInternalServerError,
+			})
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
 			return
@@ -171,10 +203,10 @@ func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (api *APIServer) deletePlayer(w http.ResponseWriter, r *http.Request) {
+func (api *APIServer) deleteTournament(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
-		err := api.PlayerMicroservice.Usecases.DeleteTournament.Do(r.Context(), id)
+		err := api.TournamentMicroservice.Usecases.DeleteTournament.Do(r.Context(), id)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
 			return

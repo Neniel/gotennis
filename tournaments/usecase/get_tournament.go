@@ -21,6 +21,6 @@ func NewGetTournament(dbReader database.DBReader) GetTournament {
 	}
 }
 
-func (u *getTournament) Do(tx context.Context, id string) (*entity.Tournament, error) {
-	return nil, nil
+func (u *getTournament) Do(ctx context.Context, id string) (*entity.Tournament, error) {
+	return u.DBReader.GetTournament(ctx, id)
 }

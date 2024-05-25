@@ -22,5 +22,5 @@ func NewListTournaments(dbReader database.DBReader) ListTournaments {
 }
 
 func (u *listTournaments) Do(ctx context.Context) ([]entity.Tournament, error) {
-	return nil, nil
+	return u.DBReader.GetTournaments(ctx)
 }
