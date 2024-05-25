@@ -22,7 +22,7 @@ type Metric struct {
 }
 
 var token string
-var once *sync.Once
+var once sync.Once
 
 func SendMetric(name string, interval uint64, value float64, tags map[string]interface{}) {
 	once.Do(func() {
