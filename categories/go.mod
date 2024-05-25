@@ -3,19 +3,19 @@ module github.com/Neniel/gotennis/categories
 go 1.22.3
 
 require (
-	github.com/Neniel/gotennis/lib/app v0.0.0-20240524221600-2e18421cb76f
-	github.com/Neniel/gotennis/lib/database v0.0.0-20240524221600-2e18421cb76f
-	github.com/Neniel/gotennis/lib/entity v0.0.0-20240524221600-2e18421cb76f
-	github.com/Neniel/gotennis/lib/log v0.0.0-20240524221600-2e18421cb76f
-	github.com/Neniel/gotennis/lib/telemetry v0.0.0-20240524221600-2e18421cb76f
-	github.com/Neniel/gotennis/lib/util v0.0.0-20240524221600-2e18421cb76f
+	github.com/Neniel/gotennis/lib/app v0.0.0-20240525021738-822def68bb4d
+	github.com/Neniel/gotennis/lib/database v0.0.0-20240525021738-822def68bb4d
+	github.com/Neniel/gotennis/lib/entity v0.0.0-20240525021738-822def68bb4d
+	github.com/Neniel/gotennis/lib/log v0.0.0-20240525021738-822def68bb4d
+	github.com/Neniel/gotennis/lib/telemetry v0.0.0-20240525021738-822def68bb4d
+	github.com/Neniel/gotennis/lib/util v0.0.0-20240525021738-822def68bb4d
 	github.com/prometheus/client_golang v1.19.1
 	go.mongodb.org/mongo-driver v1.15.0
 	go.uber.org/mock v0.4.0
 )
 
 require (
-	github.com/Neniel/gotennis/lib/config v0.0.0-20240524221600-2e18421cb76f // indirect
+	github.com/Neniel/gotennis/lib/config v0.0.0-20240525021738-822def68bb4d // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/go-redis/redis v6.15.9+incompatible // indirect
