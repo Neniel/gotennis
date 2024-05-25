@@ -11,7 +11,7 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-func Test_createCategoryUsecase_CreateCategory_Success(t *testing.T) {
+func Test_createCategory_CreateCategory_Success(t *testing.T) {
 	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
 
 	type fields struct {
@@ -60,16 +60,16 @@ func Test_createCategoryUsecase_CreateCategory_Success(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareMocks()
-			uc := &createCategoryUsecase{
+			uc := &createCategory{
 				DBWriter: tt.fields.DBWriter,
 			}
 			got, err := uc.CreateCategory(tt.args.ctx, tt.args.request)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("createCategoryUsecase.CreateCategory() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("createCategory.Do() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("createCategoryUsecase.CreateCategory() = %v, want %v", got, tt.want)
+				t.Errorf("createCategory.Do() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -129,16 +129,16 @@ func Test_createCategoryUsecase_CreateCategory_Failure(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareMocks()
-			uc := &createCategoryUsecase{
+			uc := &createCategory{
 				DBWriter: tt.fields.DBWriter,
 			}
 			got, err := uc.CreateCategory(tt.args.ctx, tt.args.request)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("createCategoryUsecase.CreateCategory() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("createCategory.Do() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("createCategoryUsecase.CreateCategory() = %v, want %v", got, tt.want)
+				t.Errorf("createCategory.Do() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -152,22 +152,22 @@ func TestNewCreateCategoryUsecase(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want CreateCategoryUsecase
+		want CreateCategory
 	}{
 		{
 			name: "Create_category_usecase",
 			args: args{
 				dbWriter: dbWriter,
 			},
-			want: &createCategoryUsecase{
+			want: &createCategory{
 				DBWriter: dbWriter,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewCreateCategoryUsecase(tt.args.dbWriter); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewCreateCategoryUsecase() = %v, want %v", got, tt.want)
+			if got := NewCreateCategory(tt.args.dbWriter); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewCreateCategory() = %v, want %v", got, tt.want)
 			}
 		})
 	}

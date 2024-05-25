@@ -8,21 +8,21 @@ import (
 	"github.com/Neniel/gotennis/lib/database"
 )
 
-type DeleteCategoryUsecase interface {
-	Delete(ctx context.Context, id string) error
+type DeleteCategory interface {
+	Do(ctx context.Context, id string) error
 }
 
-type deleteCategoryUsecase struct {
+type deleteCategory struct {
 	DBWriter database.DBWriter
 }
 
-func NewDeleteCategoryUsecase(dbWriter database.DBWriter) DeleteCategoryUsecase {
-	return &deleteCategoryUsecase{
+func NewDeleteCategory(dbWriter database.DBWriter) DeleteCategory {
+	return &deleteCategory{
 		DBWriter: dbWriter,
 	}
 }
 
-func (uc *deleteCategoryUsecase) Delete(ctx context.Context, id string) error {
+func (uc *deleteCategory) Do(ctx context.Context, id string) error {
 	err := uc.DBWriter.DeleteCategory(ctx, id)
 	if err != nil {
 		log.Println(fmt.Errorf("error at DeleteCategory: %w", err))

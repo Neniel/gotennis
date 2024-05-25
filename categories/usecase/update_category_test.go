@@ -11,7 +11,7 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-func TestNewUpdateCategoryUsecase(t *testing.T) {
+func TestNewUpdateCategory(t *testing.T) {
 	dbReader := database.NewMockDBReader(gomock.NewController(t))
 	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
 	type args struct {
@@ -21,7 +21,7 @@ func TestNewUpdateCategoryUsecase(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want UpdateCategoryUsecase
+		want UpdateCategory
 	}{
 		{
 			name: "Create_a_new_update_category_usecase",
@@ -29,7 +29,7 @@ func TestNewUpdateCategoryUsecase(t *testing.T) {
 				dbReader: dbReader,
 				dbWriter: dbWriter,
 			},
-			want: &updateCategoryUsecase{
+			want: &updateCategory{
 				DBReader: dbReader,
 				DBWriter: dbWriter,
 			},
@@ -37,7 +37,7 @@ func TestNewUpdateCategoryUsecase(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewUpdateCategoryUsecase(tt.args.dbReader, tt.args.dbWriter); !reflect.DeepEqual(got, tt.want) {
+			if got := NewUpdateCategory(tt.args.dbReader, tt.args.dbWriter); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewUpdateCategoryUsecase() = %v, want %v", got, tt.want)
 			}
 		})
@@ -114,7 +114,7 @@ func TestUpdateCategoryRequest_Validate(t *testing.T) {
 	}
 }
 
-func Test_updateCategoryUsecase_UpdateCategory(t *testing.T) {
+func Test_updateCategory_UpdateCategory(t *testing.T) {
 	dbReader := database.NewMockDBReader((gomock.NewController(t)))
 	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
 
@@ -265,17 +265,17 @@ func Test_updateCategoryUsecase_UpdateCategory(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareMocks()
-			uc := &updateCategoryUsecase{
+			uc := &updateCategory{
 				DBReader: tt.fields.DBReader,
 				DBWriter: tt.fields.DBWriter,
 			}
-			got, err := uc.UpdateCategory(tt.args.ctx, tt.args.id, tt.args.request)
+			got, err := uc.Do(tt.args.ctx, tt.args.id, tt.args.request)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("updateCategoryUsecase.UpdateCategory() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("updateCategory.Do() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("updateCategoryUsecase.UpdateCategory() = %v, want %v", got, tt.want)
+				t.Errorf("updateCategory.Do() = %v, want %v", got, tt.want)
 			}
 		})
 	}

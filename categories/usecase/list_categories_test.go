@@ -11,7 +11,7 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-func TestNewListCategoriesUsecase(t *testing.T) {
+func TestNewListCategories(t *testing.T) {
 	dbReader := database.NewMockDBReader(gomock.NewController(t))
 	type args struct {
 		dbReader database.DBReader
@@ -19,28 +19,28 @@ func TestNewListCategoriesUsecase(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want ListCategoriesUsecase
+		want ListCategories
 	}{
 		{
 			name: "Create_new_list_categories_usecase",
 			args: args{
 				dbReader: dbReader,
 			},
-			want: &listCategoriesUsecase{
+			want: &listCategories{
 				DBReader: dbReader,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewListCategoriesUsecase(tt.args.dbReader); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewListCategoriesUsecase() = %v, want %v", got, tt.want)
+			if got := NewListCategories(tt.args.dbReader); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewListCategories() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_listCategoriesUsecase_List_Success(t *testing.T) {
+func Test_listCategories_List_Success(t *testing.T) {
 	dbReader := database.NewMockDBReader(gomock.NewController(t))
 	type fields struct {
 		DBReader database.DBReader
@@ -88,22 +88,22 @@ func Test_listCategoriesUsecase_List_Success(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareUsecase()
-			uc := &listCategoriesUsecase{
+			uc := &listCategories{
 				DBReader: tt.fields.DBReader,
 			}
-			got, err := uc.List(tt.args.ctx)
+			got, err := uc.Do(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("listCategoriesUsecase.List() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("listCategories.Do() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("listCategoriesUsecase.List() = %v, want %v", got, tt.want)
+				t.Errorf("listCategories.Do() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_listCategoriesUsecase_List_Failed(t *testing.T) {
+func Test_listCategories_List_Failed(t *testing.T) {
 	dbReader := database.NewMockDBReader(gomock.NewController(t))
 	type fields struct {
 		DBReader database.DBReader
@@ -137,16 +137,16 @@ func Test_listCategoriesUsecase_List_Failed(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareUsecase()
-			uc := &listCategoriesUsecase{
+			uc := &listCategories{
 				DBReader: tt.fields.DBReader,
 			}
-			got, err := uc.List(tt.args.ctx)
+			got, err := uc.Do(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("listCategoriesUsecase.List() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("listCategories.Do() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("listCategoriesUsecase.List() = %v, want %v", got, tt.want)
+				t.Errorf("listCategories.Do() = %v, want %v", got, tt.want)
 			}
 		})
 	}
