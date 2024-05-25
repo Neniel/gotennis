@@ -19,11 +19,11 @@ import (
 )
 
 type Usecases struct {
-	CreateCategoryUsecase usecase.CreateCategoryUsecase
-	ListCategories        usecase.ListCategoriesUsecase
-	GetCategory           usecase.GetCategoryUsecase
-	UpdateCategory        usecase.UpdateCategoryUsecase
-	DeleteCategory        usecase.DeleteCategoryUsecase
+	CreateCategoryUsecase usecase.CreateCategory
+	ListCategories        usecase.ListCategories
+	GetCategory           usecase.GetCategory
+	UpdateCategory        usecase.UpdateCategory
+	DeleteCategory        usecase.DeleteCategory
 }
 
 type CategoryMicroservice struct {
@@ -71,7 +71,7 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 
 func (api *APIServer) listCategories(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
-	categories, err := api.CategoryMicroservice.Usecases.ListCategories.List(r.Context())
+	categories, err := api.CategoryMicroservice.Usecases.ListCategories.Do(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -87,7 +87,7 @@ func (api *APIServer) listCategories(w http.ResponseWriter, r *http.Request) {
 func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	if categoryId := r.PathValue("id"); categoryId != "" {
-		categories, err := api.CategoryMicroservice.Usecases.GetCategory.Get(r.Context(), categoryId)
+		categories, err := api.CategoryMicroservice.Usecases.GetCategory.Do(r.Context(), categoryId)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
 			grafana.SendMetric("get.category", 1, 1, map[string]interface{}{
@@ -156,7 +156,7 @@ func (api *APIServer) updateCategory(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		category, err := api.CategoryMicroservice.Usecases.UpdateCategory.UpdateCategory(r.Context(), id, &request)
+		category, err := api.CategoryMicroservice.Usecases.UpdateCategory.Do(r.Context(), id, &request)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(err.Error()))
@@ -176,7 +176,7 @@ func (api *APIServer) updateCategory(w http.ResponseWriter, r *http.Request) {
 func (api *APIServer) deleteCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
-		err := api.CategoryMicroservice.Usecases.DeleteCategory.Delete(r.Context(), id)
+		err := api.CategoryMicroservice.Usecases.DeleteCategory.Do(r.Context(), id)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(err.Error()))

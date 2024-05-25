@@ -10,16 +10,16 @@ import (
 	"github.com/Neniel/gotennis/lib/util"
 )
 
-type CreateCategoryUsecase interface {
+type CreateCategory interface {
 	CreateCategory(ctx context.Context, request *CreateCategoryRequest) (*entity.Category, error)
 }
 
-type createCategoryUsecase struct {
+type createCategory struct {
 	DBWriter database.DBWriter
 }
 
-func NewCreateCategoryUsecase(dbWriter database.DBWriter) CreateCategoryUsecase {
-	return &createCategoryUsecase{
+func NewCreateCategory(dbWriter database.DBWriter) CreateCategory {
+	return &createCategory{
 		DBWriter: dbWriter,
 	}
 }
@@ -36,7 +36,7 @@ func (r *CreateCategoryRequest) Validate() error {
 	return nil
 }
 
-func (uc *createCategoryUsecase) CreateCategory(ctx context.Context, request *CreateCategoryRequest) (*entity.Category, error) {
+func (uc *createCategory) CreateCategory(ctx context.Context, request *CreateCategoryRequest) (*entity.Category, error) {
 	if err := request.Validate(); err != nil {
 		log.Logger.Info(fmt.Errorf("could not create category: %w", err).Error())
 		return nil, err

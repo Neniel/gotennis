@@ -9,17 +9,17 @@ import (
 	"github.com/Neniel/gotennis/lib/util"
 )
 
-type UpdateCategoryUsecase interface {
-	UpdateCategory(ctx context.Context, id string, request *UpdateCategoryRequest) (*entity.Category, error)
+type UpdateCategory interface {
+	Do(ctx context.Context, id string, request *UpdateCategoryRequest) (*entity.Category, error)
 }
 
-type updateCategoryUsecase struct {
+type updateCategory struct {
 	DBReader database.DBReader
 	DBWriter database.DBWriter
 }
 
-func NewUpdateCategoryUsecase(dbReader database.DBReader, dbWriter database.DBWriter) UpdateCategoryUsecase {
-	return &updateCategoryUsecase{
+func NewUpdateCategory(dbReader database.DBReader, dbWriter database.DBWriter) UpdateCategory {
+	return &updateCategory{
 		DBReader: dbReader,
 		DBWriter: dbWriter,
 	}
@@ -47,7 +47,7 @@ func (r *UpdateCategoryRequest) Validate(id string) error {
 	return nil
 }
 
-func (uc *updateCategoryUsecase) UpdateCategory(ctx context.Context, id string, request *UpdateCategoryRequest) (*entity.Category, error) {
+func (uc *updateCategory) Do(ctx context.Context, id string, request *UpdateCategoryRequest) (*entity.Category, error) {
 	if err := request.Validate(id); err != nil {
 		return nil, err
 	}

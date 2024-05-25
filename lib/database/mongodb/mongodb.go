@@ -244,6 +244,7 @@ func (mdbw *MongoDbWriter) DeletePlayer(ctx context.Context, id string) error {
 }
 
 func (mdbw *MongoDbWriter) AddTournament(ctx context.Context, tournament *entity.Tournament) (*entity.Tournament, error) {
+	tournament.ID = primitive.NewObjectID()
 	_, err := mdbw.Tournaments.InsertOne(ctx, tournament)
 	if err != nil {
 		return nil, err
@@ -258,7 +259,7 @@ func (mdbw *MongoDbWriter) UpdateTournament(ctx context.Context, tournament *ent
 		return nil, err
 	}
 
-	_, err = mdbw.Categories.ReplaceOne(ctx, bson.M{"_id": tournament.ID}, updatedTournament)
+	_, err = mdbw.Tournaments.ReplaceOne(ctx, bson.M{"_id": tournament.ID}, updatedTournament)
 	if err != nil {
 		return nil, err
 	}

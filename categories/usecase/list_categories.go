@@ -10,21 +10,21 @@ import (
 	"github.com/Neniel/gotennis/lib/entity"
 )
 
-type ListCategoriesUsecase interface {
-	List(ctx context.Context) ([]entity.Category, error)
+type ListCategories interface {
+	Do(ctx context.Context) ([]entity.Category, error)
 }
 
-type listCategoriesUsecase struct {
+type listCategories struct {
 	DBReader database.DBReader
 }
 
-func NewListCategoriesUsecase(dbReader database.DBReader) ListCategoriesUsecase {
-	return &listCategoriesUsecase{
+func NewListCategories(dbReader database.DBReader) ListCategories {
+	return &listCategories{
 		DBReader: dbReader,
 	}
 }
 
-func (uc *listCategoriesUsecase) List(ctx context.Context) ([]entity.Category, error) {
+func (uc *listCategories) Do(ctx context.Context) ([]entity.Category, error) {
 	categories, err := uc.DBReader.GetCategories(ctx)
 	if err != nil {
 		log.Println(fmt.Errorf("error at GetCategories: %w", err))

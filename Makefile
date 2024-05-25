@@ -8,6 +8,32 @@ deploy-db:
 	docker-compose -f docker-compose-db.yml build
 	docker-compose -f docker-compose-db.yml up -d
 
+MICROSERVICE ?=
+VERSION ?=
+buildv2:
+ifeq ($(MICROSERVICE),)
+	@echo "Please provide a value for MICROSERVICE"
+else
+ifeq ($(VERSION),)
+	@echo "Please provide a value for VERSION"
+else
+	docker build ${MICROSERVICE} -t neniel/tennis-${MICROSERVICE}:${VERSION}
+endif
+endif
+
+pushv2:
+ifeq ($(MICROSERVICE),)
+	@echo "Please provide a value for MICROSERVICE"
+else
+ifeq ($(VERSION),)
+	@echo "Please provide a value for VERSION"
+else
+	docker push neniel/tennis-${MICROSERVICE}:${VERSION}
+endif
+endif
+
+
+
 build:
 	docker-compose -f docker-compose.yml build ${SERVICE}
 
@@ -66,18 +92,14 @@ endif
 k8s-uninstall:
 	helm uninstall tennis-app
 
+PROJECT_PATH ?=
 update-dependencies:
+ifeq ($(PROJECT_PATH),)
+	echo Please prvide a PROJECT_PATH
+else
 	@echo "\033[1;33m🎾 Updating dependencies 🎾\033[0m"
-	cd cache ; go get -u ./... ; go mod tidy
-	cd categories ; go get -u ./... ; go mod tidy
-	cd players ; go get -u ./... ; go mod tidy
-	cd lib/app ; go get -u ./... ; go mod tidy
-	cd lib/database ; go get -u ./... ; go mod tidy
-	cd lib/entity ; go get -u ./... ; go mod tidy
-	cd lib/util ; go get -u ./... ; go mod tidy
-	cd lib/telemetry ; go get -u ./... ; go mod tidy
-	cd lib/log ; go get -u ./... ; go mod tidy
-	cd lib/config ; go get -u ./... ; go mod tidy
+	cd ${PROJECT_PATH} ; go get -u ./... ; go mod tidy
+endif
 
 gen-mocks:
 	@echo "\033[1;33m🎾 Generating mocks 🎾\033[0m"
@@ -89,6 +111,7 @@ test:
 	go test ./cache/...
 	go test ./categories/...
 	go test ./players/...
+	go test ./tournaments/...
 	go test ./lib/app/...
 	go test ./lib/database/...
 	go test ./lib/entity/...
