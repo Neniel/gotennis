@@ -2,20 +2,20 @@ module github.com/Neniel/gotennis/tournaments
 
 go 1.22.3
 
-require github.com/Neniel/gotennis/lib/database v0.0.0-20240524224306-467345fc6c13
+require github.com/Neniel/gotennis/lib/database v0.0.0-20240525001956-4d48e83b9a42
 
 require (
-	github.com/Neniel/gotennis/lib/config v0.0.0-20240524224306-467345fc6c13 // indirect
+	github.com/Neniel/gotennis/lib/config v0.0.0-20240525001956-4d48e83b9a42 // indirect
 	github.com/nxadm/tail v1.4.11 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (
-	github.com/Neniel/gotennis/lib/app v0.0.0-20240524224306-467345fc6c13
-	github.com/Neniel/gotennis/lib/entity v0.0.0-20240524224306-467345fc6c13
-	github.com/Neniel/gotennis/lib/log v0.0.0-20240524224306-467345fc6c13
-	github.com/Neniel/gotennis/lib/telemetry v0.0.0-20240524224306-467345fc6c13
-	github.com/Neniel/gotennis/lib/util v0.0.0-20240524224306-467345fc6c13 // indirect
+	github.com/Neniel/gotennis/lib/app v0.0.0-20240525001956-4d48e83b9a42
+	github.com/Neniel/gotennis/lib/entity v0.0.0-20240525001956-4d48e83b9a42
+	github.com/Neniel/gotennis/lib/log v0.0.0-20240525001956-4d48e83b9a42
+	github.com/Neniel/gotennis/lib/telemetry v0.0.0-20240525001956-4d48e83b9a42
+	github.com/Neniel/gotennis/lib/util v0.0.0-20240525001956-4d48e83b9a42 // indirect
 	github.com/go-redis/redis v6.15.9+incompatible // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
