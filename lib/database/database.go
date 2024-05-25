@@ -4,10 +4,8 @@ import (
 	"context"
 
 	"github.com/Neniel/gotennis/lib/database/mongodb"
-	redisdb "github.com/Neniel/gotennis/lib/database/redis"
 	"github.com/Neniel/gotennis/lib/entity"
 
-	"github.com/go-redis/redis"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -23,6 +21,9 @@ type DBReader interface {
 	GetPlayers(context.Context) ([]entity.Player, error)
 	GetPlayer(context.Context, string) (*entity.Player, error)
 	IsAvailable(context.Context, string, string) (bool, error)
+
+	GetTournaments(context.Context) ([]entity.Tournament, error)
+	GetTournament(context.Context, string) (*entity.Tournament, error)
 }
 
 type DBWriter interface {
@@ -33,6 +34,10 @@ type DBWriter interface {
 	AddPlayer(context.Context, *entity.Player) (*entity.Player, error)
 	UpdatePlayer(context.Context, *entity.Player) (*entity.Player, error)
 	DeletePlayer(context.Context, string) error
+
+	AddTournament(context.Context, *entity.Tournament) (*entity.Tournament, error)
+	UpdateTournament(context.Context, *entity.Tournament) (*entity.Tournament, error)
+	DeleteTournament(context.Context, string) error
 }
 
 func NewDatabaseReader(client interface{}) DBReader {
@@ -55,10 +60,12 @@ func NewDatabaseWriter(client interface{}) DBWriter {
 		return mongodb.NewMongoDbWriter(mongoClient)
 	}
 
-	redisClient, isRedisClient := client.(*redis.Client)
-	if isRedisClient {
-		return redisdb.NewRedisWriter(redisClient)
-	}
+	/*
+		redisClient, isRedisClient := client.(*redis.Client)
+		if isRedisClient {
+			return redisdb.NewRedisWriter(redisClient)
+		}
+	*/
 
 	panic("client is not supported")
 }
