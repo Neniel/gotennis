@@ -59,6 +59,7 @@ func (api *APIServer) Run() {
 }
 
 func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodGet {
 		w.Write([]byte("Ok"))
 		return
@@ -67,6 +68,7 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) listTournaments(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	categories, err := api.TournamentMicroservice.Usecases.ListTournaments.Do(r.Context())
 	if err != nil {
@@ -92,6 +94,7 @@ func (api *APIServer) listTournaments(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) getTournament(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if categoryId := r.PathValue("id"); categoryId != "" {
 		categories, err := api.TournamentMicroservice.Usecases.GetTournament.Do(r.Context(), categoryId)
@@ -127,6 +130,7 @@ func (api *APIServer) getTournament(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) addTournament(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	var request usecase.CreateTournamentRequest
 	defer r.Body.Close()
@@ -166,6 +170,7 @@ func (api *APIServer) addTournament(w http.ResponseWriter, r *http.Request) {
 	})
 }
 func (api *APIServer) updateTournament(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 		var request usecase.UpdateTournamentRequest
@@ -204,6 +209,7 @@ func (api *APIServer) updateTournament(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) deleteTournament(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 		err := api.TournamentMicroservice.Usecases.DeleteTournament.Do(r.Context(), id)
