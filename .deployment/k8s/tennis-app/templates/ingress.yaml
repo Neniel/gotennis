@@ -4,6 +4,11 @@ metadata:
   name: ingress-wildcard-host
   namespace: {{ .Values.app.namespace }}
 spec:
+  tls:
+  - hosts:
+    - categories.tennis.dev
+    - players.tennis.dev
+    secretName: tls-secret
   rules:
   - host: "categories.tennis.dev"
     http:

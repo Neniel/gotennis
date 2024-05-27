@@ -6,20 +6,20 @@ import (
 	"github.com/Neniel/gotennis/lib/database"
 )
 
-type DeletePlayerUsecase interface {
-	Delete(ctx context.Context, id string) error
+type DeletePlayer interface {
+	Do(ctx context.Context, id string) error
 }
 
-type deletePlayerUsecase struct {
+type deletePlayer struct {
 	DBWriter database.DBWriter
 }
 
-func NewDeletePlayerUsecase(dbWriter database.DBWriter) DeletePlayerUsecase {
-	return &deletePlayerUsecase{
+func NewDeletePlayer(dbWriter database.DBWriter) DeletePlayer {
+	return &deletePlayer{
 		DBWriter: dbWriter,
 	}
 }
 
-func (uc *deletePlayerUsecase) Delete(ctx context.Context, id string) error {
+func (uc *deletePlayer) Do(ctx context.Context, id string) error {
 	return uc.DBWriter.DeletePlayer(context.Background(), id)
 }

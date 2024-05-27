@@ -6,7 +6,7 @@ import (
 	"github.com/Neniel/gotennis/lib/database"
 )
 
-type ValidateAliasUsecase interface {
+type ValidateAlias interface {
 	IsAvailable(ctx context.Context, alias *string) (bool, error)
 }
 
@@ -14,7 +14,7 @@ type validateAliasUsecase struct {
 	DBReader database.DBReader
 }
 
-func NewValidateAliasUsecase(dbReader database.DBReader) ValidateAliasUsecase {
+func NewValidateAliasUsecase(dbReader database.DBReader) ValidateAlias {
 	return &validateAliasUsecase{
 		DBReader: dbReader,
 	}

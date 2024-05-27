@@ -17,11 +17,11 @@ func main() {
 	ms := &PlayerMicroservice{
 		App: app,
 		Usecases: &Usecases{
-			CreatePlayerUsecase: usecase.NewCreatePlayerUsecase(dbWriter, dbReader),
-			DeletePlayerUsecase: usecase.NewDeletePlayerUsecase(dbWriter),
-			ListPlayersUsecase:  usecase.NewListPlayersUsecase(dbReader),
-			GetPlayerUsecase:    usecase.NewGetPlayerUsecase(dbReader),
-			UpdatePlayerUsecase: usecase.NewUpdatePlayerUsecase(dbWriter, dbReader),
+			CreatePlayer: usecase.NewCreatePlayer(dbWriter, dbReader),
+			DeletePlayer: usecase.NewDeletePlayer(dbWriter),
+			ListPlayers:  usecase.NewListPlayers(dbReader),
+			GetPlayer:    usecase.NewGetPlayer(dbReader),
+			UpdatePlayer: usecase.NewUpdatePlayer(dbWriter, dbReader),
 		},
 	}
 

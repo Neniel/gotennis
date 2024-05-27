@@ -6,7 +6,7 @@ import (
 	"github.com/Neniel/gotennis/lib/database"
 )
 
-type ValidateEmailUsecase interface {
+type ValidateEmail interface {
 	IsAvailable(ctx context.Context, email string) (bool, error)
 }
 
@@ -14,7 +14,7 @@ type validateEmailUsecaseUsecase struct {
 	DBReader database.DBReader
 }
 
-func NewValidateEmailUsecase(dbReader database.DBReader) ValidateEmailUsecase {
+func NewValidateEmailUsecase(dbReader database.DBReader) ValidateEmail {
 	return &validateEmailUsecaseUsecase{
 		DBReader: dbReader,
 	}

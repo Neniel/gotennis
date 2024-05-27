@@ -6,7 +6,7 @@ import (
 	"github.com/Neniel/gotennis/lib/database"
 )
 
-type ValidateGovernmentIDUsecase interface {
+type ValidateGovernmentID interface {
 	IsAvailable(ctx context.Context, governmentID string) (bool, error)
 }
 
@@ -14,7 +14,7 @@ type validateGovernmentIDUsecase struct {
 	DBReader database.DBReader
 }
 
-func NewValidateGovernmentIDUsecase(dbReader database.DBReader) ValidateGovernmentIDUsecase {
+func NewValidateGovernmentIDUsecase(dbReader database.DBReader) ValidateGovernmentID {
 	return &validateGovernmentIDUsecase{
 		DBReader: dbReader,
 	}

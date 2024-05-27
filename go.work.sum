@@ -1,3 +1,4 @@
+github.com/Neniel/gotennis v0.0.8/go.mod h1:sFO4/rsBR+IMHtLgGeA5fF47YyhIuD5TKH7LHsoBhAU=
 github.com/Neniel/gotennis/config v0.0.0-20240524060653-2b8f363879c4/go.mod h1:HdwzfW+LIkyLfLvKb8dJz0gEF3wDz18RnyMM/Ae4sNw=
 github.com/Neniel/gotennis/lib/app v0.0.0-20240524201638-a576cbabafa4/go.mod h1:4I0KEXMkXM73t2uObu8vxw7vbR5XeFVQAqUgZS00Hi0=
 github.com/Neniel/gotennis/lib/database v0.0.0-20240524201638-a576cbabafa4/go.mod h1:lpX5hFKYlBxrKwKbx4zSbrs3bdZkMs2e7E7i6aSWAZ4=

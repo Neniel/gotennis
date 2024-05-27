@@ -70,6 +70,7 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) listCategories(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	categories, err := api.CategoryMicroservice.Usecases.ListCategories.Do(r.Context())
 	if err != nil {
@@ -85,6 +86,7 @@ func (api *APIServer) listCategories(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if categoryId := r.PathValue("id"); categoryId != "" {
 		categories, err := api.CategoryMicroservice.Usecases.GetCategory.Do(r.Context(), categoryId)
@@ -119,6 +121,7 @@ func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	var request usecase.CreateCategoryRequest
 	defer r.Body.Close()
@@ -145,6 +148,7 @@ func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (api *APIServer) updateCategory(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 		var request usecase.UpdateCategoryRequest
@@ -174,6 +178,7 @@ func (api *APIServer) updateCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) deleteCategory(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 		err := api.CategoryMicroservice.Usecases.DeleteCategory.Do(r.Context(), id)

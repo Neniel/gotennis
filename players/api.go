@@ -17,12 +17,13 @@ import (
 )
 
 type Usecases struct {
-	CreatePlayerUsecase usecase.CreatePlayerUsecase
-	SavePlayerUsecase   interface{}
-	ListPlayersUsecase  usecase.ListPlayersUsecase
-	GetPlayerUsecase    usecase.GetPlayerUsecase
-	UpdatePlayerUsecase usecase.UpdatePlayerUsecase
-	DeletePlayerUsecase usecase.DeletePlayerUsecase
+	CreatePlayer          usecase.CreatePlayer
+	SavePlayer            interface{}
+	ListPlayers           usecase.ListPlayers
+	GetPlayer             usecase.GetPlayer
+	UpdatePlayer          usecase.UpdatePlayer
+	PartiallyUpdatePlayer usecase.PartialltUpdatePlayer
+	DeletePlayer          usecase.DeletePlayer
 }
 
 type PlayerMicroservice struct {
@@ -54,12 +55,14 @@ func (api *APIServer) Run() {
 	mux.HandleFunc("GET /players/{id}", api.getPlayer)
 	mux.HandleFunc("POST /players", api.addPlayer)
 	mux.HandleFunc("PUT /players/{id}", api.updatePlayer)
+	mux.HandleFunc("PATCH /players/{id}", api.partiallyUpdatePlayer)
 	mux.HandleFunc("DELETE /players/{id}", api.deletePlayer)
 
 	log.Logger.Error(http.ListenAndServe(os.Getenv("APP_PORT"), mux).Error())
 }
 
 func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodGet {
 		w.Write([]byte("Ok"))
 		return
@@ -68,8 +71,9 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) listPlayers(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
-	categories, err := api.PlayerMicroservice.Usecases.ListPlayersUsecase.List(r.Context())
+	categories, err := api.PlayerMicroservice.Usecases.ListPlayers.Do(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -83,9 +87,10 @@ func (api *APIServer) listPlayers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if categoryId := r.PathValue("id"); categoryId != "" {
-		categories, err := api.PlayerMicroservice.Usecases.GetPlayerUsecase.Get(r.Context(), categoryId)
+		categories, err := api.PlayerMicroservice.Usecases.GetPlayer.Do(r.Context(), categoryId)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
 			grafana.SendMetric("get.player", 1, 1, map[string]interface{}{
@@ -118,6 +123,7 @@ func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	var request usecase.CreatePlayerRequest
 	defer r.Body.Close()
@@ -128,7 +134,7 @@ func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	player, err := api.PlayerMicroservice.Usecases.CreatePlayerUsecase.CreatePlayer(r.Context(), &request)
+	player, err := api.PlayerMicroservice.Usecases.CreatePlayer.Do(r.Context(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -143,7 +149,9 @@ func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
 func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 		var request usecase.UpdatePlayerRequest
@@ -155,7 +163,36 @@ func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		category, err := api.PlayerMicroservice.Usecases.UpdatePlayerUsecase.UpdatePlayer(r.Context(), id, &request)
+		category, err := api.PlayerMicroservice.Usecases.UpdatePlayer.Do(r.Context(), id, &request)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		err = json.NewEncoder(w).Encode(&category)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+	}
+}
+
+func (api *APIServer) partiallyUpdatePlayer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+	if id := r.PathValue("id"); id != "" {
+		var request usecase.PartiallyUpdatePlayerRequest
+		defer r.Body.Close()
+		err := json.NewDecoder(r.Body).Decode(&request)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		category, err := api.PlayerMicroservice.Usecases.PartiallyUpdatePlayer.Do(r.Context(), id, &request)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(err.Error()))
@@ -173,9 +210,10 @@ func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) deletePlayer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
-		err := api.PlayerMicroservice.Usecases.DeletePlayerUsecase.Delete(r.Context(), id)
+		err := api.PlayerMicroservice.Usecases.DeletePlayer.Do(r.Context(), id)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
 			return

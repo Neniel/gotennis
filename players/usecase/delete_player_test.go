@@ -19,21 +19,21 @@ func TestNewDeletePlayerUsecase(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want DeletePlayerUsecase
+		want DeletePlayer
 	}{
 		{
 			name: "Create_new_usecase_delete_player",
 			args: args{
 				dbWriter: dbWriter,
 			},
-			want: &deletePlayerUsecase{
+			want: &deletePlayer{
 				DBWriter: dbWriter,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewDeletePlayerUsecase(tt.args.dbWriter); !reflect.DeepEqual(got, tt.want) {
+			if got := NewDeletePlayer(tt.args.dbWriter); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewDeletePlayerUsecase() = %v, want %v", got, tt.want)
 			}
 		})
@@ -90,10 +90,10 @@ func Test_deletePlayerUsecase_Delete(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareUsecase()
-			uc := &deletePlayerUsecase{
+			uc := &deletePlayer{
 				DBWriter: tt.fields.DBWriter,
 			}
-			if err := uc.Delete(tt.args.ctx, tt.args.id); (err != nil) != tt.wantErr {
+			if err := uc.Do(tt.args.ctx, tt.args.id); (err != nil) != tt.wantErr {
 				t.Errorf("deletePlayerUsecase.Delete() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
