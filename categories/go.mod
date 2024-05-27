@@ -15,7 +15,6 @@ require (
 )
 
 require (
-	github.com/Neniel/gotennis v0.0.8 // indirect
 	github.com/Neniel/gotennis/lib/config v0.0.0-20240525021738-822def68bb4d // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
