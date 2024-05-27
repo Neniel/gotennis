@@ -73,7 +73,10 @@ k8s-configure-kind:
 	kubectl wait --namespace ingress-nginx \
   --for=condition=ready pod \
   --selector=app.kubernetes.io/component=controller \
-  --timeout=90s
+  --timeout=180s
+
+	kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager.yaml
+	cmctl check api --wait=2m
 
 k8s-deploy:
 ifneq ($(ENV),)

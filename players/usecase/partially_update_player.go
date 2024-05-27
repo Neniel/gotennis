@@ -13,20 +13,20 @@ import (
 	"github.com/Neniel/gotennis/lib/util"
 )
 
-type UpdatePlayerRequest struct {
+type PartiallyUpdatePlayerRequest struct {
 	ID           string           `json:"id"`
-	GovernmentID string           `json:"government_id"`
-	FirstName    string           `json:"first_name"`
-	MiddleName   string           `json:"middle_name"`
-	LastName     string           `json:"last_name"`
+	GovernmentID string           `json:"government_id,omitempty"`
+	FirstName    string           `json:"first_name,omitempty"`
+	MiddleName   string           `json:"middle_name,omitempty"`
+	LastName     string           `json:"last_name,omitempty"`
 	Category     *entity.Category `json:"category,omitempty"`
 	Birthdate    *time.Time       `json:"birthdate,omitempty"`
-	PhoneNumber  string           `json:"phone_number"`
-	Email        string           `json:"email"`
+	PhoneNumber  string           `json:"phone_number,omitempty"`
+	Email        string           `json:"email,omitempty"`
 	Alias        *string          `json:"alias,omitempty"`
 }
 
-func (r *UpdatePlayerRequest) Validate(id string) error {
+func (r *PartiallyUpdatePlayerRequest) Validate(id string) error {
 	if id == "" {
 		return errors.New("id is required in request")
 	}
@@ -70,27 +70,27 @@ func (r *UpdatePlayerRequest) Validate(id string) error {
 	return nil
 }
 
-type UpdatePlayer interface {
-	Do(ctx context.Context, id string, request *UpdatePlayerRequest) (*entity.Player, error)
+type PartialltUpdatePlayer interface {
+	Do(ctx context.Context, id string, request *PartiallyUpdatePlayerRequest) (*entity.Player, error)
 }
 
-type internalUpdatePlayer struct {
+type internalPartiallyUpdatePlayer struct {
 	ValidateGovernmentID ValidateGovernmentID
 	ValidateEmail        ValidateEmail
 	ValidateAlias        ValidateAlias
 }
 
-type updatePlayerUsecase struct {
-	*internalUpdatePlayer
+type partiallyUpdatePlayer struct {
+	*internalPartiallyUpdatePlayer
 	DBWriter database.DBWriter
 	DBReader database.DBReader
 }
 
-func NewUpdatePlayer(dbWriter database.DBWriter, dbReader database.DBReader) UpdatePlayer {
-	return &updatePlayerUsecase{
+func NewPartiallyUpdatePlayer(dbWriter database.DBWriter, dbReader database.DBReader) PartialltUpdatePlayer {
+	return &partiallyUpdatePlayer{
 		DBWriter: dbWriter,
 		DBReader: dbReader,
-		internalUpdatePlayer: &internalUpdatePlayer{
+		internalPartiallyUpdatePlayer: &internalPartiallyUpdatePlayer{
 			ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 			ValidateEmail:        NewValidateEmailUsecase(dbReader),
 			ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -98,13 +98,13 @@ func NewUpdatePlayer(dbWriter database.DBWriter, dbReader database.DBReader) Upd
 	}
 }
 
-func (uc *updatePlayerUsecase) Do(ctx context.Context, id string, request *UpdatePlayerRequest) (*entity.Player, error) {
+func (uc *partiallyUpdatePlayer) Do(ctx context.Context, id string, request *PartiallyUpdatePlayerRequest) (*entity.Player, error) {
 	if err := request.Validate(id); err != nil {
 		log.Logger.Error(fmt.Errorf("couldn't create player. Error when validating request: %w", err).Error())
 		return nil, err
 	}
 
-	isAvailableGovernmentID, err := uc.internalUpdatePlayer.ValidateGovernmentID.IsAvailable(ctx, request.GovernmentID)
+	isAvailableGovernmentID, err := uc.internalPartiallyUpdatePlayer.ValidateGovernmentID.IsAvailable(ctx, request.GovernmentID)
 	if err != nil {
 		log.Logger.Error(fmt.Errorf("couldn't update player. Error when validating government ID: %w", err).Error())
 		return nil, err
@@ -115,7 +115,7 @@ func (uc *updatePlayerUsecase) Do(ctx context.Context, id string, request *Updat
 		return nil, fmt.Errorf("couldn't update player. There is another player registered with the provided government ID")
 	}
 
-	isAvailableEmail, err := uc.internalUpdatePlayer.ValidateEmail.IsAvailable(ctx, request.Email)
+	isAvailableEmail, err := uc.internalPartiallyUpdatePlayer.ValidateEmail.IsAvailable(ctx, request.Email)
 	if err != nil {
 		log.Logger.Error(fmt.Errorf("couldn't update player. Error when validating email: %w", err).Error())
 		return nil, err
@@ -126,7 +126,7 @@ func (uc *updatePlayerUsecase) Do(ctx context.Context, id string, request *Updat
 		return nil, fmt.Errorf("couldn't update player. There is another player registered with the provided email")
 	}
 
-	isAvailableAlias, err := uc.internalUpdatePlayer.ValidateAlias.IsAvailable(ctx, request.Alias)
+	isAvailableAlias, err := uc.internalPartiallyUpdatePlayer.ValidateAlias.IsAvailable(ctx, request.Alias)
 	if err != nil {
 		log.Logger.Error(fmt.Errorf("couldn't update player. Error when validating alias: %w", err).Error())
 		return nil, err

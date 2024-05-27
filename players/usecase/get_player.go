@@ -7,20 +7,20 @@ import (
 	"github.com/Neniel/gotennis/lib/entity"
 )
 
-type GetPlayerUsecase interface {
-	Get(ctx context.Context, id string) (*entity.Player, error)
+type GetPlayer interface {
+	Do(ctx context.Context, id string) (*entity.Player, error)
 }
 
-type getPlayerUsecase struct {
+type getPlayer struct {
 	DBReader database.DBReader
 }
 
-func NewGetPlayerUsecase(dbReader database.DBReader) GetPlayerUsecase {
-	return &getPlayerUsecase{
+func NewGetPlayer(dbReader database.DBReader) GetPlayer {
+	return &getPlayer{
 		DBReader: dbReader,
 	}
 }
 
-func (uc *getPlayerUsecase) Get(ctx context.Context, id string) (*entity.Player, error) {
+func (uc *getPlayer) Do(ctx context.Context, id string) (*entity.Player, error) {
 	return uc.DBReader.GetPlayer(ctx, id)
 }
