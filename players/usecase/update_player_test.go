@@ -259,7 +259,7 @@ func TestNewUpdatePlayerUsecase(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want UpdatePlayerUsecase
+		want UpdatePlayer
 	}{
 		{
 			name: "Create_new_update_player_usecase",
@@ -270,7 +270,7 @@ func TestNewUpdatePlayerUsecase(t *testing.T) {
 			want: &updatePlayerUsecase{
 				DBWriter: dbWriter,
 				DBReader: dbReader,
-				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+				internalUpdatePlayer: &internalUpdatePlayer{
 					ValidateGovernmentID: &validateGovernmentIDUsecase{
 						DBReader: dbReader,
 					},
@@ -286,7 +286,7 @@ func TestNewUpdatePlayerUsecase(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewUpdatePlayerUsecase(tt.args.dbWriter, tt.args.dbReader); !reflect.DeepEqual(got, tt.want) {
+			if got := NewUpdatePlayer(tt.args.dbWriter, tt.args.dbReader); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewUpdatePlayerUsecase() = %v, want %v", got, tt.want)
 			}
 		})
@@ -299,7 +299,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Success(t *testing.T) {
 	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
 
 	type fields struct {
-		internalUpdatePlayerUsecases *internalUpdatePlayerUsecases
+		internalUpdatePlayerUsecases *internalUpdatePlayer
 		DBWriter                     database.DBWriter
 		DBReader                     database.DBReader
 	}
@@ -319,7 +319,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Success(t *testing.T) {
 		{
 			name: "Update_player",
 			fields: fields{
-				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+				internalUpdatePlayerUsecases: &internalUpdatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 					ValidateEmail:        NewValidateEmailUsecase(dbReader),
 					ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -403,11 +403,11 @@ func Test_updatePlayerUsecase_UpdatePlayer_Success(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareUsecase()
 			uc := &updatePlayerUsecase{
-				internalUpdatePlayerUsecases: tt.fields.internalUpdatePlayerUsecases,
-				DBWriter:                     tt.fields.DBWriter,
-				DBReader:                     tt.fields.DBReader,
+				internalUpdatePlayer: tt.fields.internalUpdatePlayerUsecases,
+				DBWriter:             tt.fields.DBWriter,
+				DBReader:             tt.fields.DBReader,
 			}
-			got, err := uc.UpdatePlayer(tt.args.ctx, tt.args.id, tt.args.request)
+			got, err := uc.Do(tt.args.ctx, tt.args.id, tt.args.request)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("updatePlayerUsecase.UpdatePlayer() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -425,7 +425,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 	dbWriter := database.NewMockDBWriter(gomock.NewController(t))
 
 	type fields struct {
-		internalUpdatePlayerUsecases *internalUpdatePlayerUsecases
+		internalUpdatePlayerUsecases *internalUpdatePlayer
 		DBWriter                     database.DBWriter
 		DBReader                     database.DBReader
 	}
@@ -445,7 +445,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 		{
 			name: "Cannot_update_player_due_to_validation_failure_(missing_government_id)",
 			fields: fields{
-				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+				internalUpdatePlayerUsecases: &internalUpdatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 					ValidateEmail:        NewValidateEmailUsecase(dbReader),
 					ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -476,7 +476,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 		{
 			name: "Cannot_update_player_due_to_government_id_is_not_available",
 			fields: fields{
-				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+				internalUpdatePlayerUsecases: &internalUpdatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 					ValidateEmail:        NewValidateEmailUsecase(dbReader),
 					ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -509,7 +509,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 		{
 			name: "Cannot_update_player_due_to_government_id_might_not_available",
 			fields: fields{
-				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+				internalUpdatePlayerUsecases: &internalUpdatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 					ValidateEmail:        NewValidateEmailUsecase(dbReader),
 					ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -542,7 +542,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 		{
 			name: "Cannot_update_player_due_to_email_is_not_available",
 			fields: fields{
-				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+				internalUpdatePlayerUsecases: &internalUpdatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 					ValidateEmail:        NewValidateEmailUsecase(dbReader),
 					ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -576,7 +576,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 		{
 			name: "Cannot_update_player_due_to_email_might_not_available",
 			fields: fields{
-				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+				internalUpdatePlayerUsecases: &internalUpdatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 					ValidateEmail:        NewValidateEmailUsecase(dbReader),
 					ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -610,7 +610,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 		{
 			name: "Cannot_update_player_due_to_alias_is_not_available",
 			fields: fields{
-				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+				internalUpdatePlayerUsecases: &internalUpdatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 					ValidateEmail:        NewValidateEmailUsecase(dbReader),
 					ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -645,7 +645,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 		{
 			name: "Cannot_update_player_due_to_alias_might_not_available",
 			fields: fields{
-				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+				internalUpdatePlayerUsecases: &internalUpdatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 					ValidateEmail:        NewValidateEmailUsecase(dbReader),
 					ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -680,7 +680,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 		{
 			name: "Cannot_update_player_due_to_could_not_retrieve_player",
 			fields: fields{
-				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+				internalUpdatePlayerUsecases: &internalUpdatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 					ValidateEmail:        NewValidateEmailUsecase(dbReader),
 					ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -716,7 +716,7 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 		{
 			name: "Cannot_update_player_due_to_could_not_update_player",
 			fields: fields{
-				internalUpdatePlayerUsecases: &internalUpdatePlayerUsecases{
+				internalUpdatePlayerUsecases: &internalUpdatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 					ValidateEmail:        NewValidateEmailUsecase(dbReader),
 					ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -766,11 +766,11 @@ func Test_updatePlayerUsecase_UpdatePlayer_Failure(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareUsecase()
 			uc := &updatePlayerUsecase{
-				internalUpdatePlayerUsecases: tt.fields.internalUpdatePlayerUsecases,
-				DBWriter:                     tt.fields.DBWriter,
-				DBReader:                     tt.fields.DBReader,
+				internalUpdatePlayer: tt.fields.internalUpdatePlayerUsecases,
+				DBWriter:             tt.fields.DBWriter,
+				DBReader:             tt.fields.DBReader,
 			}
-			got, err := uc.UpdatePlayer(tt.args.ctx, tt.args.id, tt.args.request)
+			got, err := uc.Do(tt.args.ctx, tt.args.id, tt.args.request)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("updatePlayerUsecase.UpdatePlayer() error = %v, wantErr %v", err, tt.wantErr)
 				return

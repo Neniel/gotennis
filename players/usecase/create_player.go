@@ -55,25 +55,25 @@ func (r *CreatePlayerRequest) Validate() error {
 	return nil
 }
 
-type CreatePlayerUsecase interface {
-	CreatePlayer(ctx context.Context, request *CreatePlayerRequest) (*entity.Player, error)
+type CreatePlayer interface {
+	Do(ctx context.Context, request *CreatePlayerRequest) (*entity.Player, error)
 }
 
-type internalCreatePlayerUsecases struct {
-	ValidateGovernmentID ValidateGovernmentIDUsecase
-	ValidateEmail        ValidateEmailUsecase
-	ValidateAlias        ValidateAliasUsecase
+type internalCreatePlayer struct {
+	ValidateGovernmentID ValidateGovernmentID
+	ValidateEmail        ValidateEmail
+	ValidateAlias        ValidateAlias
 }
 
-type createPlayerUsecase struct {
-	*internalCreatePlayerUsecases
+type createPlayer struct {
+	*internalCreatePlayer
 	DBWriter database.DBWriter
 }
 
-func NewCreatePlayerUsecase(dbWriter database.DBWriter, dbReader database.DBReader) CreatePlayerUsecase {
-	return &createPlayerUsecase{
+func NewCreatePlayer(dbWriter database.DBWriter, dbReader database.DBReader) CreatePlayer {
+	return &createPlayer{
 		DBWriter: dbWriter,
-		internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+		internalCreatePlayer: &internalCreatePlayer{
 			ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 			ValidateEmail:        NewValidateEmailUsecase(dbReader),
 			ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -81,13 +81,13 @@ func NewCreatePlayerUsecase(dbWriter database.DBWriter, dbReader database.DBRead
 	}
 }
 
-func (uc *createPlayerUsecase) CreatePlayer(ctx context.Context, request *CreatePlayerRequest) (*entity.Player, error) {
+func (uc *createPlayer) Do(ctx context.Context, request *CreatePlayerRequest) (*entity.Player, error) {
 	if err := request.Validate(); err != nil {
 		log.Logger.Error(fmt.Errorf("couldn't create player. Error when validating request: %w", err).Error())
 		return nil, err
 	}
 
-	isAvailableGovernmentID, err := uc.internalCreatePlayerUsecases.ValidateGovernmentID.IsAvailable(ctx, request.GovernmentID)
+	isAvailableGovernmentID, err := uc.internalCreatePlayer.ValidateGovernmentID.IsAvailable(ctx, request.GovernmentID)
 	if err != nil {
 		log.Logger.Error(fmt.Errorf("couldn't create player. Error when validating government ID: %w", err).Error())
 		return nil, err
@@ -98,7 +98,7 @@ func (uc *createPlayerUsecase) CreatePlayer(ctx context.Context, request *Create
 		return nil, fmt.Errorf("couldn't create player. There is another player registered with the provided government ID")
 	}
 
-	isAvailableEmail, err := uc.internalCreatePlayerUsecases.ValidateEmail.IsAvailable(ctx, request.Email)
+	isAvailableEmail, err := uc.internalCreatePlayer.ValidateEmail.IsAvailable(ctx, request.Email)
 	if err != nil {
 		log.Logger.Error(fmt.Errorf("couldn't create player. Error when validating email: %w", err).Error())
 		return nil, err
@@ -109,7 +109,7 @@ func (uc *createPlayerUsecase) CreatePlayer(ctx context.Context, request *Create
 		return nil, fmt.Errorf("couldn't create player. There is another player registered with the provided email")
 	}
 
-	isAvailableAlias, err := uc.internalCreatePlayerUsecases.ValidateAlias.IsAvailable(ctx, request.Alias)
+	isAvailableAlias, err := uc.internalCreatePlayer.ValidateAlias.IsAvailable(ctx, request.Alias)
 	if err != nil {
 		log.Logger.Error(fmt.Errorf("couldn't create player. Error when validating alias: %w", err).Error())
 		return nil, err

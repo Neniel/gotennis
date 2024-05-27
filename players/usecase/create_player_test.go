@@ -17,7 +17,7 @@ func Test_createPlayerUsecase_CreatePlayer_Success(t *testing.T) {
 	dbWriterMock := database.NewMockDBWriter(gomock.NewController(t))
 
 	type fields struct {
-		internalCreatePlayerUsecases *internalCreatePlayerUsecases
+		internalCreatePlayerUsecases *internalCreatePlayer
 		DBWriter                     database.DBWriter
 	}
 	type args struct {
@@ -35,7 +35,7 @@ func Test_createPlayerUsecase_CreatePlayer_Success(t *testing.T) {
 		{
 			name: "Try_to_create_player_with_all_valid_data",
 			fields: fields{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+				internalCreatePlayerUsecases: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReaderMock),
 					ValidateEmail:        NewValidateEmailUsecase(dbReaderMock),
 					ValidateAlias:        NewValidateAliasUsecase(dbReaderMock),
@@ -84,11 +84,11 @@ func Test_createPlayerUsecase_CreatePlayer_Success(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareMocks()
-			uc := &createPlayerUsecase{
-				internalCreatePlayerUsecases: tt.fields.internalCreatePlayerUsecases,
-				DBWriter:                     tt.fields.DBWriter,
+			uc := &createPlayer{
+				internalCreatePlayer: tt.fields.internalCreatePlayerUsecases,
+				DBWriter:             tt.fields.DBWriter,
 			}
-			got, err := uc.CreatePlayer(tt.args.ctx, tt.args.request)
+			got, err := uc.Do(tt.args.ctx, tt.args.request)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("createPlayerUsecase.CreatePlayer() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -105,7 +105,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 	dbWriterMock := database.NewMockDBWriter(gomock.NewController(t))
 
 	type fields struct {
-		internalCreatePlayerUsecases *internalCreatePlayerUsecases
+		internalCreatePlayerUsecases *internalCreatePlayer
 		DBWriter                     database.DBWriter
 	}
 	type args struct {
@@ -123,7 +123,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 		{
 			name: "Fails_when_GovernmentID_in_request_is_empty",
 			fields: fields{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+				internalCreatePlayerUsecases: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReaderMock),
 					ValidateEmail:        NewValidateEmailUsecase(dbReaderMock),
 					ValidateAlias:        NewValidateAliasUsecase(dbReaderMock),
@@ -143,7 +143,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 		{
 			name: "Fails_when_Email_in_request_is_empty",
 			fields: fields{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+				internalCreatePlayerUsecases: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReaderMock),
 					ValidateEmail:        NewValidateEmailUsecase(dbReaderMock),
 					ValidateAlias:        NewValidateAliasUsecase(dbReaderMock),
@@ -164,7 +164,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 		{
 			name: "Fails_when_FirstName_in_request_is_empty",
 			fields: fields{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+				internalCreatePlayerUsecases: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReaderMock),
 					ValidateEmail:        NewValidateEmailUsecase(dbReaderMock),
 					ValidateAlias:        NewValidateAliasUsecase(dbReaderMock),
@@ -186,7 +186,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 		{
 			name: "Fails_when_LastName_in_request_is_empty",
 			fields: fields{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+				internalCreatePlayerUsecases: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReaderMock),
 					ValidateEmail:        NewValidateEmailUsecase(dbReaderMock),
 					ValidateAlias:        NewValidateAliasUsecase(dbReaderMock),
@@ -209,7 +209,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 		{
 			name: "Fails_when_the_provided_GovernmentID_is_not_available",
 			fields: fields{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+				internalCreatePlayerUsecases: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReaderMock),
 					ValidateEmail:        NewValidateEmailUsecase(dbReaderMock),
 					ValidateAlias:        NewValidateAliasUsecase(dbReaderMock),
@@ -239,7 +239,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 		{
 			name: "Fails_when_the_provided_GovernmentID_might_be_available_but_could_not_check_availability",
 			fields: fields{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+				internalCreatePlayerUsecases: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReaderMock),
 					ValidateEmail:        NewValidateEmailUsecase(dbReaderMock),
 					ValidateAlias:        NewValidateAliasUsecase(dbReaderMock),
@@ -269,7 +269,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 		{
 			name: "Fails_when_the_provided_Email_is_not_available",
 			fields: fields{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+				internalCreatePlayerUsecases: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReaderMock),
 					ValidateEmail:        NewValidateEmailUsecase(dbReaderMock),
 					ValidateAlias:        NewValidateAliasUsecase(dbReaderMock),
@@ -300,7 +300,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 		{
 			name: "Fails_when_the_provided_Email_might_be_available_but_could_not_check_availability",
 			fields: fields{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+				internalCreatePlayerUsecases: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReaderMock),
 					ValidateEmail:        NewValidateEmailUsecase(dbReaderMock),
 					ValidateAlias:        NewValidateAliasUsecase(dbReaderMock),
@@ -331,7 +331,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 		{
 			name: "Fails_when_the_provided_Alias_is_not_available",
 			fields: fields{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+				internalCreatePlayerUsecases: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReaderMock),
 					ValidateEmail:        NewValidateEmailUsecase(dbReaderMock),
 					ValidateAlias:        NewValidateAliasUsecase(dbReaderMock),
@@ -363,7 +363,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 		{
 			name: "Fails_when_the_provided_Alias_might_be_available_but_could_not_check_availability",
 			fields: fields{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+				internalCreatePlayerUsecases: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReaderMock),
 					ValidateEmail:        NewValidateEmailUsecase(dbReaderMock),
 					ValidateAlias:        NewValidateAliasUsecase(dbReaderMock),
@@ -395,7 +395,7 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 		{
 			name: "Fails_when_all_data_is_correct_but_cannot_save_player_into_the_database",
 			fields: fields{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+				internalCreatePlayerUsecases: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReaderMock),
 					ValidateEmail:        NewValidateEmailUsecase(dbReaderMock),
 					ValidateAlias:        NewValidateAliasUsecase(dbReaderMock),
@@ -429,11 +429,11 @@ func Test_createPlayerUsecase_CreatePlayer_Failure(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.prepareMocks()
-			uc := &createPlayerUsecase{
-				internalCreatePlayerUsecases: tt.fields.internalCreatePlayerUsecases,
-				DBWriter:                     tt.fields.DBWriter,
+			uc := &createPlayer{
+				internalCreatePlayer: tt.fields.internalCreatePlayerUsecases,
+				DBWriter:             tt.fields.DBWriter,
 			}
-			got, err := uc.CreatePlayer(tt.args.ctx, tt.args.request)
+			got, err := uc.Do(tt.args.ctx, tt.args.request)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("createPlayerUsecase.CreatePlayer() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -456,7 +456,7 @@ func TestNewCreatePlayerUsecase(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want CreatePlayerUsecase
+		want CreatePlayer
 	}{
 		{
 			name: "Should_get_a_create_player_usecase",
@@ -464,8 +464,8 @@ func TestNewCreatePlayerUsecase(t *testing.T) {
 				dbWriter: dbWriter,
 				dbReader: dbReader,
 			},
-			want: &createPlayerUsecase{
-				internalCreatePlayerUsecases: &internalCreatePlayerUsecases{
+			want: &createPlayer{
+				internalCreatePlayer: &internalCreatePlayer{
 					ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 					ValidateEmail:        NewValidateEmailUsecase(dbReader),
 					ValidateAlias:        NewValidateAliasUsecase(dbReader),
@@ -476,7 +476,7 @@ func TestNewCreatePlayerUsecase(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewCreatePlayerUsecase(tt.args.dbWriter, tt.args.dbReader); !reflect.DeepEqual(got, tt.want) {
+			if got := NewCreatePlayer(tt.args.dbWriter, tt.args.dbReader); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewCreatePlayerUsecase() = %v, want %v", got, tt.want)
 			}
 		})
