@@ -37,3 +37,6 @@ app:
 
   secrets:
     config: <BASE64_JSON_CONFIG>
+
+cert-manager: #defined by either the name or alias of your dependency in Chart.yaml
+  namespace: security
