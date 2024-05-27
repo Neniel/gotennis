@@ -60,6 +60,7 @@ func (api *APIServer) Run() {
 }
 
 func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodGet {
 		w.Write([]byte("Ok"))
 		return
@@ -68,6 +69,7 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) listPlayers(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	categories, err := api.PlayerMicroservice.Usecases.ListPlayersUsecase.List(r.Context())
 	if err != nil {
@@ -83,6 +85,7 @@ func (api *APIServer) listPlayers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if categoryId := r.PathValue("id"); categoryId != "" {
 		categories, err := api.PlayerMicroservice.Usecases.GetPlayerUsecase.Get(r.Context(), categoryId)
@@ -118,6 +121,7 @@ func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	var request usecase.CreatePlayerRequest
 	defer r.Body.Close()
@@ -144,6 +148,7 @@ func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 		var request usecase.UpdatePlayerRequest
@@ -173,6 +178,7 @@ func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) deletePlayer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 		err := api.PlayerMicroservice.Usecases.DeletePlayerUsecase.Delete(r.Context(), id)
