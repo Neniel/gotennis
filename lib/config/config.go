@@ -8,9 +8,14 @@ import (
 )
 
 type Configuration struct {
-	MongoDB MongoDB `json:"mongodb"`
-	Redis   Redis   `json:"redis"`
-	Grafana Grafana `json:"grafana"`
+	MongoDB          MongoDB          `json:"mongodb"`
+	Redis            Redis            `json:"redis"`
+	Grafana          Grafana          `json:"grafana"`
+	SystemDataSource SystemDataSource `json:"system_data_source"`
+}
+
+type SystemDataSource struct {
+	URI string `json:"uri"`
 }
 
 type MongoDB struct {

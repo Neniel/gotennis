@@ -54,6 +54,20 @@ func (mr *MockIAppMockRecorder) GetMongoDBClient() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMongoDBClient", reflect.TypeOf((*MockIApp)(nil).GetMongoDBClient))
 }
 
+// GetMongoDBClients mocks base method.
+func (m *MockIApp) GetMongoDBClients() map[string]*mongo.Client {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMongoDBClients")
+	ret0, _ := ret[0].(map[string]*mongo.Client)
+	return ret0
+}
+
+// GetMongoDBClients indicates an expected call of GetMongoDBClients.
+func (mr *MockIAppMockRecorder) GetMongoDBClients() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMongoDBClients", reflect.TypeOf((*MockIApp)(nil).GetMongoDBClients))
+}
+
 // GetRedisClient mocks base method.
 func (m *MockIApp) GetRedisClient() *redis.Client {
 	m.ctrl.T.Helper()
