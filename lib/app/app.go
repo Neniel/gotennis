@@ -174,4 +174,6 @@ func loadCustomersClients(ctx context.Context, customers []entity.Customer) map[
 			mongoDBClients[customer.ID.Hex()] = customerMongoClient
 		}
 	}
+
+	return mongoDBClients
 }

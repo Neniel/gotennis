@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Neniel/gotennis/lib/app"
 	"github.com/Neniel/gotennis/lib/database"
 	"github.com/Neniel/gotennis/lib/entity"
 	"github.com/Neniel/gotennis/lib/log"
@@ -15,13 +16,20 @@ type CreateCategory interface {
 }
 
 type createCategory struct {
+	App      app.IApp
 	DBWriter database.DBWriter
 }
 
-func NewCreateCategory(dbWriter database.DBWriter) CreateCategory {
-	return &createCategory{
-		DBWriter: dbWriter,
+func NewCreateCategory(app app.IApp, customerID string) (CreateCategory, error) {
+	mongoDBClient, ok := app.GetMongoDBClients()[customerID]
+	if !ok {
+		log.Logger.Info(fmt.Errorf("could not initialize usecase CreateCategory: no mongoDBClient for customerID '%s'", customerID).Error())
+		return nil, fmt.Errorf("could not initialize usecase CreateCategory: no mongoDBClient for customerID '%s'", customerID)
 	}
+
+	return &createCategory{
+		DBWriter: database.NewDatabaseWriter(mongoDBClient),
+	}, nil
 }
 
 type CreateCategoryRequest struct {
