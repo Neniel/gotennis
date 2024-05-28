@@ -1,5 +1,7 @@
 github.com/Neniel/gotennis/lib/config v0.0.0-20240524221600-2e18421cb76f h1:8DFTZBPpYU20GIB1gj8JRKolWOzTSJb/nY70MTd9SUA=
 github.com/Neniel/gotennis/lib/config v0.0.0-20240524221600-2e18421cb76f/go.mod h1:hM6goSe+lnycxAEWIfnLtdoXM7F80I1Tk4v9wsBtGLs=
+github.com/Neniel/gotennis/lib/entity v0.0.0-20240527021851-f6a872524536 h1:kPvH5BKrG8VW/9opbBURtPAAfwaOvEd2oOG4x2ziQ/c=
+github.com/Neniel/gotennis/lib/entity v0.0.0-20240527021851-f6a872524536/go.mod h1:urEh1H9wsRRh2W3mzjuWdmP6z0BcrT52bs7S4QleXmo=
 github.com/Neniel/gotennis/lib/log v0.0.0-20240524221600-2e18421cb76f h1:pQ2JIYg4v+8bJXWdmUvtlZUaauJ7T9xSn9wMyQBLGug=
 github.com/Neniel/gotennis/lib/log v0.0.0-20240524221600-2e18421cb76f/go.mod h1:KLim6iyWdAJMlFRkxmXyGeZMhVEgl81Ld16RMtBYvCQ=
 github.com/Neniel/gotennis/lib/util v0.0.0-20240524221600-2e18421cb76f h1:IDJWfAevHk1F6JHJTZ6oY3RpK1ciVurqqom/b5+rlb8=
