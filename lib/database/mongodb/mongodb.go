@@ -16,10 +16,11 @@ import (
 )
 
 type MongoDbReader struct {
-	MongodbClient *mongo.Client
-	Categories    *mongo.Collection
-	Players       *mongo.Collection
-	Tournaments   *mongo.Collection
+	MongodbClient  *mongo.Client
+	MongoDBClients map[string]*mongo.Client
+	Categories     *mongo.Collection
+	Players        *mongo.Collection
+	Tournaments    *mongo.Collection
 }
 
 func NewMongoDbReader(client *mongo.Client) *MongoDbReader {

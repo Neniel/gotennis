@@ -12,6 +12,7 @@ require (
 )
 
 require (
+	github.com/Neniel/gotennis/lib/entity v0.0.0-20240527021851-f6a872524536
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
