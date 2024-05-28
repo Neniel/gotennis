@@ -12,18 +12,17 @@ import (
 )
 
 type CreateCustomer interface {
-	Do(ctx context.Context, request *CreateCustomerRequest) (*entity.Category, error)
+	Do(ctx context.Context, request *CreateCustomerRequest) (*entity.Customer, error)
 }
 
-type createCategory struct {
-	App      app.IApp
+type createCustomer struct {
 	DBWriter database.DBWriter
 }
 
-func NewCreateCustomer(app app.IApp) (CreateCustomer, error) {
-	return &createCategory{
-		DBWriter: database.NewDatabaseWriter(mongoDBClient),
-	}, nil
+func NewCreateCustomer(app app.IApp) CreateCustomer {
+	return &createCustomer{
+		DBWriter: database.NewDatabaseWriter(app.GetSystemMongoDBClient()),
+	}
 }
 
 type CreateCustomerRequest struct {
@@ -38,18 +37,20 @@ func (r *CreateCustomerRequest) Validate() error {
 	return nil
 }
 
-func (uc *createCategory) Do(ctx context.Context, request *CreateCustomerRequest) (*entity.Category, error) {
+func (uc *createCustomer) Do(ctx context.Context, request *CreateCustomerRequest) (*entity.Customer, error) {
 	if err := request.Validate(); err != nil {
 		log.Logger.Info(fmt.Errorf("could not create customer: %w", err).Error())
 		return nil, err
 	}
 
-	customer := entity.Customer{}
+	customer := &entity.Customer{
+		Name: request.Name,
+	}
 
-	newCategory, err := uc.DBWriter.AddCategory(ctx, customer)
+	newCustomer, err := uc.DBWriter.AddCustomer(ctx, customer)
 	if err != nil {
 		log.Logger.Info(fmt.Errorf("could not create customer: %w", err).Error())
 		return nil, err
 	}
-	return newCategory, nil
+	return newCustomer, nil
 }

@@ -3,12 +3,12 @@ module github.com/Neniel/gotennis/customers
 go 1.22.3
 
 require (
-	github.com/Neniel/gotennis/lib/app v0.0.1
-	github.com/Neniel/gotennis/lib/database v0.0.0-20240527021851-f6a872524536
-	github.com/Neniel/gotennis/lib/entity v0.0.0-20240527021851-f6a872524536
-	github.com/Neniel/gotennis/lib/log v0.0.0-20240527021851-f6a872524536
-	github.com/Neniel/gotennis/lib/telemetry v0.0.0-20240527021851-f6a872524536
-	github.com/Neniel/gotennis/lib/util v0.0.0-20240527021851-f6a872524536
+	github.com/Neniel/gotennis/lib/app v0.0.0-20240528214116-87fc32c5c416
+	github.com/Neniel/gotennis/lib/database v0.0.0-20240528214116-87fc32c5c416
+	github.com/Neniel/gotennis/lib/entity v0.0.0-20240528214116-87fc32c5c416
+	github.com/Neniel/gotennis/lib/log v0.0.0-20240528214116-87fc32c5c416
+	github.com/Neniel/gotennis/lib/telemetry v0.0.0-20240528214116-87fc32c5c416
+	github.com/Neniel/gotennis/lib/util v0.0.0-20240528214116-87fc32c5c416
 	github.com/prometheus/client_golang v1.19.1
 	go.mongodb.org/mongo-driver v1.15.0
 )

@@ -20,14 +20,15 @@ import (
 
 type Usecases struct {
 	CreateCustomer usecase.CreateCustomer
-	//ListCustomers  usecase.ListCategories
-	//GetCustomer    usecase.GetCategory
-	//UpdateCustomer usecase.UpdateCategory
-	//DeleteCustomer usecase.DeleteCategory
+	ListCustomers  usecase.ListCustomers
+	GetCustomer    usecase.GetCustomer
+	UpdateCustomer usecase.UpdateCustomer
+	DeleteCustomer usecase.DeleteCustomer
 }
 
 type CustomerMicroservice struct {
-	App app.IApp
+	App      app.IApp
+	Usecases *Usecases
 }
 
 type APIServer struct {
@@ -70,18 +71,13 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 func (api *APIServer) listCustomers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
-	createCustomer, err := usecase.NewCreateCustomer(api.CustomerMicroservice.App, "CUSTOMERIDGOESHERE")
-	if err != nil {
-
-	}
-
-	categories, err := createCustomer.Do(r.Context())
+	customers, err := api.CustomerMicroservice.Usecases.ListCustomers.Do(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	err = json.NewEncoder(w).Encode(&categories)
+	err = json.NewEncoder(w).Encode(&customers)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -91,8 +87,8 @@ func (api *APIServer) listCustomers(w http.ResponseWriter, r *http.Request) {
 func (api *APIServer) getCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
-	if categoryId := r.PathValue("id"); categoryId != "" {
-		categories, err := api.CustomerMicroservice.Usecases.GetCustomer.Do(r.Context(), categoryId)
+	if id := r.PathValue("id"); id != "" {
+		categories, err := api.CustomerMicroservice.Usecases.GetCustomer.Do(r.Context(), id)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
 			grafana.SendMetric("get.category", 1, 1, map[string]interface{}{
@@ -135,7 +131,7 @@ func (api *APIServer) addCustomer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	category, err := api.CustomerMicroservice.Usecases.CreateCustomer.CreateCategory(r.Context(), &request)
+	customer, err := api.CustomerMicroservice.Usecases.CreateCustomer.Do(r.Context(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -143,7 +139,7 @@ func (api *APIServer) addCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	err = json.NewEncoder(w).Encode(&category)
+	err = json.NewEncoder(w).Encode(&customer)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -154,7 +150,7 @@ func (api *APIServer) updateCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
-		var request usecase.UpdateCategoryRequest
+		var request usecase.UpdateCustomerRequest
 		defer r.Body.Close()
 		err := json.NewDecoder(r.Body).Decode(&request)
 		if err != nil {
