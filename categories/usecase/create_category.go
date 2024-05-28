@@ -12,7 +12,7 @@ import (
 )
 
 type CreateCategory interface {
-	CreateCategory(ctx context.Context, request *CreateCategoryRequest) (*entity.Category, error)
+	Do(ctx context.Context, request *CreateCategoryRequest) (*entity.Category, error)
 }
 
 type createCategory struct {
@@ -20,16 +20,10 @@ type createCategory struct {
 	DBWriter database.DBWriter
 }
 
-func NewCreateCategory(app app.IApp, customerID string) (CreateCategory, error) {
-	mongoDBClient, ok := app.GetMongoDBClients()[customerID]
-	if !ok {
-		log.Logger.Info(fmt.Errorf("could not initialize usecase CreateCategory: no mongoDBClient for customerID '%s'", customerID).Error())
-		return nil, fmt.Errorf("could not initialize usecase CreateCategory: no mongoDBClient for customerID '%s'", customerID)
-	}
-
+func NewCreateCategory(dbWriter database.DBWriter) CreateCategory {
 	return &createCategory{
-		DBWriter: database.NewDatabaseWriter(mongoDBClient),
-	}, nil
+		DBWriter: dbWriter,
+	}
 }
 
 type CreateCategoryRequest struct {
@@ -44,7 +38,7 @@ func (r *CreateCategoryRequest) Validate() error {
 	return nil
 }
 
-func (uc *createCategory) CreateCategory(ctx context.Context, request *CreateCategoryRequest) (*entity.Category, error) {
+func (uc *createCategory) Do(ctx context.Context, request *CreateCategoryRequest) (*entity.Category, error) {
 	if err := request.Validate(); err != nil {
 		log.Logger.Info(fmt.Errorf("could not create category: %w", err).Error())
 		return nil, err
