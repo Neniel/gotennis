@@ -1,4 +1,18 @@
+version: '3.7'
+
 services:
+  mongodb-tenants:
+    image: mongo:latest
+    container_name: mongodb-tenants
+    ports:
+      - "27016:27017"
+    volumes:
+      - ./data/dbtenants:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=tenants
+      - MONGO_PORT=27017
+      - MONGO_PRIORITY=1
+
   mongodb1:
     image: mongo:latest
     container_name: mongodb1
@@ -65,4 +79,3 @@ services:
   #  container_name: redis
   #  ports:
   #    - "6379:6379"
-
