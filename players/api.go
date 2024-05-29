@@ -175,11 +175,12 @@ func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
 	   3. obtener datos del token
 	*/
 
-	tenantID := "" // viene del token
+	tenantID := r.Header.Get("X-Tenant-ID")
 
 	client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
 	if !ok {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("invalid value in header X-Tenant-ID"))
 		return
 	}
 
