@@ -12,8 +12,6 @@ package app
 import (
 	reflect "reflect"
 
-	redis "github.com/go-redis/redis"
-	mongo "go.mongodb.org/mongo-driver/mongo"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -40,25 +38,11 @@ func (m *MockIApp) EXPECT() *MockIAppMockRecorder {
 	return m.recorder
 }
 
-// GetMongoDBClient mocks base method.
-func (m *MockIApp) GetMongoDBClient() *mongo.Client {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMongoDBClient")
-	ret0, _ := ret[0].(*mongo.Client)
-	return ret0
-}
-
-// GetMongoDBClient indicates an expected call of GetMongoDBClient.
-func (mr *MockIAppMockRecorder) GetMongoDBClient() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMongoDBClient", reflect.TypeOf((*MockIApp)(nil).GetMongoDBClient))
-}
-
 // GetMongoDBClients mocks base method.
-func (m *MockIApp) GetMongoDBClients() map[string]*mongo.Client {
+func (m *MockIApp) GetMongoDBClients() map[string]*TenantMongoDB {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetMongoDBClients")
-	ret0, _ := ret[0].(map[string]*mongo.Client)
+	ret0, _ := ret[0].(map[string]*TenantMongoDB)
 	return ret0
 }
 
@@ -68,16 +52,16 @@ func (mr *MockIAppMockRecorder) GetMongoDBClients() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMongoDBClients", reflect.TypeOf((*MockIApp)(nil).GetMongoDBClients))
 }
 
-// GetRedisClient mocks base method.
-func (m *MockIApp) GetRedisClient() *redis.Client {
+// GetSystemMongoDBClient mocks base method.
+func (m *MockIApp) GetSystemMongoDBClient() *SystemMongoDB {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRedisClient")
-	ret0, _ := ret[0].(*redis.Client)
+	ret := m.ctrl.Call(m, "GetSystemMongoDBClient")
+	ret0, _ := ret[0].(*SystemMongoDB)
 	return ret0
 }
 
-// GetRedisClient indicates an expected call of GetRedisClient.
-func (mr *MockIAppMockRecorder) GetRedisClient() *gomock.Call {
+// GetSystemMongoDBClient indicates an expected call of GetSystemMongoDBClient.
+func (mr *MockIAppMockRecorder) GetSystemMongoDBClient() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRedisClient", reflect.TypeOf((*MockIApp)(nil).GetRedisClient))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSystemMongoDBClient", reflect.TypeOf((*MockIApp)(nil).GetSystemMongoDBClient))
 }

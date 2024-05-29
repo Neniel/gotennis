@@ -70,6 +70,21 @@ func (mr *MockDatabaseMockRecorder) AddPlayer(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddPlayer", reflect.TypeOf((*MockDatabase)(nil).AddPlayer), arg0, arg1)
 }
 
+// AddTenant mocks base method.
+func (m *MockDatabase) AddTenant(arg0 context.Context, arg1 *entity.Tenant) (*entity.Tenant, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddTenant", arg0, arg1)
+	ret0, _ := ret[0].(*entity.Tenant)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddTenant indicates an expected call of AddTenant.
+func (mr *MockDatabaseMockRecorder) AddTenant(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTenant", reflect.TypeOf((*MockDatabase)(nil).AddTenant), arg0, arg1)
+}
+
 // AddTournament mocks base method.
 func (m *MockDatabase) AddTournament(arg0 context.Context, arg1 *entity.Tournament) (*entity.Tournament, error) {
 	m.ctrl.T.Helper()
@@ -111,6 +126,20 @@ func (m *MockDatabase) DeletePlayer(arg0 context.Context, arg1 string) error {
 func (mr *MockDatabaseMockRecorder) DeletePlayer(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePlayer", reflect.TypeOf((*MockDatabase)(nil).DeletePlayer), arg0, arg1)
+}
+
+// DeleteTenant mocks base method.
+func (m *MockDatabase) DeleteTenant(arg0 context.Context, arg1 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTenant", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTenant indicates an expected call of DeleteTenant.
+func (mr *MockDatabaseMockRecorder) DeleteTenant(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTenant", reflect.TypeOf((*MockDatabase)(nil).DeleteTenant), arg0, arg1)
 }
 
 // DeleteTournament mocks base method.
@@ -185,6 +214,36 @@ func (m *MockDatabase) GetPlayers(arg0 context.Context) ([]entity.Player, error)
 func (mr *MockDatabaseMockRecorder) GetPlayers(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPlayers", reflect.TypeOf((*MockDatabase)(nil).GetPlayers), arg0)
+}
+
+// GetTenant mocks base method.
+func (m *MockDatabase) GetTenant(arg0 context.Context, arg1 string) (*entity.Tenant, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTenant", arg0, arg1)
+	ret0, _ := ret[0].(*entity.Tenant)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTenant indicates an expected call of GetTenant.
+func (mr *MockDatabaseMockRecorder) GetTenant(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTenant", reflect.TypeOf((*MockDatabase)(nil).GetTenant), arg0, arg1)
+}
+
+// GetTenants mocks base method.
+func (m *MockDatabase) GetTenants(arg0 context.Context) ([]entity.Tenant, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTenants", arg0)
+	ret0, _ := ret[0].([]entity.Tenant)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTenants indicates an expected call of GetTenants.
+func (mr *MockDatabaseMockRecorder) GetTenants(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTenants", reflect.TypeOf((*MockDatabase)(nil).GetTenants), arg0)
 }
 
 // GetTournament mocks base method.
@@ -360,6 +419,36 @@ func (mr *MockDBReaderMockRecorder) GetPlayers(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPlayers", reflect.TypeOf((*MockDBReader)(nil).GetPlayers), arg0)
 }
 
+// GetTenant mocks base method.
+func (m *MockDBReader) GetTenant(arg0 context.Context, arg1 string) (*entity.Tenant, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTenant", arg0, arg1)
+	ret0, _ := ret[0].(*entity.Tenant)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTenant indicates an expected call of GetTenant.
+func (mr *MockDBReaderMockRecorder) GetTenant(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTenant", reflect.TypeOf((*MockDBReader)(nil).GetTenant), arg0, arg1)
+}
+
+// GetTenants mocks base method.
+func (m *MockDBReader) GetTenants(arg0 context.Context) ([]entity.Tenant, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTenants", arg0)
+	ret0, _ := ret[0].([]entity.Tenant)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTenants indicates an expected call of GetTenants.
+func (mr *MockDBReaderMockRecorder) GetTenants(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTenants", reflect.TypeOf((*MockDBReader)(nil).GetTenants), arg0)
+}
+
 // GetTournament mocks base method.
 func (m *MockDBReader) GetTournament(arg0 context.Context, arg1 string) (*entity.Tournament, error) {
 	m.ctrl.T.Helper()
@@ -458,6 +547,21 @@ func (mr *MockDBWriterMockRecorder) AddPlayer(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddPlayer", reflect.TypeOf((*MockDBWriter)(nil).AddPlayer), arg0, arg1)
 }
 
+// AddTenant mocks base method.
+func (m *MockDBWriter) AddTenant(arg0 context.Context, arg1 *entity.Tenant) (*entity.Tenant, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddTenant", arg0, arg1)
+	ret0, _ := ret[0].(*entity.Tenant)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddTenant indicates an expected call of AddTenant.
+func (mr *MockDBWriterMockRecorder) AddTenant(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTenant", reflect.TypeOf((*MockDBWriter)(nil).AddTenant), arg0, arg1)
+}
+
 // AddTournament mocks base method.
 func (m *MockDBWriter) AddTournament(arg0 context.Context, arg1 *entity.Tournament) (*entity.Tournament, error) {
 	m.ctrl.T.Helper()
@@ -499,6 +603,20 @@ func (m *MockDBWriter) DeletePlayer(arg0 context.Context, arg1 string) error {
 func (mr *MockDBWriterMockRecorder) DeletePlayer(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePlayer", reflect.TypeOf((*MockDBWriter)(nil).DeletePlayer), arg0, arg1)
+}
+
+// DeleteTenant mocks base method.
+func (m *MockDBWriter) DeleteTenant(arg0 context.Context, arg1 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTenant", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTenant indicates an expected call of DeleteTenant.
+func (mr *MockDBWriterMockRecorder) DeleteTenant(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTenant", reflect.TypeOf((*MockDBWriter)(nil).DeleteTenant), arg0, arg1)
 }
 
 // DeleteTournament mocks base method.
