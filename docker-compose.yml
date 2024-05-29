@@ -10,6 +10,7 @@ services:
     environment:
       - APP_PORT=:8080
       - APP_ENVIRONMENT=docker
+      - LOGGING_LEVEL=DEBUG
       - CONFIG_FILE=/run/secrets/config
     secrets:
       - config
@@ -23,6 +24,7 @@ services:
     environment:
       - APP_PORT=:8080
       - APP_ENVIRONMENT=docker
+      - LOGGING_LEVEL=DEBUG
       - CONFIG_FILE=/run/secrets/config
     secrets:
       - config
@@ -36,6 +38,7 @@ services:
     environment:
       - APP_PORT=:8080
       - APP_ENVIRONMENT=docker
+      - LOGGING_LEVEL=DEBUG
       - CONFIG_FILE=/run/secrets/config
     secrets:
       - config
@@ -49,6 +52,7 @@ services:
     environment:
       - APP_PORT=:8080
       - APP_ENVIRONMENT=docker
+      - LOGGING_LEVEL=DEBUG
       - CONFIG_FILE=/run/secrets/config
     secrets:
       - config
