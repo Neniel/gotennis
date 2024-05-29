@@ -19,11 +19,11 @@ import (
 )
 
 type Usecases struct {
-	CreateCustomer usecase.CreateTenant
-	ListCustomers  usecase.ListTenants
-	GetCustomer    usecase.GetTenant
+	CreateTenant usecase.CreateTenant
+	ListTenants  usecase.ListTenants
+	GetTenant    usecase.GetTenant
 	//UpdateCustomer usecase.UpdateTenant
-	DeleteCustomer usecase.DeleteTenant
+	DeleteTenant usecase.DeleteTenant
 }
 
 type CustomerMicroservice struct {
@@ -71,7 +71,7 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 func (api *APIServer) listTenants(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
-	customers, err := api.CustomerMicroservice.Usecases.ListCustomers.Do(r.Context())
+	customers, err := api.CustomerMicroservice.Usecases.ListTenants.Do(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -88,7 +88,7 @@ func (api *APIServer) getTenant(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
-		categories, err := api.CustomerMicroservice.Usecases.GetCustomer.Do(r.Context(), id)
+		tenants, err := api.CustomerMicroservice.Usecases.GetTenant.Do(r.Context(), id)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
 			grafana.SendMetric("get.category", 1, 1, map[string]interface{}{
@@ -105,7 +105,7 @@ func (api *APIServer) getTenant(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = json.NewEncoder(w).Encode(&categories)
+		err = json.NewEncoder(w).Encode(&tenants)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			grafana.SendMetric("get.category", 1, 1, map[string]interface{}{
@@ -131,7 +131,7 @@ func (api *APIServer) addTenant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	customer, err := api.CustomerMicroservice.Usecases.CreateCustomer.Do(r.Context(), &request)
+	customer, err := api.CustomerMicroservice.Usecases.CreateTenant.Do(r.Context(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -151,7 +151,7 @@ func (api *APIServer) deleteTenant(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
-		err := api.CustomerMicroservice.Usecases.DeleteCustomer.Do(r.Context(), id)
+		err := api.CustomerMicroservice.Usecases.DeleteTenant.Do(r.Context(), id)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(err.Error()))
