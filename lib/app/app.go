@@ -15,7 +15,7 @@ import (
 )
 
 type IApp interface {
-	GetSystemMongoDBClient() SystemMongoDB
+	GetSystemMongoDBClient() *SystemMongoDB
 	GetMongoDBClients() map[string]*TenantMongoDB
 }
 
@@ -31,7 +31,7 @@ type TenantMongoDB struct {
 }
 
 type App struct {
-	SystemMongoDBClient     *mongo.Client
+	SystemMongoDBClient     *SystemMongoDB
 	CustomersMongoDBClients map[string]*TenantMongoDB
 }
 
@@ -39,7 +39,7 @@ func (a *App) GetMongoDBClients() map[string]*TenantMongoDB {
 	return a.CustomersMongoDBClients
 }
 
-func (a *App) GetSystemMongoDBClient() *mongo.Client {
+func (a *App) GetSystemMongoDBClient() *SystemMongoDB {
 	return a.SystemMongoDBClient
 }
 
@@ -165,7 +165,10 @@ func NewApp(ctx context.Context) IApp {
 		log.Logger.Info("Connected to Redis")
 	*/
 	return &App{
-		SystemMongoDBClient:     systemMongoClient,
+		SystemMongoDBClient: &SystemMongoDB{
+			DatabaseName:  "system",
+			MongoDBClient: systemMongoClient,
+		},
 		CustomersMongoDBClients: mongoDBClients,
 	}
 
