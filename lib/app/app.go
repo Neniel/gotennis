@@ -15,11 +15,16 @@ import (
 )
 
 type IApp interface {
-	GetSystemMongoDBClient() *mongo.Client
-	GetMongoDBClients() map[string]*CustomerMongoDB
+	GetSystemMongoDBClient() SystemMongoDB
+	GetMongoDBClients() map[string]*TenantMongoDB
 }
 
-type CustomerMongoDB struct {
+type SystemMongoDB struct {
+	DatabaseName  string
+	MongoDBClient *mongo.Client
+}
+
+type TenantMongoDB struct {
 	ID            string
 	DatabaseName  string
 	MongoDBClient *mongo.Client
@@ -27,10 +32,10 @@ type CustomerMongoDB struct {
 
 type App struct {
 	SystemMongoDBClient     *mongo.Client
-	CustomersMongoDBClients map[string]*CustomerMongoDB
+	CustomersMongoDBClients map[string]*TenantMongoDB
 }
 
-func (a *App) GetMongoDBClients() map[string]*CustomerMongoDB {
+func (a *App) GetMongoDBClients() map[string]*TenantMongoDB {
 	return a.CustomersMongoDBClients
 }
 
@@ -40,7 +45,7 @@ func (a *App) GetSystemMongoDBClient() *mongo.Client {
 
 func NewApp(ctx context.Context) IApp {
 	// Store all mongodb clients for each of the customers
-	mongoDBClients := make(map[string]*CustomerMongoDB)
+	mongoDBClients := make(map[string]*TenantMongoDB)
 
 	c, err := config.LoadConfiguration()
 	if err != nil {
@@ -85,7 +90,7 @@ func NewApp(ctx context.Context) IApp {
 			os.Exit(1)
 		}
 
-		mongoDBClients[customer.ID.Hex()] = &CustomerMongoDB{
+		mongoDBClients[customer.ID.Hex()] = &TenantMongoDB{
 			ID:            customer.ID.Hex(),
 			DatabaseName:  customer.DatabaseName,
 			MongoDBClient: customerMongoDBClient,
@@ -166,8 +171,8 @@ func NewApp(ctx context.Context) IApp {
 
 }
 
-func loadCustomersClients(ctx context.Context, customers []entity.Tenant) map[string]*CustomerMongoDB {
-	mongoDBClients := make(map[string]*CustomerMongoDB)
+func loadCustomersClients(ctx context.Context, customers []entity.Tenant) map[string]*TenantMongoDB {
+	mongoDBClients := make(map[string]*TenantMongoDB)
 	for _, customer := range customers {
 		customerMongoDBClient, err := mongo.Connect(ctx, options.Client().ApplyURI(customer.MongoDBConnectionString))
 		if err != nil {
@@ -181,7 +186,7 @@ func loadCustomersClients(ctx context.Context, customers []entity.Tenant) map[st
 		}
 
 		if _, ok := mongoDBClients[customer.ID.Hex()]; !ok {
-			mongoDBClients[customer.ID.Hex()] = &CustomerMongoDB{
+			mongoDBClients[customer.ID.Hex()] = &TenantMongoDB{
 				ID:            customer.ID.Hex(),
 				DatabaseName:  customer.DatabaseName,
 				MongoDBClient: customerMongoDBClient,
