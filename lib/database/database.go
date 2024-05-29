@@ -40,10 +40,10 @@ type DBWriter interface {
 	DeleteTournament(context.Context, string) error
 }
 
-func NewDatabaseReader(client interface{}) DBReader {
+func NewDatabaseReader(client interface{}, databaseName string) DBReader {
 	mongoClient, isMongoClient := client.(*mongo.Client)
 	if isMongoClient {
-		return mongodb.NewMongoDbReader(mongoClient)
+		return mongodb.NewMongoDbReader(mongoClient, databaseName)
 	}
 
 	/*redisClient, isRedisClient := client.(*redis.Client)
@@ -54,10 +54,10 @@ func NewDatabaseReader(client interface{}) DBReader {
 	panic("client is not supported")
 }
 
-func NewDatabaseWriter(client interface{}) DBWriter {
+func NewDatabaseWriter(client interface{}, databaseName string) DBWriter {
 	mongoClient, isMongoClient := client.(*mongo.Client)
 	if isMongoClient {
-		return mongodb.NewMongoDbWriter(mongoClient)
+		return mongodb.NewMongoDbWriter(mongoClient, databaseName)
 	}
 
 	/*

@@ -67,12 +67,14 @@ type internalCreatePlayer struct {
 
 type createPlayer struct {
 	*internalCreatePlayer
-	DBWriter database.DBWriter
+	DBWriter       database.DBWriter
+	SystemDBWriter database.DBWriter
 }
 
-func NewCreatePlayer(dbWriter database.DBWriter, dbReader database.DBReader) CreatePlayer {
+func NewCreatePlayer(dbWriter database.DBWriter, systemDBWriter database.DBWriter, dbReader database.DBReader) CreatePlayer {
 	return &createPlayer{
-		DBWriter: dbWriter,
+		DBWriter:       dbWriter,
+		SystemDBWriter: systemDBWriter,
 		internalCreatePlayer: &internalCreatePlayer{
 			ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 			ValidateEmail:        NewValidateEmailUsecase(dbReader),
@@ -131,6 +133,7 @@ func (uc *createPlayer) Do(ctx context.Context, request *CreatePlayerRequest) (*
 		request.Alias,
 	)
 
+	//uc.SystemDBWriter.AddUser()
 	player, err := uc.DBWriter.AddPlayer(ctx, newPlayer)
 	if err != nil {
 		log.Logger.Error(fmt.Errorf("couldn't create player. Error when attempting add user to the database request: %w", err).Error())

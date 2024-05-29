@@ -12,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/Neniel/gotennis/lib/app"
+	"github.com/Neniel/gotennis/lib/database"
 	"github.com/Neniel/gotennis/lib/log"
 	"github.com/Neniel/gotennis/lib/telemetry/grafana"
 )
@@ -25,8 +26,8 @@ type Usecases struct {
 }
 
 type TournamentMicroservice struct {
-	App      app.IApp
-	Usecases *Usecases
+	App app.IApp
+	//Usecases *Usecases
 }
 
 type APIServer struct {
@@ -36,8 +37,8 @@ type APIServer struct {
 func (ms *TournamentMicroservice) NewAPIServer() *APIServer {
 	return &APIServer{
 		TournamentMicroservice: &TournamentMicroservice{
-			App:      ms.App,
-			Usecases: ms.Usecases,
+			App: ms.App,
+			//Usecases: ms.Usecases,
 		},
 	}
 
@@ -70,7 +71,24 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 func (api *APIServer) listTournaments(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
-	categories, err := api.TournamentMicroservice.Usecases.ListTournaments.Do(r.Context())
+
+	/*
+	   1. recibir el token
+	   2. validar el token
+	   3. obtener datos del token
+	*/
+
+	customerID := "" // viene del token
+
+	client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[customerID]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	listTournaments := usecase.NewListTournaments(database.NewDatabaseReader(client.MongoDBClient, client.DatabaseName))
+
+	tournaments, err := listTournaments.Do(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		grafana.SendMetric("tournament.list", 1, 1, map[string]interface{}{
@@ -79,7 +97,7 @@ func (api *APIServer) listTournaments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = json.NewEncoder(w).Encode(&categories)
+	err = json.NewEncoder(w).Encode(&tournaments)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		grafana.SendMetric("tournament.list", 1, 1, map[string]interface{}{
@@ -96,8 +114,25 @@ func (api *APIServer) listTournaments(w http.ResponseWriter, r *http.Request) {
 func (api *APIServer) getTournament(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
-	if categoryId := r.PathValue("id"); categoryId != "" {
-		categories, err := api.TournamentMicroservice.Usecases.GetTournament.Do(r.Context(), categoryId)
+	if id := r.PathValue("id"); id != "" {
+
+		/*
+		   1. recibir el token
+		   2. validar el token
+		   3. obtener datos del token
+		*/
+
+		customerID := "" // viene del token
+
+		client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[customerID]
+		if !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		getTournament := usecase.NewGetTournament(database.NewDatabaseReader(client.MongoDBClient, client.DatabaseName))
+
+		categories, err := getTournament.Do(r.Context(), id)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
 			grafana.SendMetric("tournament.get", 1, 1, map[string]interface{}{
@@ -144,7 +179,23 @@ func (api *APIServer) addTournament(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tournament, err := api.TournamentMicroservice.Usecases.CreateTournament.CreateTournament(r.Context(), &request)
+	/*
+	   1. recibir el token
+	   2. validar el token
+	   3. obtener datos del token
+	*/
+
+	customerID := "" // viene del token
+
+	client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[customerID]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	createTournament := usecase.NewCreateTournament(database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName))
+
+	tournament, err := createTournament.CreateTournament(r.Context(), &request)
 	if err != nil {
 		grafana.SendMetric("tournaments.add", 1, 1, map[string]interface{}{
 			"status_code": http.StatusBadRequest,
@@ -185,7 +236,23 @@ func (api *APIServer) updateTournament(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		category, err := api.TournamentMicroservice.Usecases.UpdateTournament.Do(r.Context(), id, &request)
+		/*
+		   1. recibir el token
+		   2. validar el token
+		   3. obtener datos del token
+		*/
+
+		customerID := "" // viene del token
+
+		client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[customerID]
+		if !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		updateTournament := usecase.NewUpdateTournament(database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName), database.NewDatabaseReader(client.MongoDBClient, client.DatabaseName))
+
+		category, err := updateTournament.Do(r.Context(), id, &request)
 		if err != nil {
 			grafana.SendMetric("tournaments.update", 1, 1, map[string]interface{}{
 				"status_code": http.StatusBadRequest,
@@ -212,7 +279,24 @@ func (api *APIServer) deleteTournament(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
-		err := api.TournamentMicroservice.Usecases.DeleteTournament.Do(r.Context(), id)
+
+		/*
+		   1. recibir el token
+		   2. validar el token
+		   3. obtener datos del token
+		*/
+
+		customerID := "" // viene del token
+
+		client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[customerID]
+		if !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		deleteTournament := usecase.NewDeleteTournament(database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName))
+
+		err := deleteTournament.Do(r.Context(), id)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
 			return

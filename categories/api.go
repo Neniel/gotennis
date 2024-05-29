@@ -10,6 +10,7 @@ import (
 	"github.com/Neniel/gotennis/categories/usecase"
 
 	"github.com/Neniel/gotennis/lib/app"
+	"github.com/Neniel/gotennis/lib/database"
 	"github.com/Neniel/gotennis/lib/telemetry/grafana"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -27,8 +28,8 @@ type Usecases struct {
 }
 
 type CategoryMicroservice struct {
-	App      app.IApp
-	Usecases *Usecases
+	App app.IApp
+	//Usecases *Usecases
 }
 
 type APIServer struct {
@@ -38,8 +39,8 @@ type APIServer struct {
 func (ms *CategoryMicroservice) NewAPIServer() *APIServer {
 	return &APIServer{
 		CategoryMicroservice: &CategoryMicroservice{
-			App:      ms.App,
-			Usecases: ms.Usecases,
+			App: ms.App,
+			//Usecases: ms.Usecases,
 		},
 	}
 
@@ -72,7 +73,24 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 func (api *APIServer) listCategories(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
-	categories, err := api.CategoryMicroservice.Usecases.ListCategories.Do(r.Context())
+
+	/*
+	   1. recibir el token
+	   2. validar el token
+	   3. obtener datos del token
+	*/
+
+	customerID := "" // viene del token
+
+	client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[customerID]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	listCategories := usecase.NewListCategories(database.NewDatabaseReader(client.MongoDBClient, client.DatabaseName))
+
+	categories, err := listCategories.Do(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -89,7 +107,24 @@ func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if categoryId := r.PathValue("id"); categoryId != "" {
-		categories, err := api.CategoryMicroservice.Usecases.GetCategory.Do(r.Context(), categoryId)
+
+		/*
+		   1. recibir el token
+		   2. validar el token
+		   3. obtener datos del token
+		*/
+
+		customerID := "" // viene del token
+
+		client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[customerID]
+		if !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		getCategory := usecase.NewGetCategory(database.NewDatabaseReader(client.MongoDBClient, client.DatabaseName))
+
+		categories, err := getCategory.Do(r.Context(), categoryId)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
 			grafana.SendMetric("get.category", 1, 1, map[string]interface{}{
@@ -123,7 +158,9 @@ func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
 func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
+
 	var request usecase.CreateCategoryRequest
+
 	defer r.Body.Close()
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
@@ -132,7 +169,23 @@ func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	category, err := api.CategoryMicroservice.Usecases.CreateCategoryUsecase.CreateCategory(r.Context(), &request)
+	/*
+	   1. recibir el token
+	   2. validar el token
+	   3. obtener datos del token
+	*/
+
+	customerID := "" // viene del token
+
+	client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[customerID]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	createCategory := usecase.NewCreateCategory(database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName))
+
+	category, err := createCategory.Do(r.Context(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -151,7 +204,9 @@ func (api *APIServer) updateCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
+
 		var request usecase.UpdateCategoryRequest
+
 		defer r.Body.Close()
 		err := json.NewDecoder(r.Body).Decode(&request)
 		if err != nil {
@@ -160,7 +215,23 @@ func (api *APIServer) updateCategory(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		category, err := api.CategoryMicroservice.Usecases.UpdateCategory.Do(r.Context(), id, &request)
+		/*
+		   1. recibir el token
+		   2. validar el token
+		   3. obtener datos del token
+		*/
+
+		customerID := "" // viene del token
+
+		client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[customerID]
+		if !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		updateCategory := usecase.NewUpdateCategory(database.NewDatabaseReader(client.MongoDBClient, client.DatabaseName), database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName))
+
+		category, err := updateCategory.Do(r.Context(), id, &request)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(err.Error()))
@@ -181,7 +252,24 @@ func (api *APIServer) deleteCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
-		err := api.CategoryMicroservice.Usecases.DeleteCategory.Do(r.Context(), id)
+
+		/*
+		   1. recibir el token
+		   2. validar el token
+		   3. obtener datos del token
+		*/
+
+		customerID := "" // viene del token
+
+		client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[customerID]
+		if !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		deleteCategory := usecase.NewDeleteCategory(database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName))
+
+		err := deleteCategory.Do(r.Context(), id)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(err.Error()))
