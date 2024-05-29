@@ -67,14 +67,12 @@ type internalCreatePlayer struct {
 
 type createPlayer struct {
 	*internalCreatePlayer
-	DBWriter       database.DBWriter
-	SystemDBWriter database.DBWriter
+	DBWriter database.DBWriter
 }
 
-func NewCreatePlayer(dbWriter database.DBWriter, systemDBWriter database.DBWriter, dbReader database.DBReader) CreatePlayer {
+func NewCreatePlayer(dbWriter database.DBWriter, dbReader database.DBReader) CreatePlayer {
 	return &createPlayer{
-		DBWriter:       dbWriter,
-		SystemDBWriter: systemDBWriter,
+		DBWriter: dbWriter,
 		internalCreatePlayer: &internalCreatePlayer{
 			ValidateGovernmentID: NewValidateGovernmentIDUsecase(dbReader),
 			ValidateEmail:        NewValidateEmailUsecase(dbReader),

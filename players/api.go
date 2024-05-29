@@ -52,12 +52,12 @@ func (api *APIServer) Run() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /ping", api.pingHandler)
-	mux.HandleFunc("GET /players", api.listPlayers)
-	mux.HandleFunc("GET /players/{id}", api.getPlayer)
-	mux.HandleFunc("POST /players", api.addPlayer)
-	mux.HandleFunc("PUT /players/{id}", api.updatePlayer)
-	mux.HandleFunc("PATCH /players/{id}", api.partiallyUpdatePlayer)
-	mux.HandleFunc("DELETE /players/{id}", api.deletePlayer)
+	mux.HandleFunc("GET /api/players", api.listPlayers)
+	mux.HandleFunc("GET /api/players/{id}", api.getPlayer)
+	mux.HandleFunc("POST /api/players", api.addPlayer)
+	mux.HandleFunc("PUT /api/players/{id}", api.updatePlayer)
+	mux.HandleFunc("PATCH /api/players/{id}", api.partiallyUpdatePlayer)
+	mux.HandleFunc("DELETE /api/players/{id}", api.deletePlayer)
 
 	log.Logger.Error(http.ListenAndServe(os.Getenv("APP_PORT"), mux).Error())
 }
@@ -185,7 +185,6 @@ func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
 
 	createPlayer := usecase.NewCreatePlayer(
 		database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName),
-		nil,
 		database.NewDatabaseReader(client.MongoDBClient, client.DatabaseName),
 	)
 
