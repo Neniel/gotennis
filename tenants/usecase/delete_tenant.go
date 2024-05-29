@@ -26,9 +26,9 @@ func NewDeleteTenant(app app.IApp) DeleteTenant {
 
 func (uc *deleteTenant) Do(ctx context.Context, customerID string) error {
 
-	err := uc.DBWriter.DeleteTournament(ctx, customerID)
+	err := uc.DBWriter.DeleteTenant(ctx, customerID)
 	if err != nil {
-		log.Logger.Info(fmt.Errorf("could not update customer: %w", err).Error())
+		log.Logger.Info(fmt.Errorf("could not delete tenant: %w", err).Error())
 		return err
 	}
 	return nil

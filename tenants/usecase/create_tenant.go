@@ -8,7 +8,6 @@ import (
 	"github.com/Neniel/gotennis/lib/database"
 	"github.com/Neniel/gotennis/lib/entity"
 	"github.com/Neniel/gotennis/lib/log"
-	"github.com/Neniel/gotennis/lib/util"
 )
 
 type CreateTenant interface {
@@ -27,30 +26,36 @@ func NewCreateTenant(app app.IApp) CreateTenant {
 }
 
 type CreateTenantRequest struct {
-	Name string `json:"name"`
+	Name                    string `json:"name"`
+	PhoneNumber             string `json:"phone_number"`
+	Email                   string `json:"email"`
+	Tier                    string `json:"tier"`
+	MongoDBConnectionString string `json:"mongo_db_connection_string"`
+	DatabaseName            string `json:"database_name"`
 }
 
 func (r *CreateTenantRequest) Validate() error {
-	if r.Name == "" {
-		return util.ErrCategoryNameIsEmpty
-	}
-
 	return nil
 }
 
 func (uc *createTenant) Do(ctx context.Context, request *CreateTenantRequest) (*entity.Tenant, error) {
 	if err := request.Validate(); err != nil {
-		log.Logger.Info(fmt.Errorf("could not create customer: %w", err).Error())
+		log.Logger.Info(fmt.Errorf("could not create tenant: %w", err).Error())
 		return nil, err
 	}
 
 	customer := &entity.Tenant{
-		Name: request.Name,
+		Name:                    request.Name,
+		PhoneNumber:             request.PhoneNumber,
+		Email:                   request.Email,
+		Tier:                    request.Tier,
+		MongoDBConnectionString: request.MongoDBConnectionString,
+		DatabaseName:            request.DatabaseName,
 	}
 
 	newCustomer, err := uc.DBWriter.AddTenant(ctx, customer)
 	if err != nil {
-		log.Logger.Info(fmt.Errorf("could not create customer: %w", err).Error())
+		log.Logger.Info(fmt.Errorf("could not create tenant: %w", err).Error())
 		return nil, err
 	}
 	return newCustomer, nil

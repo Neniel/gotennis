@@ -38,7 +38,8 @@ type APIServer struct {
 func (ms *CustomerMicroservice) NewAPIServer() *APIServer {
 	return &APIServer{
 		CustomerMicroservice: &CustomerMicroservice{
-			App: ms.App,
+			App:      ms.App,
+			Usecases: ms.Usecases,
 		},
 	}
 

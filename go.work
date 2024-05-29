@@ -12,5 +12,6 @@ use (
 	./lib/util
 	./players
 	./tournaments
+	./tenants
 	./lib
 )
