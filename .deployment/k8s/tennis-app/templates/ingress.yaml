@@ -6,25 +6,20 @@ metadata:
 spec:
   tls:
   - hosts:
-    - categories.tennis.dev
-    - players.tennis.dev
+    - api.tennis.dev
     secretName: tls-secret
   rules:
-  - host: "categories.tennis.dev"
-    http:
-      paths:
-      - pathType: Prefix
-        path: "/"
+  - http:
+    paths:
+      - path: "/api/categories"
+        pathType: Prefix
         backend:
           service:
             name: {{ .Values.app.services.categories.name }}
             port:
               number: {{ .Values.app.services.categories.port }}
-  - host: "players.tennis.dev"
-    http:
-      paths:
-      - pathType: Prefix
-        path: "/"
+      - path: "/api/players"
+        pathType: Prefix
         backend:
           service:
             name: {{ .Values.app.services.players.name }}

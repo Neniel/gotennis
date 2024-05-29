@@ -8,5 +8,4 @@ spec:
     name: cluster-issuer
     kind: ClusterIssuer
   dnsNames:
-    - categories.tennis.dev
-    - players.tennis.dev
+    - api.tennis.dev
