@@ -37,7 +37,7 @@ endif
 build:
 	docker-compose -f docker-compose.yml build ${SERVICE}
 
-deploy: deploy-db
+deploy:
 ifeq ($(ENV),)
 	@echo "🎾"
 	docker-compose -f docker-compose.yml down ${SERVICE}
