@@ -11,25 +11,25 @@ import (
 	"github.com/Neniel/gotennis/lib/util"
 )
 
-type CreateCustomer interface {
-	Do(ctx context.Context, request *CreateCustomerRequest) (*entity.Customer, error)
+type CreateTenant interface {
+	Do(ctx context.Context, request *CreateTenantRequest) (*entity.Tenant, error)
 }
 
-type createCustomer struct {
+type createTenant struct {
 	DBWriter database.DBWriter
 }
 
-func NewCreateCustomer(app app.IApp) CreateCustomer {
-	return &createCustomer{
-		DBWriter: database.NewDatabaseWriter(app.GetSystemMongoDBClient()),
+func NewCreateTenant(app app.IApp) CreateTenant {
+	return &createTenant{
+		DBWriter: database.NewDatabaseWriter(app.GetSystemMongoDBClient(), "system"),
 	}
 }
 
-type CreateCustomerRequest struct {
+type CreateTenantRequest struct {
 	Name string `json:"name"`
 }
 
-func (r *CreateCustomerRequest) Validate() error {
+func (r *CreateTenantRequest) Validate() error {
 	if r.Name == "" {
 		return util.ErrCategoryNameIsEmpty
 	}
@@ -37,17 +37,17 @@ func (r *CreateCustomerRequest) Validate() error {
 	return nil
 }
 
-func (uc *createCustomer) Do(ctx context.Context, request *CreateCustomerRequest) (*entity.Customer, error) {
+func (uc *createTenant) Do(ctx context.Context, request *CreateTenantRequest) (*entity.Tenant, error) {
 	if err := request.Validate(); err != nil {
 		log.Logger.Info(fmt.Errorf("could not create customer: %w", err).Error())
 		return nil, err
 	}
 
-	customer := &entity.Customer{
+	customer := &entity.Tenant{
 		Name: request.Name,
 	}
 
-	newCustomer, err := uc.DBWriter.AddCustomer(ctx, customer)
+	newCustomer, err := uc.DBWriter.AddTenant(ctx, customer)
 	if err != nil {
 		log.Logger.Info(fmt.Errorf("could not create customer: %w", err).Error())
 		return nil, err

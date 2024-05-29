@@ -10,22 +10,22 @@ import (
 	"github.com/Neniel/gotennis/lib/log"
 )
 
-type ListCustomers interface {
-	Do(ctx context.Context) ([]entity.Customer, error)
+type ListTenants interface {
+	Do(ctx context.Context) ([]entity.Tenant, error)
 }
 
-type listCustomers struct {
+type listTenants struct {
 	DBReader database.DBReader
 }
 
-func NewListCustomers(app app.IApp) ListCustomers {
-	return &listCustomers{
-		DBReader: database.NewDatabaseReader(app.GetSystemMongoDBClient()),
+func NewListCustomers(app app.IApp) ListTenants {
+	return &listTenants{
+		DBReader: database.NewDatabaseReader(app.GetSystemMongoDBClient(), "system"),
 	}
 }
 
-func (uc *listCustomers) Do(ctx context.Context) ([]entity.Customer, error) {
-	newCustomer, err := uc.DBReader.GetCustomers(ctx)
+func (uc *listTenants) Do(ctx context.Context) ([]entity.Tenant, error) {
+	newCustomer, err := uc.DBReader.GetTenants(ctx)
 	if err != nil {
 		log.Logger.Info(fmt.Errorf("could not create customer: %w", err).Error())
 		return nil, err

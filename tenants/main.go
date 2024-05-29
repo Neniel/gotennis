@@ -13,11 +13,11 @@ func main() {
 	ms := &CustomerMicroservice{
 		App: app,
 		Usecases: &Usecases{
-			CreateCustomer: usecase.NewCreateCustomer(app),
+			CreateCustomer: usecase.NewCreateTenant(app),
 			ListCustomers:  usecase.NewListCustomers(app),
 			GetCustomer:    usecase.NewGetCustomer(app),
-			UpdateCustomer: usecase.NewUpdateCustomer(app),
-			DeleteCustomer: usecase.NewDeleteCustomer(app),
+			//UpdateCustomer: usecase.NewUpdateCustomer(app),
+			DeleteCustomer: usecase.NewDeleteTenant(app),
 		},
 	}
 

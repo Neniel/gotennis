@@ -19,11 +19,11 @@ import (
 )
 
 type Usecases struct {
-	CreateCustomer usecase.CreateCustomer
-	ListCustomers  usecase.ListCustomers
-	GetCustomer    usecase.GetCustomer
-	UpdateCustomer usecase.UpdateCustomer
-	DeleteCustomer usecase.DeleteCustomer
+	CreateCustomer usecase.CreateTenant
+	ListCustomers  usecase.ListTenants
+	GetCustomer    usecase.GetTenant
+	//UpdateCustomer usecase.UpdateTenant
+	DeleteCustomer usecase.DeleteTenant
 }
 
 type CustomerMicroservice struct {
@@ -50,11 +50,11 @@ func (api *APIServer) Run() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /ping", api.pingHandler)
-	mux.HandleFunc("GET /customers", api.listCustomers)
-	mux.HandleFunc("GET /customers/{id}", api.getCustomer)
-	mux.HandleFunc("POST /customers", api.addCustomer)
-	mux.HandleFunc("PUT /customers/{id}", api.updateCustomer)
-	mux.HandleFunc("DELETE /customers/{id}", api.deleteCustomer)
+	mux.HandleFunc("GET /api/tenants", api.listTenants)
+	mux.HandleFunc("GET /api/tenants/{id}", api.getTenant)
+	mux.HandleFunc("POST /api/tenants", api.addTenant)
+	//mux.HandleFunc("PUT /api/tenants/{id}", api.updateCustomer)
+	mux.HandleFunc("DELETE /api/tenants/{id}", api.deleteTenant)
 	mux.Handle("/metrics", promhttp.Handler())
 
 	log.Fatal(http.ListenAndServe(os.Getenv("APP_PORT"), mux))
@@ -68,7 +68,7 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusMethodNotAllowed)
 }
 
-func (api *APIServer) listCustomers(w http.ResponseWriter, r *http.Request) {
+func (api *APIServer) listTenants(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	customers, err := api.CustomerMicroservice.Usecases.ListCustomers.Do(r.Context())
@@ -84,7 +84,7 @@ func (api *APIServer) listCustomers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (api *APIServer) getCustomer(w http.ResponseWriter, r *http.Request) {
+func (api *APIServer) getTenant(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
@@ -119,10 +119,10 @@ func (api *APIServer) getCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (api *APIServer) addCustomer(w http.ResponseWriter, r *http.Request) {
+func (api *APIServer) addTenant(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
-	var request usecase.CreateCustomerRequest
+	var request usecase.CreateTenantRequest
 	defer r.Body.Close()
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
@@ -146,37 +146,8 @@ func (api *APIServer) addCustomer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-func (api *APIServer) updateCustomer(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Content-Type", "application/json")
-	if id := r.PathValue("id"); id != "" {
-		var request usecase.UpdateCustomerRequest
-		defer r.Body.Close()
-		err := json.NewDecoder(r.Body).Decode(&request)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(err.Error()))
-			return
-		}
 
-		category, err := api.CustomerMicroservice.Usecases.UpdateCustomer.Do(r.Context(), id, &request)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(err.Error()))
-			return
-		}
-
-		w.WriteHeader(http.StatusOK)
-		err = json.NewEncoder(w).Encode(&category)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
-			return
-		}
-	}
-}
-
-func (api *APIServer) deleteCustomer(w http.ResponseWriter, r *http.Request) {
+func (api *APIServer) deleteTenant(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {

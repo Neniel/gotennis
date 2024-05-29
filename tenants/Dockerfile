@@ -8,13 +8,13 @@ WORKDIR /app
 COPY . .
 RUN go mod download
 
-RUN go build -o /customers
+RUN go build -o /tenants
 
 FROM alpine:latest
 
 WORKDIR /
-COPY --from=Build /customers /customers
+COPY --from=Build /tenants /tenants
 
 EXPOSE 8080
 
-ENTRYPOINT [ "/customers" ]
+ENTRYPOINT [ "/tenants" ]
