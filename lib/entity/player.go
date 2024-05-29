@@ -9,7 +9,6 @@ import (
 
 type Player struct {
 	ID                  primitive.ObjectID `bson:"_id" json:"id"`
-	CustomerID          primitive.ObjectID `bson:"customer_id" json:"customer_id"`
 	GovernmentID        string             `bson:"government_id" json:"government_id"`
 	FirstName           string             `bson:"first_name" json:"first_name"`
 	MiddleName          string             `bson:"middle_name" json:"middle_name"`
