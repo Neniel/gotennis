@@ -20,8 +20,9 @@ type createTenant struct {
 }
 
 func NewCreateTenant(app app.IApp) CreateTenant {
+	systemMongoDBClient := app.GetSystemMongoDBClient()
 	return &createTenant{
-		DBWriter: database.NewDatabaseWriter(app.GetSystemMongoDBClient(), "system"),
+		DBWriter: database.NewDatabaseWriter(systemMongoDBClient.MongoDBClient, systemMongoDBClient.DatabaseName),
 	}
 }
 

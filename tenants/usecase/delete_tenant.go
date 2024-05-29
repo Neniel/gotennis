@@ -18,8 +18,9 @@ type deleteTenant struct {
 }
 
 func NewDeleteTenant(app app.IApp) DeleteTenant {
+	systemMongoDBClient := app.GetSystemMongoDBClient()
 	return &deleteTenant{
-		DBWriter: database.NewDatabaseWriter(app.GetSystemMongoDBClient(), "system"),
+		DBWriter: database.NewDatabaseWriter(systemMongoDBClient.MongoDBClient, systemMongoDBClient.DatabaseName),
 	}
 }
 
