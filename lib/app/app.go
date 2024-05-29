@@ -16,15 +16,21 @@ import (
 
 type IApp interface {
 	GetSystemMongoDBClient() *mongo.Client
-	GetMongoDBClients() map[string]*mongo.Client
+	GetMongoDBClients() map[string]*CustomerMongoDB
+}
+
+type CustomerMongoDB struct {
+	ID            string
+	DatabaseName  string
+	MongoDBClient *mongo.Client
 }
 
 type App struct {
 	SystemMongoDBClient     *mongo.Client
-	CustomersMongoDBClients map[string]*mongo.Client
+	CustomersMongoDBClients map[string]*CustomerMongoDB
 }
 
-func (a *App) GetMongoDBClients() map[string]*mongo.Client {
+func (a *App) GetMongoDBClients() map[string]*CustomerMongoDB {
 	return a.CustomersMongoDBClients
 }
 
@@ -34,7 +40,7 @@ func (a *App) GetSystemMongoDBClient() *mongo.Client {
 
 func NewApp(ctx context.Context) IApp {
 	// Store all mongodb clients for each of the customers
-	mongoDBClients := make(map[string]*mongo.Client)
+	mongoDBClients := make(map[string]*CustomerMongoDB)
 
 	c, err := config.LoadConfiguration()
 	if err != nil {
@@ -62,7 +68,7 @@ func NewApp(ctx context.Context) IApp {
 			os.Exit(1)
 		}
 
-		var customer entity.Customer
+		var customer entity.Tenant
 		err = systemMongoClient.Database("system").Collection("customers").FindOne(ctx, bson.D{{Key: "_id", Value: _id}}).Decode(&customer)
 		if err != nil {
 			log.Logger.Error(fmt.Errorf("error while fetching database of customer '%s': %w", _id, err).Error())
@@ -79,7 +85,11 @@ func NewApp(ctx context.Context) IApp {
 			os.Exit(1)
 		}
 
-		mongoDBClients[customer.ID.Hex()] = customerMongoDBClient
+		mongoDBClients[customer.ID.Hex()] = &CustomerMongoDB{
+			ID:            customer.ID.Hex(),
+			DatabaseName:  customer.DatabaseName,
+			MongoDBClient: customerMongoDBClient,
+		}
 
 	} else {
 		customersCursor, err := systemMongoClient.Database("system").Collection("customers").Find(ctx, bson.D{}) // TODO filter out diamond clients
@@ -88,7 +98,7 @@ func NewApp(ctx context.Context) IApp {
 			os.Exit(1)
 		}
 
-		customers := make([]entity.Customer, 0)
+		customers := make([]entity.Tenant, 0)
 		err = customersCursor.All(ctx, &customers)
 		if err != nil {
 			log.Logger.Error(fmt.Errorf("error while parsing customers: %w", err).Error())
@@ -156,22 +166,28 @@ func NewApp(ctx context.Context) IApp {
 
 }
 
-func loadCustomersClients(ctx context.Context, customers []entity.Customer) map[string]*mongo.Client {
-	mongoDBClients := make(map[string]*mongo.Client)
+func loadCustomersClients(ctx context.Context, customers []entity.Tenant) map[string]*CustomerMongoDB {
+	mongoDBClients := make(map[string]*CustomerMongoDB)
 	for _, customer := range customers {
-		customerMongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI(customer.MongoDBConnectionString))
+		customerMongoDBClient, err := mongo.Connect(ctx, options.Client().ApplyURI(customer.MongoDBConnectionString))
 		if err != nil {
 			log.Logger.Warn(fmt.Errorf("error while connecting to '%s' customer database: %w", customer.Name, err).Error())
 			continue
 		}
 
-		if err := customerMongoClient.Ping(ctx, nil); err != nil {
+		if err := customerMongoDBClient.Ping(ctx, nil); err != nil {
 			log.Logger.Warn(fmt.Errorf("error while checking '%s' customer database connection: %w", customer.Name, err).Error())
 			continue
 		}
 
 		if _, ok := mongoDBClients[customer.ID.Hex()]; !ok {
-			mongoDBClients[customer.ID.Hex()] = customerMongoClient
+			mongoDBClients[customer.ID.Hex()] = &CustomerMongoDB{
+				ID:            customer.ID.Hex(),
+				DatabaseName:  customer.DatabaseName,
+				MongoDBClient: customerMongoDBClient,
+			}
 		}
 	}
+
+	return mongoDBClients
 }

@@ -63,7 +63,7 @@ func Test_createCategory_CreateCategory_Success(t *testing.T) {
 			uc := &createCategory{
 				DBWriter: tt.fields.DBWriter,
 			}
-			got, err := uc.CreateCategory(tt.args.ctx, tt.args.request)
+			got, err := uc.Do(tt.args.ctx, tt.args.request)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("createCategory.Do() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -132,7 +132,7 @@ func Test_createCategoryUsecase_CreateCategory_Failure(t *testing.T) {
 			uc := &createCategory{
 				DBWriter: tt.fields.DBWriter,
 			}
-			got, err := uc.CreateCategory(tt.args.ctx, tt.args.request)
+			got, err := uc.Do(tt.args.ctx, tt.args.request)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("createCategory.Do() error = %v, wantErr %v", err, tt.wantErr)
 				return
