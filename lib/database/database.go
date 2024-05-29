@@ -24,6 +24,9 @@ type DBReader interface {
 
 	GetTournaments(context.Context) ([]entity.Tournament, error)
 	GetTournament(context.Context, string) (*entity.Tournament, error)
+
+	GetTenants(context.Context) ([]entity.Tenant, error)
+	GetTenant(context.Context, string) (*entity.Tenant, error)
 }
 
 type DBWriter interface {
@@ -38,6 +41,10 @@ type DBWriter interface {
 	AddTournament(context.Context, *entity.Tournament) (*entity.Tournament, error)
 	UpdateTournament(context.Context, *entity.Tournament) (*entity.Tournament, error)
 	DeleteTournament(context.Context, string) error
+
+	AddTenant(context.Context, *entity.Tenant) (*entity.Tenant, error)
+	//UpdateTournament(context.Context, *entity.Tournament) (*entity.Tournament, error)
+	DeleteTenant(context.Context, string) error
 }
 
 func NewDatabaseReader(client interface{}, databaseName string) DBReader {

@@ -12,11 +12,10 @@ import (
 )
 
 type MongoDbReader struct {
-	MongodbClient  *mongo.Client
-	MongoDBClients map[string]*mongo.Client
-	Categories     *mongo.Collection
-	Players        *mongo.Collection
-	Tournaments    *mongo.Collection
+	MongodbClient *mongo.Client
+	Categories    *mongo.Collection
+	Players       *mongo.Collection
+	Tournaments   *mongo.Collection
 }
 
 func NewMongoDbReader(client *mongo.Client, databaseName string) *MongoDbReader {
@@ -117,6 +116,34 @@ func (mdbr *MongoDbReader) GetTournament(ctx context.Context, id string) (*entit
 
 	var result entity.Tournament
 	err = mdbr.Tournaments.FindOne(ctx, bson.D{{Key: "_id", Value: _id}}).Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (mdbr *MongoDbReader) GetTenants(ctx context.Context) ([]entity.Tenant, error) {
+	cursor, err := mdbr.MongodbClient.Database("system").Collection("tenants").Find(ctx, bson.D{})
+
+	if err != nil {
+		return nil, err
+	}
+	var tenants []entity.Tenant
+	if err := cursor.All(ctx, &tenants); err != nil {
+		return nil, err
+	}
+
+	return tenants, nil
+}
+func (mdbr *MongoDbReader) GetTenant(ctx context.Context, id string) (*entity.Tenant, error) {
+	_id, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	var result entity.Tenant
+	err = mdbr.MongodbClient.Database("system").Collection("tenants").FindOne(ctx, bson.D{{Key: "_id", Value: _id}}).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
