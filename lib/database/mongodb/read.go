@@ -14,18 +14,12 @@ import (
 type MongoDbReader struct {
 	MongodbClient *mongo.Client
 	DB            *mongo.Database
-	Categories    *mongo.Collection
-	Players       *mongo.Collection
-	Tournaments   *mongo.Collection
 }
 
 func NewMongoDbReader(client *mongo.Client, databaseName string) *MongoDbReader {
 	return &MongoDbReader{
 		MongodbClient: client,
 		DB:            client.Database(databaseName),
-		Categories:    client.Database(databaseName).Collection("categories"),
-		Players:       client.Database(databaseName).Collection("players"),
-		Tournaments:   client.Database(databaseName).Collection("tournaments"),
 	}
 
 }
