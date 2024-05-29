@@ -167,7 +167,7 @@ func (mdbw *MongoDbWriter) DeleteTournament(ctx context.Context, id string) erro
 	return nil
 }
 
-func (mdbw *MongoDbWriter) AddCustomer(ctx context.Context, customer *entity.Customer) (*entity.Customer, error) {
+func (mdbw *MongoDbWriter) AddCustomer(ctx context.Context, customer *entity.Tenant) (*entity.Tenant, error) {
 	customer.ID = primitive.NewObjectID()
 	_, err := mdbw.mongodbClient.Database("system").Collection("customers").InsertOne(ctx, customer)
 	if err != nil {

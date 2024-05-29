@@ -68,7 +68,7 @@ func NewApp(ctx context.Context) IApp {
 			os.Exit(1)
 		}
 
-		var customer entity.Customer
+		var customer entity.Tenant
 		err = systemMongoClient.Database("system").Collection("customers").FindOne(ctx, bson.D{{Key: "_id", Value: _id}}).Decode(&customer)
 		if err != nil {
 			log.Logger.Error(fmt.Errorf("error while fetching database of customer '%s': %w", _id, err).Error())
@@ -98,7 +98,7 @@ func NewApp(ctx context.Context) IApp {
 			os.Exit(1)
 		}
 
-		customers := make([]entity.Customer, 0)
+		customers := make([]entity.Tenant, 0)
 		err = customersCursor.All(ctx, &customers)
 		if err != nil {
 			log.Logger.Error(fmt.Errorf("error while parsing customers: %w", err).Error())
@@ -166,7 +166,7 @@ func NewApp(ctx context.Context) IApp {
 
 }
 
-func loadCustomersClients(ctx context.Context, customers []entity.Customer) map[string]*CustomerMongoDB {
+func loadCustomersClients(ctx context.Context, customers []entity.Tenant) map[string]*CustomerMongoDB {
 	mongoDBClients := make(map[string]*CustomerMongoDB)
 	for _, customer := range customers {
 		customerMongoDBClient, err := mongo.Connect(ctx, options.Client().ApplyURI(customer.MongoDBConnectionString))

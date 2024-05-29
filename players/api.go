@@ -175,15 +175,19 @@ func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
 	   3. obtener datos del token
 	*/
 
-	customerID := "" // viene del token
+	tenantID := "" // viene del token
 
-	client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[customerID]
+	client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
 	if !ok {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	createPlayer := usecase.NewCreatePlayer(database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName), database.NewDatabaseReader(client.MongoDBClient, client.DatabaseName))
+	createPlayer := usecase.NewCreatePlayer(
+		database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName),
+		nil,
+		database.NewDatabaseReader(client.MongoDBClient, client.DatabaseName),
+	)
 
 	player, err := createPlayer.Do(r.Context(), &request)
 	if err != nil {

@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type Customer struct {
+type Tenant struct {
 	ID                      primitive.ObjectID `bson:"_id" json:"id"`
 	Name                    string             `bson:"name" json:"name"`
 	PhoneNumber             string             `bson:"phone_number" json:"phone_number"`
