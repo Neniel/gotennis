@@ -14,8 +14,8 @@ func main() {
 		App: app,
 		Usecases: &Usecases{
 			CreateTenant: usecase.NewCreateTenant(app),
-			ListTenants:  usecase.NewListCustomers(app),
-			GetTenant:    usecase.NewGetCustomer(app),
+			ListTenants:  usecase.NewListTenants(app),
+			GetTenant:    usecase.NewGetTenant(app),
 			//UpdateCustomer: usecase.NewUpdateCustomer(app),
 			DeleteTenant: usecase.NewDeleteTenant(app),
 		},

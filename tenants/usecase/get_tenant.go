@@ -18,7 +18,7 @@ type getTenant struct {
 	DBReader database.DBReader
 }
 
-func NewGetCustomer(app app.IApp) GetTenant {
+func NewGetTenant(app app.IApp) GetTenant {
 	systemMongoDBClient := app.GetSystemMongoDBClient()
 	return &getTenant{
 		DBReader: database.NewDatabaseReader(systemMongoDBClient.MongoDBClient, systemMongoDBClient.DatabaseName),

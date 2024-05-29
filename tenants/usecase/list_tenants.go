@@ -18,10 +18,10 @@ type listTenants struct {
 	DBReader database.DBReader
 }
 
-func NewListCustomers(app app.IApp) ListTenants {
+func NewListTenants(app app.IApp) ListTenants {
 	systemMongoDBClient := app.GetSystemMongoDBClient()
 	return &listTenants{
-		DBReader: database.NewDatabaseReader(systemMongoDBClient, systemMongoDBClient.DatabaseName),
+		DBReader: database.NewDatabaseReader(systemMongoDBClient.MongoDBClient, systemMongoDBClient.DatabaseName),
 	}
 }
 
