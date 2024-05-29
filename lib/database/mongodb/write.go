@@ -185,7 +185,7 @@ func (mdbw *MongoDbWriter) DeleteTenant(ctx context.Context, id string) error {
 		return err
 	}
 
-	_, err = mdbw.DB.Collection("tenant").DeleteOne(ctx, bson.D{{Key: "_id", Value: _id}})
+	_, err = mdbw.DB.Collection("tenants").DeleteOne(ctx, bson.D{{Key: "_id", Value: _id}})
 	if err != nil {
 		return err
 	}
