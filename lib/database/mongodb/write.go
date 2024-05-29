@@ -16,18 +16,12 @@ import (
 type MongoDbWriter struct {
 	mongodbClient *mongo.Client
 	DB            *mongo.Database
-	Categories    *mongo.Collection
-	Players       *mongo.Collection
-	Tournaments   *mongo.Collection
 }
 
 func NewMongoDbWriter(client *mongo.Client, databaseName string) *MongoDbWriter {
 	return &MongoDbWriter{
 		mongodbClient: client,
 		DB:            client.Database(databaseName),
-		Categories:    client.Database(databaseName).Collection("categories"),
-		Players:       client.Database(databaseName).Collection("players"),
-		Tournaments:   client.Database(databaseName).Collection("tournaments"),
 	}
 
 }
