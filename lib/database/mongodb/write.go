@@ -72,10 +72,50 @@ func (mdbw *MongoDbWriter) AddPlayer(ctx context.Context, player *entity.Player)
 	player.CreatedAt = time.Now().UTC()
 	player.TemporaryAccessCode = util.ToPtr(rand.Uint32())
 
-	_, err := mdbw.DB.Collection("players").InsertOne(ctx, player)
+	session, err := mdbw.DB.Client().StartSession()
 	if err != nil {
 		return nil, err
 	}
+	defer session.EndSession(ctx)
+
+	err = mongo.WithSession(ctx, session, func(sc mongo.SessionContext) error {
+		if err := session.StartTransaction(); err != nil {
+			return err
+		}
+
+		if _, err := mdbw.DB.Collection("players").InsertOne(sc, player); err != nil {
+			if err := session.AbortTransaction(sc); err != nil {
+				return err
+			}
+			return err
+		}
+
+		if _, err := mdbw.DB.Collection("users").InsertOne(sc, &entity.User{
+			ID:                  player.ID,
+			GovernmentID:        player.GovernmentID,
+			Email:               player.Email,
+			Alias:               player.Alias,
+			TemporaryAccessCode: player.TemporaryAccessCode,
+			CreatedAt:           player.CreatedAt,
+		}); err != nil {
+			if err := session.AbortTransaction(sc); err != nil {
+				return err
+			}
+			return err
+		}
+
+		if err := session.CommitTransaction(sc); err != nil {
+			return err
+		}
+
+		return nil
+
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
 	return player, nil
 }
 
@@ -163,14 +203,16 @@ func (mdbw *MongoDbWriter) DeleteTournament(ctx context.Context, id string) erro
 	return nil
 }
 
-func (mdbw *MongoDbWriter) AddTenant(ctx context.Context, customer *entity.Tenant) (*entity.Tenant, error) {
-	customer.ID = primitive.NewObjectID()
-	_, err := mdbw.DB.Collection("tenants").InsertOne(ctx, customer)
+func (mdbw *MongoDbWriter) AddTenant(ctx context.Context, tenant *entity.Tenant) (*entity.Tenant, error) {
+	tenant.ID = primitive.NewObjectID()
+	tenant.CreatedAt = time.Now().UTC()
+
+	_, err := mdbw.DB.Collection("tenants").InsertOne(ctx, tenant)
 	if err != nil {
 		return nil, err
 	}
 
-	return customer, nil
+	return tenant, nil
 }
 
 func (mdbw *MongoDbWriter) DeleteTenant(ctx context.Context, id string) error {
