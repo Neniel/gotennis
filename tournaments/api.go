@@ -78,11 +78,12 @@ func (api *APIServer) listTournaments(w http.ResponseWriter, r *http.Request) {
 	   3. obtener datos del token
 	*/
 
-	customerID := "" // viene del token
+	tenantID := r.Header.Get("X-Tenant-ID")
 
-	client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[customerID]
+	client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[tenantID]
 	if !ok {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("invalid value in header X-Tenant-ID"))
 		return
 	}
 
@@ -122,11 +123,12 @@ func (api *APIServer) getTournament(w http.ResponseWriter, r *http.Request) {
 		   3. obtener datos del token
 		*/
 
-		customerID := "" // viene del token
+		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[customerID]
+		client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[tenantID]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
 
@@ -185,11 +187,12 @@ func (api *APIServer) addTournament(w http.ResponseWriter, r *http.Request) {
 	   3. obtener datos del token
 	*/
 
-	customerID := "" // viene del token
+	tenantID := r.Header.Get("X-Tenant-ID")
 
-	client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[customerID]
+	client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[tenantID]
 	if !ok {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("invalid value in header X-Tenant-ID"))
 		return
 	}
 
@@ -242,11 +245,12 @@ func (api *APIServer) updateTournament(w http.ResponseWriter, r *http.Request) {
 		   3. obtener datos del token
 		*/
 
-		customerID := "" // viene del token
+		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[customerID]
+		client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[tenantID]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
 
@@ -286,11 +290,12 @@ func (api *APIServer) deleteTournament(w http.ResponseWriter, r *http.Request) {
 		   3. obtener datos del token
 		*/
 
-		customerID := "" // viene del token
+		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[customerID]
+		client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[tenantID]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
 

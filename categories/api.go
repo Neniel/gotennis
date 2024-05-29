@@ -80,11 +80,12 @@ func (api *APIServer) listCategories(w http.ResponseWriter, r *http.Request) {
 	   3. obtener datos del token
 	*/
 
-	customerID := "" // viene del token
+	tenantID := r.Header.Get("X-Tenant-ID")
 
-	client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[customerID]
+	client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[tenantID]
 	if !ok {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("invalid value in header X-Tenant-ID"))
 		return
 	}
 
@@ -114,11 +115,12 @@ func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
 		   3. obtener datos del token
 		*/
 
-		customerID := "" // viene del token
+		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[customerID]
+		client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[tenantID]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
 
@@ -175,11 +177,12 @@ func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
 	   3. obtener datos del token
 	*/
 
-	customerID := "" // viene del token
+	tenantID := r.Header.Get("X-Tenant-ID")
 
-	client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[customerID]
+	client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[tenantID]
 	if !ok {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("invalid value in header X-Tenant-ID"))
 		return
 	}
 
@@ -221,11 +224,12 @@ func (api *APIServer) updateCategory(w http.ResponseWriter, r *http.Request) {
 		   3. obtener datos del token
 		*/
 
-		customerID := "" // viene del token
+		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[customerID]
+		client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[tenantID]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
 
@@ -259,11 +263,12 @@ func (api *APIServer) deleteCategory(w http.ResponseWriter, r *http.Request) {
 		   3. obtener datos del token
 		*/
 
-		customerID := "" // viene del token
+		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[customerID]
+		client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[tenantID]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
 

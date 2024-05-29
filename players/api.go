@@ -51,7 +51,7 @@ func (api *APIServer) Run() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /ping", api.pingHandler)
+	mux.HandleFunc("GET /api/ping", api.pingHandler)
 	mux.HandleFunc("GET /api/players", api.listPlayers)
 	mux.HandleFunc("GET /api/players/{id}", api.getPlayer)
 	mux.HandleFunc("POST /api/players", api.addPlayer)
@@ -81,9 +81,9 @@ func (api *APIServer) listPlayers(w http.ResponseWriter, r *http.Request) {
 	   3. obtener datos del token
 	*/
 
-	customerID := "" // viene del token
+	tenantID := r.Header.Get("X-Tenant-ID")
 
-	client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[customerID]
+	client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
 	if !ok {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -115,9 +115,9 @@ func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
 		   3. obtener datos del token
 		*/
 
-		customerID := "" // viene del token
+		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[customerID]
+		client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
 			return
@@ -224,11 +224,12 @@ func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
 		   3. obtener datos del token
 		*/
 
-		customerID := "" // viene del token
+		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[customerID]
+		client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
 
@@ -269,11 +270,12 @@ func (api *APIServer) partiallyUpdatePlayer(w http.ResponseWriter, r *http.Reque
 		   3. obtener datos del token
 		*/
 
-		customerID := "" // viene del token
+		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[customerID]
+		client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
 
@@ -307,11 +309,12 @@ func (api *APIServer) deletePlayer(w http.ResponseWriter, r *http.Request) {
 		   3. obtener datos del token
 		*/
 
-		customerID := "" // viene del token
+		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[customerID]
+		client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
 
