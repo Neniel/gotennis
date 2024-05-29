@@ -13,6 +13,7 @@ import (
 
 type MongoDbReader struct {
 	MongodbClient *mongo.Client
+	DB            *mongo.Database
 	Categories    *mongo.Collection
 	Players       *mongo.Collection
 	Tournaments   *mongo.Collection
@@ -21,6 +22,7 @@ type MongoDbReader struct {
 func NewMongoDbReader(client *mongo.Client, databaseName string) *MongoDbReader {
 	return &MongoDbReader{
 		MongodbClient: client,
+		DB:            client.Database(databaseName),
 		Categories:    client.Database(databaseName).Collection("categories"),
 		Players:       client.Database(databaseName).Collection("players"),
 		Tournaments:   client.Database(databaseName).Collection("tournaments"),
@@ -29,7 +31,7 @@ func NewMongoDbReader(client *mongo.Client, databaseName string) *MongoDbReader 
 }
 
 func (mdbr *MongoDbReader) GetCategories(ctx context.Context) ([]entity.Category, error) {
-	cursor, err := mdbr.Categories.Find(ctx, bson.D{})
+	cursor, err := mdbr.DB.Collection("categories").Find(ctx, bson.D{})
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +50,7 @@ func (mdbr *MongoDbReader) GetCategory(ctx context.Context, id string) (*entity.
 	}
 
 	var result entity.Category
-	err = mdbr.Categories.FindOne(context.Background(), bson.D{{Key: "_id", Value: _id}}).Decode(&result)
+	err = mdbr.DB.Collection("categories").FindOne(context.Background(), bson.D{{Key: "_id", Value: _id}}).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +58,7 @@ func (mdbr *MongoDbReader) GetCategory(ctx context.Context, id string) (*entity.
 }
 
 func (mdbr *MongoDbReader) GetPlayers(ctx context.Context) ([]entity.Player, error) {
-	cursor, err := mdbr.Players.Find(ctx, bson.D{})
+	cursor, err := mdbr.DB.Collection("players").Find(ctx, bson.D{})
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +77,7 @@ func (mdbr *MongoDbReader) GetPlayer(ctx context.Context, id string) (*entity.Pl
 	}
 
 	var result entity.Player
-	err = mdbr.Players.FindOne(ctx, bson.D{{Key: "_id", Value: _id}}).Decode(&result)
+	err = mdbr.DB.Collection("players").FindOne(ctx, bson.D{{Key: "_id", Value: _id}}).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +85,7 @@ func (mdbr *MongoDbReader) GetPlayer(ctx context.Context, id string) (*entity.Pl
 }
 
 func (mdbr *MongoDbReader) IsAvailable(ctx context.Context, field string, value string) (bool, error) {
-	result := mdbr.Players.FindOne(context.TODO(), bson.D{{Key: field, Value: value}})
+	result := mdbr.DB.Collection("players").FindOne(context.TODO(), bson.D{{Key: field, Value: value}})
 	if errors.Is(result.Err(), mongo.ErrNoDocuments) {
 		return true, nil
 	}
@@ -96,7 +98,7 @@ func (mdbr *MongoDbReader) IsAvailable(ctx context.Context, field string, value 
 }
 
 func (mdbr *MongoDbReader) GetTournaments(ctx context.Context) ([]entity.Tournament, error) {
-	cursor, err := mdbr.Tournaments.Find(ctx, bson.D{})
+	cursor, err := mdbr.DB.Collection("tournaments").Find(ctx, bson.D{})
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +117,7 @@ func (mdbr *MongoDbReader) GetTournament(ctx context.Context, id string) (*entit
 	}
 
 	var result entity.Tournament
-	err = mdbr.Tournaments.FindOne(ctx, bson.D{{Key: "_id", Value: _id}}).Decode(&result)
+	err = mdbr.DB.Collection("tournaments").FindOne(ctx, bson.D{{Key: "_id", Value: _id}}).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +126,7 @@ func (mdbr *MongoDbReader) GetTournament(ctx context.Context, id string) (*entit
 }
 
 func (mdbr *MongoDbReader) GetTenants(ctx context.Context) ([]entity.Tenant, error) {
-	cursor, err := mdbr.MongodbClient.Database("system").Collection("tenants").Find(ctx, bson.D{})
+	cursor, err := mdbr.DB.Collection("tenants").Find(ctx, bson.D{})
 
 	if err != nil {
 		return nil, err
@@ -143,7 +145,7 @@ func (mdbr *MongoDbReader) GetTenant(ctx context.Context, id string) (*entity.Te
 	}
 
 	var result entity.Tenant
-	err = mdbr.MongodbClient.Database("system").Collection("tenants").FindOne(ctx, bson.D{{Key: "_id", Value: _id}}).Decode(&result)
+	err = mdbr.DB.Collection("tenants").FindOne(ctx, bson.D{{Key: "_id", Value: _id}}).Decode(&result)
 	if err != nil {
 		return nil, err
 	}

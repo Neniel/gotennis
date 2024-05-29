@@ -15,6 +15,7 @@ import (
 
 type MongoDbWriter struct {
 	mongodbClient *mongo.Client
+	DB            *mongo.Database
 	Categories    *mongo.Collection
 	Players       *mongo.Collection
 	Tournaments   *mongo.Collection
@@ -23,6 +24,7 @@ type MongoDbWriter struct {
 func NewMongoDbWriter(client *mongo.Client, databaseName string) *MongoDbWriter {
 	return &MongoDbWriter{
 		mongodbClient: client,
+		DB:            client.Database(databaseName),
 		Categories:    client.Database(databaseName).Collection("categories"),
 		Players:       client.Database(databaseName).Collection("players"),
 		Tournaments:   client.Database(databaseName).Collection("tournaments"),
@@ -34,7 +36,7 @@ func (mdbw *MongoDbWriter) AddCategory(ctx context.Context, category *entity.Cat
 	category.ID = primitive.NewObjectID()
 	category.CreatedAt = time.Now().UTC()
 
-	_, err := mdbw.Categories.InsertOne(ctx, category)
+	_, err := mdbw.DB.Collection("categories").InsertOne(ctx, category)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +51,7 @@ func (mdbw *MongoDbWriter) UpdateCategory(ctx context.Context, category *entity.
 		return nil, err
 	}
 
-	_, err = mdbw.Categories.ReplaceOne(ctx, bson.M{"_id": category.ID}, updatedCatgory)
+	_, err = mdbw.DB.Collection("categories").ReplaceOne(ctx, bson.M{"_id": category.ID}, updatedCatgory)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +65,7 @@ func (mdbw *MongoDbWriter) DeleteCategory(ctx context.Context, id string) error 
 		return err
 	}
 
-	_, err = mdbw.Categories.DeleteOne(ctx, bson.D{{Key: "_id", Value: _id}})
+	_, err = mdbw.DB.Collection("categories").DeleteOne(ctx, bson.D{{Key: "_id", Value: _id}})
 	if err != nil {
 		return err
 	}
@@ -76,7 +78,7 @@ func (mdbw *MongoDbWriter) AddPlayer(ctx context.Context, player *entity.Player)
 	player.CreatedAt = time.Now().UTC()
 	player.TemporaryAccessCode = util.ToPtr(rand.Uint32())
 
-	_, err := mdbw.Players.InsertOne(ctx, player)
+	_, err := mdbw.DB.Collection("players").InsertOne(ctx, player)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +93,7 @@ func (mdbw *MongoDbWriter) UpdatePlayer(ctx context.Context, player *entity.Play
 		return nil, err
 	}
 
-	_, err = mdbw.Players.ReplaceOne(ctx, bson.M{"_id": player.ID}, updatedPlayer)
+	_, err = mdbw.DB.Collection("players").ReplaceOne(ctx, bson.M{"_id": player.ID}, updatedPlayer)
 	if err != nil {
 		if e, ok := err.(mongo.WriteException); ok {
 			for _, ee := range e.WriteErrors {
@@ -121,7 +123,7 @@ func (mdbw *MongoDbWriter) DeletePlayer(ctx context.Context, id string) error {
 		return err
 	}
 
-	_, err = mdbw.Players.DeleteOne(ctx, bson.D{{Key: "_id", Value: _id}})
+	_, err = mdbw.DB.Collection("players").DeleteOne(ctx, bson.D{{Key: "_id", Value: _id}})
 	if err != nil {
 		return err
 	}
@@ -131,7 +133,7 @@ func (mdbw *MongoDbWriter) DeletePlayer(ctx context.Context, id string) error {
 
 func (mdbw *MongoDbWriter) AddTournament(ctx context.Context, tournament *entity.Tournament) (*entity.Tournament, error) {
 	tournament.ID = primitive.NewObjectID()
-	_, err := mdbw.Tournaments.InsertOne(ctx, tournament)
+	_, err := mdbw.DB.Collection("tournaments").InsertOne(ctx, tournament)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +147,7 @@ func (mdbw *MongoDbWriter) UpdateTournament(ctx context.Context, tournament *ent
 		return nil, err
 	}
 
-	_, err = mdbw.Tournaments.ReplaceOne(ctx, bson.M{"_id": tournament.ID}, updatedTournament)
+	_, err = mdbw.DB.Collection("tournaments").ReplaceOne(ctx, bson.M{"_id": tournament.ID}, updatedTournament)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +161,7 @@ func (mdbw *MongoDbWriter) DeleteTournament(ctx context.Context, id string) erro
 		return err
 	}
 
-	_, err = mdbw.Tournaments.DeleteOne(ctx, bson.D{{Key: "_id", Value: _id}})
+	_, err = mdbw.DB.Collection("tournaments").DeleteOne(ctx, bson.D{{Key: "_id", Value: _id}})
 	if err != nil {
 		return err
 	}
@@ -167,12 +169,26 @@ func (mdbw *MongoDbWriter) DeleteTournament(ctx context.Context, id string) erro
 	return nil
 }
 
-func (mdbw *MongoDbWriter) AddCustomer(ctx context.Context, customer *entity.Tenant) (*entity.Tenant, error) {
+func (mdbw *MongoDbWriter) AddTenant(ctx context.Context, customer *entity.Tenant) (*entity.Tenant, error) {
 	customer.ID = primitive.NewObjectID()
-	_, err := mdbw.mongodbClient.Database("system").Collection("customers").InsertOne(ctx, customer)
+	_, err := mdbw.DB.Collection("tenants").InsertOne(ctx, customer)
 	if err != nil {
 		return nil, err
 	}
 
 	return customer, nil
+}
+
+func (mdbw *MongoDbWriter) DeleteTenant(ctx context.Context, id string) error {
+	_id, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	_, err = mdbw.DB.Collection("tenant").DeleteOne(ctx, bson.D{{Key: "_id", Value: _id}})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
