@@ -25,15 +25,41 @@ services:
     secrets:
       - config
 
-  cache:
-    build: ./cache
-    container_name: cache
-    image: neniel/tennis-cache:latest
+  tournaments:
+    build: ./tournaments
+    container_name: tournaments
+    image: neniel/tennis-tournaments:latest
+    ports:
+      - 8082:8080
     environment:
+      - APP_PORT=:8080
       - APP_ENVIRONMENT=docker
       - CONFIG_FILE=/run/secrets/config
     secrets:
       - config
+
+  tenants:
+    build: ./tenants
+    container_name: tenants
+    image: neniel/tennis-tenants:latest
+    ports:
+      - 8083:8080
+    environment:
+      - APP_PORT=:8080
+      - APP_ENVIRONMENT=docker
+      - CONFIG_FILE=/run/secrets/config
+    secrets:
+      - config
+
+  #cache:
+  #  build: ./cache
+  #  container_name: cache
+  #  image: neniel/tennis-cache:latest
+  #  environment:
+  #    - APP_ENVIRONMENT=docker
+  #    - CONFIG_FILE=/run/secrets/config
+  #  secrets:
+  #    - config
 
 include:
   - docker-compose-secrets.yml
