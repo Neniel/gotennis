@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/Neniel/gotennis/lib/entity"
+	"github.com/Neniel/gotennis/lib/security"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -132,6 +133,7 @@ func (mdbr *MongoDbReader) GetTenants(ctx context.Context) ([]entity.Tenant, err
 
 	return tenants, nil
 }
+
 func (mdbr *MongoDbReader) GetTenant(ctx context.Context, id string) (*entity.Tenant, error) {
 	_id, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -145,4 +147,16 @@ func (mdbr *MongoDbReader) GetTenant(ctx context.Context, id string) (*entity.Te
 	}
 
 	return &result, nil
+}
+
+func (mdbr *MongoDbReader) Login(ctx context.Context, userID string, password string) error {
+	user := entity.User{}
+
+	err := mdbr.DB.Collection("users").FindOne(ctx, bson.M{"government_id": userID}).Decode(&user)
+
+	if err != nil {
+		return err
+	}
+
+	return security.CheckPassword(user.Password, password)
 }

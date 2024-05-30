@@ -291,6 +291,20 @@ func (mr *MockDatabaseMockRecorder) IsAvailable(arg0, arg1, arg2 any) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAvailable", reflect.TypeOf((*MockDatabase)(nil).IsAvailable), arg0, arg1, arg2)
 }
 
+// Login mocks base method.
+func (m *MockDatabase) Login(ctx context.Context, userID, password string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Login", ctx, userID, password)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Login indicates an expected call of Login.
+func (mr *MockDatabaseMockRecorder) Login(ctx, userID, password any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockDatabase)(nil).Login), ctx, userID, password)
+}
+
 // UpdateCategory mocks base method.
 func (m *MockDatabase) UpdateCategory(arg0 context.Context, arg1 *entity.Category) (*entity.Category, error) {
 	m.ctrl.T.Helper()
@@ -492,6 +506,20 @@ func (m *MockDBReader) IsAvailable(arg0 context.Context, arg1, arg2 string) (boo
 func (mr *MockDBReaderMockRecorder) IsAvailable(arg0, arg1, arg2 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAvailable", reflect.TypeOf((*MockDBReader)(nil).IsAvailable), arg0, arg1, arg2)
+}
+
+// Login mocks base method.
+func (m *MockDBReader) Login(ctx context.Context, userID, password string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Login", ctx, userID, password)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Login indicates an expected call of Login.
+func (mr *MockDBReaderMockRecorder) Login(ctx, userID, password any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockDBReader)(nil).Login), ctx, userID, password)
 }
 
 // MockDBWriter is a mock of DBWriter interface.

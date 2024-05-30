@@ -27,6 +27,8 @@ type DBReader interface {
 
 	GetTenants(context.Context) ([]entity.Tenant, error)
 	GetTenant(context.Context, string) (*entity.Tenant, error)
+
+	Login(ctx context.Context, userID string, password string) error
 }
 
 type DBWriter interface {
