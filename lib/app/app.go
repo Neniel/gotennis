@@ -17,6 +17,7 @@ import (
 type IApp interface {
 	GetSystemMongoDBClient() *SystemMongoDB
 	GetMongoDBClients() map[string]*TenantMongoDB
+	GetTenantByName(tenantName string) (*entity.Tenant, error)
 }
 
 type SystemMongoDB struct {
@@ -41,6 +42,20 @@ func (a *App) GetMongoDBClients() map[string]*TenantMongoDB {
 
 func (a *App) GetSystemMongoDBClient() *SystemMongoDB {
 	return a.SystemMongoDBClient
+}
+
+func (a *App) GetTenantByName(tenantName string) (*entity.Tenant, error) {
+	tenant := entity.Tenant{}
+
+	err := a.SystemMongoDBClient.MongoDBClient.Database(a.SystemMongoDBClient.DatabaseName).
+		Collection("tenants").
+		FindOne(context.Background(), bson.M{"name": tenantName}).Decode(&tenant)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &tenant, nil
 }
 
 func NewApp(ctx context.Context) IApp {
