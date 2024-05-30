@@ -97,6 +97,7 @@ func (api *APIServer) login(w http.ResponseWriter, r *http.Request) {
 	err = login.Do(r.Context(), &request)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
 		grafana.SendMetric("login", 1, 1, map[string]interface{}{
 			"status_code": http.StatusInternalServerError,
 		})
