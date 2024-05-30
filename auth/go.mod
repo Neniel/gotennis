@@ -3,18 +3,18 @@ module github.com/Neniel/gotennis/auth
 go 1.22.3
 
 require (
-	github.com/Neniel/gotennis/lib v0.0.0-20240530015615-222f6e5c44f8
-	github.com/Neniel/gotennis/lib/database v0.0.0-20240530015615-222f6e5c44f8
+	github.com/Neniel/gotennis/lib v0.0.0-20240530040048-fe88882710b8
+	github.com/Neniel/gotennis/lib/database v0.0.0-20240530040048-fe88882710b8
 )
 
-require github.com/Neniel/gotennis/lib/config v0.0.0-20240530015615-222f6e5c44f8 // indirect
+require github.com/Neniel/gotennis/lib/config v0.0.0-20240530040048-fe88882710b8 // indirect
 
 require (
-	github.com/Neniel/gotennis/lib/app v0.0.0-20240530015615-222f6e5c44f8
-	github.com/Neniel/gotennis/lib/entity v0.0.0-20240530015615-222f6e5c44f8 // indirect
-	github.com/Neniel/gotennis/lib/log v0.0.0-20240530015615-222f6e5c44f8
-	github.com/Neniel/gotennis/lib/telemetry v0.0.0-20240530015615-222f6e5c44f8
-	github.com/Neniel/gotennis/lib/util v0.0.0-20240530015615-222f6e5c44f8 // indirect
+	github.com/Neniel/gotennis/lib/app v0.0.0-20240530040048-fe88882710b8
+	github.com/Neniel/gotennis/lib/entity v0.0.0-20240530040048-fe88882710b8 // indirect
+	github.com/Neniel/gotennis/lib/log v0.0.0-20240530040048-fe88882710b8
+	github.com/Neniel/gotennis/lib/telemetry v0.0.0-20240530040048-fe88882710b8
+	github.com/Neniel/gotennis/lib/util v0.0.0-20240530040048-fe88882710b8 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
