@@ -12,7 +12,7 @@ type User struct {
 	GovernmentID        string             `bson:"government_id" json:"government_id"`
 	Email               string             `bson:"email" json:"email"`
 	Alias               *string            `bson:"alias" json:"alias"`
-	TemporaryAccessCode *uint32            `bson:"temporary_access_code" json:"-"`
+	TemporaryAccessCode string             `bson:"temporary_access_code" json:"-"`
 	Password            string             `bson:"password" json:"-"`
 	CreatedBy           string             `bson:"created_by" json:"created_by"`
 	CreatedAt           time.Time          `bson:"created_at" json:"created_at"`

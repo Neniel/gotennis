@@ -17,7 +17,7 @@ type Player struct {
 	PhoneNumber         string             `bson:"phone_number" json:"phone_number"`
 	Email               string             `bson:"email" json:"email"`
 	Alias               *string            `bson:"alias" json:"alias"`
-	TemporaryAccessCode *uint32            `bson:"temporary_access_code" json:"-"`
+	TemporaryAccessCode string             `bson:"temporary_access_code" json:"-"`
 	Password            string             `bson:"password" json:"-"`
 	Category            *Category          `bson:"category" json:"category"`
 	CreatedAt           time.Time          `bson:"created_at" json:"created_at"`
