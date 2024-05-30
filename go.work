@@ -13,5 +13,6 @@ use (
 	./players
 	./tournaments
 	./tenants
+	./auth
 	./lib
 )
