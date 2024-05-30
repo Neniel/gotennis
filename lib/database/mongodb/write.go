@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -70,7 +71,7 @@ func (mdbw *MongoDbWriter) DeleteCategory(ctx context.Context, id string) error 
 func (mdbw *MongoDbWriter) AddPlayer(ctx context.Context, player *entity.Player) (*entity.Player, error) {
 	player.ID = primitive.NewObjectID()
 	player.CreatedAt = time.Now().UTC()
-	player.TemporaryAccessCode = util.ToPtr(rand.Uint32())
+	player.TemporaryAccessCode = fmt.Sprintf("%v", rand.Uint32())
 
 	session, err := mdbw.DB.Client().StartSession()
 	if err != nil {

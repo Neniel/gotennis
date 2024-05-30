@@ -1,3 +1,5 @@
+github.com/Neniel/gotennis/lib v0.0.0-20240530040241-488203af9054 h1:rnfFd6uA+kS1XWCedmBVeUVVOARaWIhNnc/PS4P0SyM=
+github.com/Neniel/gotennis/lib v0.0.0-20240530040241-488203af9054/go.mod h1:gXS+5WNXfPsZEpc0aPtMs2S4Xys7qoTDv5sXxeGJAHg=
 github.com/Neniel/gotennis/lib/entity v0.0.0-20240524221600-2e18421cb76f h1:1ksEavk69uR72+tUzQNKrfb+4WbRxxxuiQQq4QogsTc=
 github.com/Neniel/gotennis/lib/entity v0.0.0-20240524221600-2e18421cb76f/go.mod h1:urEh1H9wsRRh2W3mzjuWdmP6z0BcrT52bs7S4QleXmo=
 github.com/Neniel/gotennis/lib/util v0.0.0-20240524221600-2e18421cb76f h1:IDJWfAevHk1F6JHJTZ6oY3RpK1ciVurqqom/b5+rlb8=
