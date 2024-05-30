@@ -11,6 +11,7 @@ import (
 
 	"github.com/Neniel/gotennis/lib/app"
 	"github.com/Neniel/gotennis/lib/database"
+	"github.com/Neniel/gotennis/lib/middleware"
 	"github.com/Neniel/gotennis/lib/telemetry/grafana"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -59,7 +60,7 @@ func (api *APIServer) Run() {
 	mux.HandleFunc("DELETE /api/categories/{id}", api.deleteCategory)
 	mux.Handle("/metrics", promhttp.Handler())
 
-	log.Fatal(http.ListenAndServe(os.Getenv("APP_PORT"), mux))
+	log.Fatal(http.ListenAndServe(os.Getenv("APP_PORT"), middleware.CORSMiddleware(mux)))
 }
 
 func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
@@ -71,9 +72,6 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) listCategories(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Content-Type", "application/json")
-
 	/*
 	   1. recibir el token
 	   2. validar el token
@@ -105,8 +103,6 @@ func (api *APIServer) listCategories(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Content-Type", "application/json")
 	if categoryId := r.PathValue("id"); categoryId != "" {
 
 		/*
@@ -158,9 +154,6 @@ func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Content-Type", "application/json")
-
 	var request usecase.CreateCategoryRequest
 
 	defer r.Body.Close()
@@ -204,8 +197,6 @@ func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (api *APIServer) updateCategory(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 
 		var request usecase.UpdateCategoryRequest
@@ -253,8 +244,6 @@ func (api *APIServer) updateCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) deleteCategory(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 
 		/*
