@@ -7,6 +7,8 @@ func CORSMiddleware(next http.Handler) http.Handler {
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 		w.Header().Add("Access-Control-Allow-Methods", "*")
 		w.Header().Add("Access-Control-Allow-Headers", "*")
+		w.Header().Add("Access-Control-Expose-Headers", "X-Tenant-ID")
+
 		w.Header().Add("Content-Type", "application/json")
 
 		if r.Method == "OPTIONS" {
