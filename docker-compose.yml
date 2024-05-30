@@ -57,6 +57,20 @@ services:
     secrets:
       - config
 
+  auth:
+    build: ./auth
+    container_name: auth
+    image: neniel/tennis-auth:latest
+    ports:
+      - 8084:8080
+    environment:
+      - APP_PORT=:8080
+      - APP_ENVIRONMENT=docker
+      - LOGGING_LEVEL=DEBUG
+      - CONFIG_FILE=/run/secrets/config
+    secrets:
+      - config
+
   #cache:
   #  build: ./cache
   #  container_name: cache
