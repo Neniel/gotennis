@@ -14,6 +14,7 @@ import (
 	"github.com/Neniel/gotennis/lib/app"
 	"github.com/Neniel/gotennis/lib/database"
 	"github.com/Neniel/gotennis/lib/log"
+	"github.com/Neniel/gotennis/lib/middleware"
 	"github.com/Neniel/gotennis/lib/telemetry/grafana"
 )
 
@@ -59,11 +60,14 @@ func (api *APIServer) Run() {
 	mux.HandleFunc("PATCH /api/players/{id}", api.partiallyUpdatePlayer)
 	mux.HandleFunc("DELETE /api/players/{id}", api.deletePlayer)
 
-	log.Logger.Error(http.ListenAndServe(os.Getenv("APP_PORT"), mux).Error())
+	log.Logger.Error(
+		http.ListenAndServe(
+			os.Getenv("APP_PORT"),
+			middleware.CORSMiddleware(mux),
+		).Error())
 }
 
 func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodGet {
 		w.Write([]byte("Ok"))
 		return
@@ -72,9 +76,6 @@ func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) listPlayers(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Content-Type", "application/json")
-
 	/*
 	   1. recibir el token
 	   2. validar el token
@@ -105,8 +106,6 @@ func (api *APIServer) listPlayers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Content-Type", "application/json")
 	if categoryId := r.PathValue("id"); categoryId != "" {
 
 		/*
@@ -158,8 +157,6 @@ func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Content-Type", "application/json")
 	var request usecase.CreatePlayerRequest
 	defer r.Body.Close()
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -206,8 +203,6 @@ func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 		var request usecase.UpdatePlayerRequest
 		defer r.Body.Close()
@@ -253,7 +248,6 @@ func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *APIServer) partiallyUpdatePlayer(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 		var request usecase.PartiallyUpdatePlayerRequest
 		defer r.Body.Close()
@@ -299,8 +293,6 @@ func (api *APIServer) partiallyUpdatePlayer(w http.ResponseWriter, r *http.Reque
 }
 
 func (api *APIServer) deletePlayer(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Content-Type", "application/json")
 	if id := r.PathValue("id"); id != "" {
 
 		/*
