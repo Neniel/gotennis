@@ -112,7 +112,7 @@ func NewApp(ctx context.Context) IApp {
 		}
 
 	} else {
-		customersCursor, err := systemMongoClient.Database("system").Collection("tenants").Find(ctx, bson.D{}) // TODO filter out diamond clients
+		customersCursor, err := systemMongoClient.Database("neniel").Collection("tenants").Find(ctx, bson.D{}) // TODO filter out diamond clients
 		if err != nil {
 			log.Logger.Error(fmt.Errorf("error while fetching to customers from database: %w", err).Error())
 			os.Exit(1)
@@ -181,7 +181,7 @@ func NewApp(ctx context.Context) IApp {
 	*/
 	return &App{
 		SystemMongoDBClient: &SystemMongoDB{
-			DatabaseName:  "system",
+			DatabaseName:  "neniel",
 			MongoDBClient: systemMongoClient,
 		},
 		CustomersMongoDBClients: mongoDBClients,
