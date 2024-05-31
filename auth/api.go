@@ -2,9 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"os"
 
 	"net/http"
-	"os"
 
 	"github.com/Neniel/gotennis/auth/usecase"
 	"github.com/Neniel/gotennis/lib/app"

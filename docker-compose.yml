@@ -6,9 +6,9 @@ services:
     container_name: categories
     image: neniel/tennis-categories:latest
     ports:
-      - 8080:8080
+      - 8080:443
     environment:
-      - APP_PORT=:8080
+      - APP_PORT=:443
       - APP_ENVIRONMENT=docker
       - LOGGING_LEVEL=DEBUG
       - CONFIG_FILE=/run/secrets/config
@@ -20,9 +20,9 @@ services:
     container_name: players
     image: neniel/tennis-players:latest
     ports:
-      - 8081:8080
+      - 8081:443
     environment:
-      - APP_PORT=:8080
+      - APP_PORT=:443
       - APP_ENVIRONMENT=docker
       - LOGGING_LEVEL=DEBUG
       - CONFIG_FILE=/run/secrets/config
@@ -34,9 +34,9 @@ services:
     container_name: tournaments
     image: neniel/tennis-tournaments:latest
     ports:
-      - 8082:8080
+      - 8082:443
     environment:
-      - APP_PORT=:8080
+      - APP_PORT=:443
       - APP_ENVIRONMENT=docker
       - LOGGING_LEVEL=DEBUG
       - CONFIG_FILE=/run/secrets/config
@@ -48,9 +48,9 @@ services:
     container_name: tenants
     image: neniel/tennis-tenants:latest
     ports:
-      - 8083:8080
+      - 8083:443
     environment:
-      - APP_PORT=:8080
+      - APP_PORT=:443
       - APP_ENVIRONMENT=docker
       - LOGGING_LEVEL=DEBUG
       - CONFIG_FILE=/run/secrets/config
@@ -62,12 +62,16 @@ services:
     container_name: auth
     image: neniel/tennis-auth:latest
     ports:
-      - 8084:8080
+      - 8084:443
+    volumes:
+      - ./localhost.crt:/tmp/localhost.crt
+      - ./localhost.key:/tmp/localhost.key
     environment:
-      - APP_PORT=:8080
       - APP_ENVIRONMENT=docker
       - LOGGING_LEVEL=DEBUG
       - CONFIG_FILE=/run/secrets/config
+      - CERTIFICATE_PATH=/tmp/localhost.crt
+      - KEY_PATH=/tmp/localhost.key
     secrets:
       - config
 
@@ -85,3 +89,10 @@ secrets:
   config:
     file: ./secrets/config.json
 
+volumes:
+  ca-certificate:
+    driver: local
+    driver_opts:
+      type: none
+      device: ca.crt
+      o: bind
