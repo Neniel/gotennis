@@ -310,9 +310,6 @@ func (api *APIServer) deletePlayer(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-
-		s sync
-
 		deletePlayer := usecase.NewDeletePlayer(database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName))
 		err = deletePlayer.Do(r.Context(), id)
 		if errors.Is(err, primitive.ErrInvalidHex) {
