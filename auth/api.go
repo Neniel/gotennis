@@ -42,8 +42,8 @@ func (api *APIServer) Run() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /api/ping", api.pingHandler)
-	mux.HandleFunc("POST /api/login", api.login)
+	mux.HandleFunc("GET /ping", api.pingHandler)
+	mux.HandleFunc("POST /login", api.login)
 
 	log.Logger.Error(http.ListenAndServe(os.Getenv("APP_PORT"), middleware.CORSMiddleware(mux)).Error())
 }
@@ -85,9 +85,9 @@ func (api *APIServer) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client, ok := api.AuthMicroservice.App.GetMongoDBClients()[tenant.ID.Hex()]
-	if !ok {
-		w.WriteHeader(http.StatusBadRequest)
+	client, err := api.AuthMicroservice.App.GetTenantMongoDBClient(tenant.ID.Hex())
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("invalid value in header X-Tenant-Name"))
 		return
 	}

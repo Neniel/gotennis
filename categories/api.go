@@ -52,12 +52,12 @@ func (api *APIServer) Run() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /api/ping", api.pingHandler)
-	mux.HandleFunc("GET /api/categories", api.listCategories)
-	mux.HandleFunc("GET /api/categories/{id}", api.getCategory)
-	mux.HandleFunc("POST /api/categories", api.addCategory)
-	mux.HandleFunc("PUT /api/categories/{id}", api.updateCategory)
-	mux.HandleFunc("DELETE /api/categories/{id}", api.deleteCategory)
+	mux.HandleFunc("GET /ping", api.pingHandler)
+	mux.HandleFunc("GET /categories", api.listCategories)
+	mux.HandleFunc("GET /categories/{id}", api.getCategory)
+	mux.HandleFunc("POST /categories", api.addCategory)
+	mux.HandleFunc("PUT /categories/{id}", api.updateCategory)
+	mux.HandleFunc("DELETE /categories/{id}", api.deleteCategory)
 	mux.Handle("/metrics", promhttp.Handler())
 
 	log.Fatal(http.ListenAndServe(os.Getenv("APP_PORT"), middleware.CORSMiddleware(mux)))
@@ -80,9 +80,9 @@ func (api *APIServer) listCategories(w http.ResponseWriter, r *http.Request) {
 
 	tenantID := r.Header.Get("X-Tenant-ID")
 
-	client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[tenantID]
-	if !ok {
-		w.WriteHeader(http.StatusBadRequest)
+	client, err := api.CategoryMicroservice.App.GetTenantMongoDBClient(tenantID)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("invalid value in header X-Tenant-ID"))
 		return
 	}
@@ -113,9 +113,9 @@ func (api *APIServer) getCategory(w http.ResponseWriter, r *http.Request) {
 
 		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[tenantID]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+		client, err := api.CategoryMicroservice.App.GetTenantMongoDBClient(tenantID)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
@@ -172,9 +172,9 @@ func (api *APIServer) addCategory(w http.ResponseWriter, r *http.Request) {
 
 	tenantID := r.Header.Get("X-Tenant-ID")
 
-	client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[tenantID]
-	if !ok {
-		w.WriteHeader(http.StatusBadRequest)
+	client, err := api.CategoryMicroservice.App.GetTenantMongoDBClient(tenantID)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("invalid value in header X-Tenant-ID"))
 		return
 	}
@@ -217,9 +217,9 @@ func (api *APIServer) updateCategory(w http.ResponseWriter, r *http.Request) {
 
 		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[tenantID]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+		client, err := api.CategoryMicroservice.App.GetTenantMongoDBClient(tenantID)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
@@ -254,16 +254,16 @@ func (api *APIServer) deleteCategory(w http.ResponseWriter, r *http.Request) {
 
 		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.CategoryMicroservice.App.GetMongoDBClients()[tenantID]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+		client, err := api.CategoryMicroservice.App.GetTenantMongoDBClient(tenantID)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
 
 		deleteCategory := usecase.NewDeleteCategory(database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName))
 
-		err := deleteCategory.Do(r.Context(), id)
+		err = deleteCategory.Do(r.Context(), id)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(err.Error()))

@@ -51,11 +51,11 @@ func (api *APIServer) Run() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /ping", api.pingHandler)
-	mux.HandleFunc("GET /api/tenants", api.listTenants)
-	mux.HandleFunc("GET /api/tenants/{id}", api.getTenant)
-	mux.HandleFunc("POST /api/tenants", api.addTenant)
+	mux.HandleFunc("GET /tenants", api.listTenants)
+	mux.HandleFunc("GET /tenants/{id}", api.getTenant)
+	mux.HandleFunc("POST /tenants", api.addTenant)
 	//mux.HandleFunc("PUT /api/tenants/{id}", api.updateCustomer)
-	mux.HandleFunc("DELETE /api/tenants/{id}", api.deleteTenant)
+	mux.HandleFunc("DELETE /tenants/{id}", api.deleteTenant)
 	mux.Handle("/metrics", promhttp.Handler())
 
 	log.Fatal(http.ListenAndServe(os.Getenv("APP_PORT"), mux))

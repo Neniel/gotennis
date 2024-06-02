@@ -52,13 +52,13 @@ func (api *APIServer) Run() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /api/ping", api.pingHandler)
-	mux.HandleFunc("GET /api/players", api.listPlayers)
-	mux.HandleFunc("GET /api/players/{id}", api.getPlayer)
-	mux.HandleFunc("POST /api/players", api.addPlayer)
-	mux.HandleFunc("PUT /api/players/{id}", api.updatePlayer)
-	mux.HandleFunc("PATCH /api/players/{id}", api.partiallyUpdatePlayer)
-	mux.HandleFunc("DELETE /api/players/{id}", api.deletePlayer)
+	mux.HandleFunc("GET /ping", api.pingHandler)
+	mux.HandleFunc("GET /players", api.listPlayers)
+	mux.HandleFunc("GET /players/{id}", api.getPlayer)
+	mux.HandleFunc("POST /players", api.addPlayer)
+	mux.HandleFunc("PUT /players/{id}", api.updatePlayer)
+	mux.HandleFunc("PATCH /players/{id}", api.partiallyUpdatePlayer)
+	mux.HandleFunc("DELETE /players/{id}", api.deletePlayer)
 
 	log.Logger.Error(
 		http.ListenAndServe(
@@ -84,9 +84,9 @@ func (api *APIServer) listPlayers(w http.ResponseWriter, r *http.Request) {
 
 	tenantID := r.Header.Get("X-Tenant-ID")
 
-	client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
-	if !ok {
-		w.WriteHeader(http.StatusBadRequest)
+	client, err := api.PlayerMicroservice.App.GetTenantMongoDBClient(tenantID)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
@@ -116,9 +116,9 @@ func (api *APIServer) getPlayer(w http.ResponseWriter, r *http.Request) {
 
 		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+		client, err := api.PlayerMicroservice.App.GetTenantMongoDBClient(tenantID)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
@@ -174,9 +174,9 @@ func (api *APIServer) addPlayer(w http.ResponseWriter, r *http.Request) {
 
 	tenantID := r.Header.Get("X-Tenant-ID")
 
-	client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
-	if !ok {
-		w.WriteHeader(http.StatusBadRequest)
+	client, err := api.PlayerMicroservice.App.GetTenantMongoDBClient(tenantID)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("invalid value in header X-Tenant-ID"))
 		return
 	}
@@ -221,9 +221,9 @@ func (api *APIServer) updatePlayer(w http.ResponseWriter, r *http.Request) {
 
 		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+		client, err := api.PlayerMicroservice.App.GetTenantMongoDBClient(tenantID)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
@@ -266,9 +266,9 @@ func (api *APIServer) partiallyUpdatePlayer(w http.ResponseWriter, r *http.Reque
 
 		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+		client, err := api.PlayerMicroservice.App.GetTenantMongoDBClient(tenantID)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
@@ -303,15 +303,18 @@ func (api *APIServer) deletePlayer(w http.ResponseWriter, r *http.Request) {
 
 		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.PlayerMicroservice.App.GetMongoDBClients()[tenantID]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+		client, err := api.PlayerMicroservice.App.GetTenantMongoDBClient(tenantID)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
 
+
+		s sync
+
 		deletePlayer := usecase.NewDeletePlayer(database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName))
-		err := deletePlayer.Do(r.Context(), id)
+		err = deletePlayer.Do(r.Context(), id)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
 			return

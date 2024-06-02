@@ -49,12 +49,12 @@ func (api *APIServer) Run() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /api/ping", api.pingHandler)
-	mux.HandleFunc("GET /api/tournaments", api.listTournaments)
-	mux.HandleFunc("GET /api/tournaments/{id}", api.getTournament)
-	mux.HandleFunc("POST /api/tournaments", api.addTournament)
-	mux.HandleFunc("PUT /api/tournaments/{id}", api.updateTournament)
-	mux.HandleFunc("DELETE /api/tournaments/{id}", api.deleteTournament)
+	mux.HandleFunc("GET /ping", api.pingHandler)
+	mux.HandleFunc("GET /tournaments", api.listTournaments)
+	mux.HandleFunc("GET /tournaments/{id}", api.getTournament)
+	mux.HandleFunc("POST /tournaments", api.addTournament)
+	mux.HandleFunc("PUT /tournaments/{id}", api.updateTournament)
+	mux.HandleFunc("DELETE /tournaments/{id}", api.deleteTournament)
 
 	log.Logger.Error(http.ListenAndServe(os.Getenv("APP_PORT"), mux).Error())
 }
@@ -80,9 +80,9 @@ func (api *APIServer) listTournaments(w http.ResponseWriter, r *http.Request) {
 
 	tenantID := r.Header.Get("X-Tenant-ID")
 
-	client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[tenantID]
-	if !ok {
-		w.WriteHeader(http.StatusBadRequest)
+	client, err := api.TournamentMicroservice.App.GetTenantMongoDBClient(tenantID)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("invalid value in header X-Tenant-ID"))
 		return
 	}
@@ -125,9 +125,9 @@ func (api *APIServer) getTournament(w http.ResponseWriter, r *http.Request) {
 
 		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[tenantID]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+		client, err := api.TournamentMicroservice.App.GetTenantMongoDBClient(tenantID)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
@@ -189,9 +189,9 @@ func (api *APIServer) addTournament(w http.ResponseWriter, r *http.Request) {
 
 	tenantID := r.Header.Get("X-Tenant-ID")
 
-	client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[tenantID]
-	if !ok {
-		w.WriteHeader(http.StatusBadRequest)
+	client, err := api.TournamentMicroservice.App.GetTenantMongoDBClient(tenantID)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("invalid value in header X-Tenant-ID"))
 		return
 	}
@@ -247,9 +247,9 @@ func (api *APIServer) updateTournament(w http.ResponseWriter, r *http.Request) {
 
 		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[tenantID]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+		client, err := api.TournamentMicroservice.App.GetTenantMongoDBClient(tenantID)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
@@ -292,16 +292,16 @@ func (api *APIServer) deleteTournament(w http.ResponseWriter, r *http.Request) {
 
 		tenantID := r.Header.Get("X-Tenant-ID")
 
-		client, ok := api.TournamentMicroservice.App.GetMongoDBClients()[tenantID]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
+		client, err := api.TournamentMicroservice.App.GetTenantMongoDBClient(tenantID)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("invalid value in header X-Tenant-ID"))
 			return
 		}
 
 		deleteTournament := usecase.NewDeleteTournament(database.NewDatabaseWriter(client.MongoDBClient, client.DatabaseName))
 
-		err := deleteTournament.Do(r.Context(), id)
+		err = deleteTournament.Do(r.Context(), id)
 		if errors.Is(err, primitive.ErrInvalidHex) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
