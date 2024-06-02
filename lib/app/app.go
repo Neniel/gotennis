@@ -16,8 +16,8 @@ import (
 
 type IApp interface {
 	GetSystemMongoDBClient() *SystemMongoDB
-	GetMongoDBClients() map[string]*TenantMongoDB
 	GetTenantByName(tenantName string) (*entity.Tenant, error)
+	GetTenantMongoDBClient(tenantID string) (*TenantMongoDB, error)
 }
 
 type SystemMongoDB struct {
@@ -32,12 +32,12 @@ type TenantMongoDB struct {
 }
 
 type App struct {
-	SystemMongoDBClient     *SystemMongoDB
-	CustomersMongoDBClients map[string]*TenantMongoDB
+	SystemMongoDBClient   *SystemMongoDB
+	TenantsMongoDBClients map[string]*TenantMongoDB
 }
 
 func (a *App) GetMongoDBClients() map[string]*TenantMongoDB {
-	return a.CustomersMongoDBClients
+	return a.TenantsMongoDBClients
 }
 
 func (a *App) GetSystemMongoDBClient() *SystemMongoDB {
@@ -56,6 +56,16 @@ func (a *App) GetTenantByName(tenantName string) (*entity.Tenant, error) {
 	}
 
 	return &tenant, nil
+}
+
+func (a *App) GetTenantMongoDBClient(tenantID string) (*TenantMongoDB, error) {
+
+	client, ok := a.TenantsMongoDBClients[tenantID]
+	if !ok {
+		return nil, fmt.Errorf("invalid tenant id")
+	}
+
+	return client, nil
 }
 
 func NewApp(ctx context.Context) IApp {
@@ -184,7 +194,7 @@ func NewApp(ctx context.Context) IApp {
 			DatabaseName:  "neniel",
 			MongoDBClient: systemMongoClient,
 		},
-		CustomersMongoDBClients: mongoDBClients,
+		TenantsMongoDBClients: mongoDBClients,
 	}
 
 }
@@ -192,13 +202,13 @@ func NewApp(ctx context.Context) IApp {
 func loadCustomersClients(ctx context.Context, customers []entity.Tenant) map[string]*TenantMongoDB {
 	mongoDBClients := make(map[string]*TenantMongoDB)
 	for _, customer := range customers {
-		customerMongoDBClient, err := mongo.Connect(ctx, options.Client().ApplyURI(customer.MongoDBConnectionString))
+		tenantMongoDBClient, err := mongo.Connect(ctx, options.Client().ApplyURI(customer.MongoDBConnectionString))
 		if err != nil {
 			log.Logger.Warn(fmt.Errorf("error while connecting to '%s' customer database: %w", customer.Name, err).Error())
 			continue
 		}
 
-		if err := customerMongoDBClient.Ping(ctx, nil); err != nil {
+		if err := tenantMongoDBClient.Ping(ctx, nil); err != nil {
 			log.Logger.Warn(fmt.Errorf("error while checking '%s' customer database connection: %w", customer.Name, err).Error())
 			continue
 		}
@@ -207,7 +217,7 @@ func loadCustomersClients(ctx context.Context, customers []entity.Tenant) map[st
 			mongoDBClients[customer.ID.Hex()] = &TenantMongoDB{
 				ID:            customer.ID.Hex(),
 				DatabaseName:  customer.DatabaseName,
-				MongoDBClient: customerMongoDBClient,
+				MongoDBClient: tenantMongoDBClient,
 			}
 		}
 	}
