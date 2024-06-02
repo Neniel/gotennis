@@ -69,7 +69,7 @@ func (api *APIServer) Run() {
 
 func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		w.Write([]byte("Ok"))
+		w.Write([]byte("Players is ok"))
 		return
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)

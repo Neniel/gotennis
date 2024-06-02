@@ -62,7 +62,7 @@ func (api *APIServer) Run() {
 func (api *APIServer) pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodGet {
-		w.Write([]byte("Ok"))
+		w.Write([]byte("Tournaments is ok"))
 		return
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
